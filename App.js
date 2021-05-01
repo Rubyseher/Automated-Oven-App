@@ -1,16 +1,12 @@
-import React from 'react';
-import Slide from './slider';
+import React, { useState } from 'react';
+import { Slider } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import { Image, StyleSheet, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
-  tinyLogo: {
-    width: 390,
-    height: 290,
-  },
   name: {
     fontWeight: 'bold',
     fontSize: 36,
@@ -21,8 +17,15 @@ const styles = StyleSheet.create({
     width: 60,
     height: 20,
   }
-});
 
+});
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFF',
+  },
+};
 
 function HomeScreen() {
   return (
@@ -40,15 +43,15 @@ function historyScreen() {
   );
 }
 function utensilScreen() {
+  const [value, setValue] = useState(89);
+
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-       <View>
+    <View>
       <Image
-        style={styles.tinyLogo}
+        style={{ width: 390, height: 340 }}
         source={require('./images/emptyPlate.png')}
       />
-      <Slide />
-      <Text style={styles.name}>Emptsy</Text>
+      <Text style={styles.name}>Empty</Text>
 
       {/* <Button
       style={styles.round}
@@ -56,7 +59,30 @@ function utensilScreen() {
       />
 
       <Icon name="circle" size={30} color="#900" /> */}
-      <Slide />
+
+      <View style={{ paddingRight: '5%', paddingLeft: '5%', justifyContent: 'center' }}>
+      
+      <Slider
+        value={value}
+        maximumTrackTintColor='#dfddff'
+        minimumTrackTintColor='#ff6a00'
+        maximumValue={200}
+        minimumValue={0}
+        trackStyle={{ backgroundColor: '#ff6a00', height: 20, borderRadius: 20 }}
+        onValueChange={(value) => setValue(value)}
+        thumbStyle={{ backgroundColor: 'transparent' }}
+      />
+      <Slider
+        value={value}
+        maximumTrackTintColor='#dfddff'
+        minimumTrackTintColor='#ff6a00'
+        maximumValue={200}
+        minimumValue={0}
+        trackStyle={{ backgroundColor: '#ff6a00', height: 20, borderRadius: 20 }}
+        onValueChange={(value) => setValue(value)}
+        thumbStyle={{ backgroundColor: 'transparent' }}
+      />
+      <Text>Value: {value}</Text>
     </View>
     </View>
   );
@@ -64,14 +90,14 @@ function utensilScreen() {
 function powerScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-       <Text> Home Screen </Text>
+      <Text> Home Screen </Text>
     </View>
   );
 }
 function SettingsScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-       <Text> Home Screen </Text>
+      <Text> Home Screen </Text>
     </View>
   );
 }
@@ -80,7 +106,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer >
+    <NavigationContainer theme={MyTheme}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
@@ -92,6 +118,7 @@ export default function App() {
             else if (route.name === 'Settings') { iconName = 'cog' }
             return <Icon name={iconName} size={size} color={color} solid />;
           },
+
         })}
         tabBarOptions={{
           activeTintColor: '#3f91ff',
