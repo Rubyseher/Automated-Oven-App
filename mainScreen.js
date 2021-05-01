@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Slider, LinearProgress } from 'react-native-elements';
-import { Image, StyleSheet, View, Text } from 'react-native';
+import { Image, View, Text } from 'react-native';
 import styles from './styles'
 
 function mainScreen() {
