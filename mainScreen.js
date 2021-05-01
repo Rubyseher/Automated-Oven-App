@@ -2,18 +2,17 @@ import React, { useState, Fragment } from 'react';
 import { Slider, LinearProgress } from 'react-native-elements';
 import { Image, View, Text } from 'react-native';
 import styles from './styles'
+import OvenTop from './assets/Oven Direction Top.svg'
+import OvenBottom from './assets/Oven Direction Bottom.svg'
 
 const TemperatureSlider = (props) => {
     return (
         <Fragment>
             <View style={{ flexDirection: 'row', width: '100%' }}>
-                <Image
-                    style={{ height: 30, width: 30 }}
-                    source={props.image}
-                    resizeMode="contain"
-                />
+                {props.icon}
                 <Text style={{ textAlign: 'right', width: '90%' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
+
             <Slider
                 value={props.handler.value}
                 style={{ width: '100%' }}
@@ -35,8 +34,9 @@ function mainScreen() {
     return (
         <View>
             <Image
-                style={{ width: 390, height: 340 }}
+                style={{ width: '100%', height:'54%' }}
                 source={require('./assets/Plate.jpg')}
+                resizeMode='contain'
             />
             <LinearProgress
                 color="#ff6a00"
@@ -53,8 +53,8 @@ function mainScreen() {
         />
         <Icon name="circle" size={30} color="#900" /> */}
             <View style={{ paddingRight: '5%', paddingLeft: '5%' }}>
-                <TemperatureSlider image={require('./assets/OvenTop.png')} handler={{value:value,setValue:setValue}}/>
-                <TemperatureSlider image={require('./assets/OvenBottom.png')} handler={{value:value2,setValue:setValue2}}/>
+                <TemperatureSlider icon={<OvenTop height={30} width={30} fill={'black'}/>} handler={{value:value,setValue:setValue}}/>
+                <TemperatureSlider icon={<OvenBottom height={30} width={30} fill={'black'}/>} handler={{value:value2,setValue:setValue2}}/>
             </View>
         </View>
     );
