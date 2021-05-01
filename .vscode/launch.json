@@ -1,7 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [{
-        "name": "Run Direct iOS - Experimental",
+        "name": "Run Direct iOS",
         "request": "launch",
         "type": "reactnativedirect",
         "cwd": "${workspaceFolder}",
