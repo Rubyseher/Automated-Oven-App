@@ -30,13 +30,13 @@ const TemperatureSlider = (props) => {
 }
 
 function mainScreen() {
-    const [value, setValue] = useState(89);
-    const [value2, setValue2] = useState(89);
+    const [value, setValue] = useState(180);
+    const [value2, setValue2] = useState(80);
     return (
         <View>
             <Image
                 style={{ width: 390, height: 340 }}
-                source={require('./images/emptyPlate.png')}
+                source={require('./assets/Plate.jpg')}
             />
             <LinearProgress
                 color="#ff6a00"
@@ -53,8 +53,8 @@ function mainScreen() {
         />
         <Icon name="circle" size={30} color="#900" /> */}
             <View style={{ paddingRight: '5%', paddingLeft: '5%' }}>
-                <TemperatureSlider image={require('./images/OvenTop.png')} handler={{value:value,setValue:setValue}}/>
-                <TemperatureSlider image={require('./images/OvenBottom.png')} handler={{value:value2,setValue:setValue2}}/>
+                <TemperatureSlider image={require('./assets/OvenTop.png')} handler={{value:value,setValue:setValue}}/>
+                <TemperatureSlider image={require('./assets/OvenBottom.png')} handler={{value:value2,setValue:setValue2}}/>
             </View>
         </View>
     );
