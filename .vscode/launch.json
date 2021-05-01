@@ -1,15 +1,13 @@
 {
     "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Run Direct iOS - Experimental",
-            "request": "launch",
-            "type": "reactnativedirect",
-            "cwd": "${workspaceFolder}",
-            "enableDebug": false,
-            "platform": "ios",
-            "useHermesEngine": false,
-            "target": "00008020-001D69AC0263002E"
-        }
-    ]
+    "configurations": [{
+        "name": "Run Direct iOS - Experimental",
+        "request": "launch",
+        "type": "reactnativedirect",
+        "cwd": "${workspaceFolder}",
+        "enableDebug": false,
+        "platform": "ios",
+        "useHermesEngine": false,
+        "target": "device"
+    }]
 }
