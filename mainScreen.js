@@ -1,23 +1,32 @@
 import React, { useState, Fragment } from 'react';
-import { Slider, LinearProgress } from 'react-native-elements';
+import { Slider } from 'react-native-elements';
 import { Image, View, Text } from 'react-native';
-import styles from './styles'
+import {styles, colors} from './styles'
 import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
+import LinearGradient from 'react-native-linear-gradient';
+
+const GradientProgress = (props) => {
+    return (
+        <View style={[{ width: '100%', height: 12, backgroundColor: props.trackColor ? props.trackColor : '#e1dddd' },props.trackStyle]}>
+            <LinearGradient colors={[colors.yellow, colors.orange]} start={{ x: 0, y: 0 }} locations={[0.5,1]} style={{ width: `${props.value}%`, height: '100%' }}></LinearGradient>
+        </View>
+    )
+}
 
 const TemperatureSlider = (props) => {
     return (
         <Fragment>
-            <View style={{ flexDirection: 'row', width: '100%' }}>
+            <View style={{ flexDirection: 'row', width: '100%', marginTop: 10 }}>
                 {props.icon}
-                <Text style={{ textAlign: 'right', width: '90%' }}> {Math.round(props.handler.value)}°C </Text>
+                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
 
             <Slider
                 value={props.handler.value}
                 style={{ width: '100%' }}
-                maximumTrackTintColor="#dfddff"
-                minimumTrackTintColor="#ff6a00"
+                maximumTrackTintColor={colors.grey}
+                minimumTrackTintColor={colors.yellow}
                 maximumValue={200}
                 minimumValue={0}
                 trackStyle={styles.sliderTrackStyle}
@@ -29,32 +38,21 @@ const TemperatureSlider = (props) => {
 }
 
 function mainScreen() {
-    const [value, setValue] = useState(180);
-    const [value2, setValue2] = useState(80);
+    const [topTemp, setTopTemp] = useState(180);
+    const [bottomTemp, setBottomTemp] = useState(80);
     return (
         <View>
             <Image
-                style={{ width: '100%', height:'54%' }}
+                style={{ width: '100%', height: '53%' }}
                 source={require('./assets/Plate.jpg')}
-                resizeMode='contain'
+                resizeMode='cover'
             />
-            <LinearProgress
-                color="#ff6a00"
-                variant="determinate"
-                value={0.5}
-                style={{ height: 20 }}
-                trackColor="#dfddff"
-            />
-            <Text style={styles.name}>Empty</Text>
-
-            {/* <Button
-        style={styles.round}
-        title="Solid Button"
-        />
-        <Icon name="circle" size={30} color="#900" /> */}
-            <View style={{ paddingRight: '5%', paddingLeft: '5%' }}>
-                <TemperatureSlider icon={<OvenTop height={30} width={30} fill={'black'}/>} handler={{value:value,setValue:setValue}}/>
-                <TemperatureSlider icon={<OvenBottom height={30} width={30} fill={'black'}/>} handler={{value:value2,setValue:setValue2}}/>
+            <GradientProgress value={70} trackColor={colors.white}/>
+            <Text style={styles.title}>Burger</Text>
+            <Text style={styles.subtitle}>14 min 34 sec left</Text>
+            <View style={{ width: '80%', alignSelf: 'center' }}>
+                <TemperatureSlider icon={<OvenTop height={25} width={25} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
+                <TemperatureSlider icon={<OvenBottom height={25} width={25} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
             </View>
         </View>
     );

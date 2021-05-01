@@ -7,12 +7,16 @@ import historyScreen from './historyScreen'
 import mainScreen from './mainScreen'
 import energyScreen from './energyScreen'
 import settingsScreen from './settingsScreen'
+import { styles, colors } from './styles'
+import { Image, View, Text } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+
 
 const NavContainerTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: '#FFF',
+    background: colors.white,
   },
 };
 
@@ -29,8 +33,6 @@ export default function App() {
               iconName = 'user';
             } else if (route.name === 'history') {
               iconName = 'history';
-            } else if (route.name === 'main') {
-              (iconName = 'utensils'), (size = 47);
             } else if (route.name === 'energy') {
               iconName = 'plug';
             } else if (route.name === 'settings') {
@@ -40,13 +42,42 @@ export default function App() {
           },
         })}
         tabBarOptions={{
-          activeTintColor: '#3f91ff',
+          activeTintColor: colors.blue,
           showLabel: false,
-          inactiveTintColor: 'gray',
+          inactiveTintColor: colors.navBarInactive,
+          style: { borderTopWidth: 0 }
         }}>
         <Tab.Screen name="profile" component={profileScreen} />
         <Tab.Screen name="history" component={historyScreen} />
-        <Tab.Screen name="main" component={mainScreen} />
+        <Tab.Screen name="main"
+          options={{
+            tabBarIcon: ({ color }) => (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 0, // space from bottombar
+                  height: 70,
+                  width: 70,
+                  borderRadius: 35,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: colors.blue,
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 3,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4.84,
+
+                  elevation: 5,
+                }}
+              >
+                <Icon name="utensils" color={colors.white} size={32} />
+              </View>
+            )
+          }}
+          component={mainScreen} />
         <Tab.Screen name="energy" component={energyScreen} />
         <Tab.Screen name="settings" component={settingsScreen} />
       </Tab.Navigator>
