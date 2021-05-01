@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Slider } from 'react-native-elements';
+import { Slider, LinearProgress } from 'react-native-elements';
 import { Button } from 'react-native-elements';
 import { Image, StyleSheet, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import ImageResizeMode from 'react-native/Libraries/Image/ImageResizeMode'
 
 const styles = StyleSheet.create({
   name: {
@@ -42,48 +43,42 @@ function historyScreen() {
     </View>
   );
 }
+
 function utensilScreen() {
   const [value, setValue] = useState(89);
-
   return (
     <View>
       <Image
         style={{ width: 390, height: 340 }}
         source={require('./images/emptyPlate.png')}
       />
+      <LinearProgress color="#ff6a00" variant='determinate' value={0.5} style={{ height: 20 }} trackColor="#dfddff" />
       <Text style={styles.name}>Empty</Text>
 
       {/* <Button
       style={styles.round}
       title="Solid Button"
       />
-
       <Icon name="circle" size={30} color="#900" /> */}
 
-      <View style={{ paddingRight: '5%', paddingLeft: '5%', justifyContent: 'center' }}>
-      
-      <Slider
-        value={value}
-        maximumTrackTintColor='#dfddff'
-        minimumTrackTintColor='#ff6a00'
-        maximumValue={200}
-        minimumValue={0}
-        trackStyle={{ backgroundColor: '#ff6a00', height: 20, borderRadius: 20 }}
-        onValueChange={(value) => setValue(value)}
-        thumbStyle={{ backgroundColor: 'transparent' }}
-      />
-      <Slider
-        value={value}
-        maximumTrackTintColor='#dfddff'
-        minimumTrackTintColor='#ff6a00'
-        maximumValue={200}
-        minimumValue={0}
-        trackStyle={{ backgroundColor: '#ff6a00', height: 20, borderRadius: 20 }}
-        onValueChange={(value) => setValue(value)}
-        thumbStyle={{ backgroundColor: 'transparent' }}
-      />
-      <Text>Value: {value}</Text>
-    </View>
+      <View style={{ paddingRight: '5%', paddingLeft: '5%',flexDirection:'row',width:'100%'}}>
+        <Image
+          style={{ height: 30 ,width:30 }}
+          source={require('./images/topOven.png')}
+          resizeMode='contain'
+        />
+        <Slider
+          value={value}
+          style={{width:'90%'}}
+          maximumTrackTintColor='#dfddff'
+          minimumTrackTintColor='#ff6a00'
+          maximumValue={200}
+          minimumValue={0}
+          trackStyle={{ backgroundColor: '#ff6a00', height: 20, borderRadius: 20 }}
+          onValueChange={(value) => setValue(value)}
+          thumbStyle={{ backgroundColor: 'transparent' }}
+        />
+      </View>
     </View>
   );
 }
