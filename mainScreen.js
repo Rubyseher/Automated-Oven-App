@@ -17,14 +17,14 @@ const GradientProgress = (props) => {
 const TemperatureSlider = (props) => {
     return (
         <Fragment>
-            <View style={{ flexDirection: 'row', width: '100%', marginTop: 10 }}>
+            <View style={{ flexDirection: 'row', width: '100%', marginTop: 15 }}>
                 {props.icon}
                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
 
             <Slider
                 value={props.handler.value}
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginTop: -8 }}
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 maximumValue={200}
