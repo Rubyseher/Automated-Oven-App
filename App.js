@@ -26,20 +26,8 @@ const styles = StyleSheet.create({
 
 function HomeScreen() {
   return (
-    <View>
-      <Image
-        style={styles.tinyLogo}
-        source={require('./images/emptyPlate.png')}
-      />
-      <Text style={styles.name}>Emptsy</Text>
-
-      {/* <Button
-      style={styles.round}
-      title="Solid Button"
-      />
-
-      <Icon name="circle" size={30} color="#900" /> */}
-      <Slide />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text> Home Screen </Text>
     </View>
   );
 }
@@ -54,7 +42,22 @@ function historyScreen() {
 function utensilScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-       <Text> Home Screen </Text>
+       <View>
+      <Image
+        style={styles.tinyLogo}
+        source={require('./images/emptyPlate.png')}
+      />
+      <Slide />
+      <Text style={styles.name}>Emptsy</Text>
+
+      {/* <Button
+      style={styles.round}
+      title="Solid Button"
+      />
+
+      <Icon name="circle" size={30} color="#900" /> */}
+      <Slide />
+    </View>
     </View>
   );
 }
