@@ -15,30 +15,30 @@ export default function historyScreen() {
                 />
                 <Text style={{ fontWeight: 'bold', marginLeft: 14, marginTop: 26, marginRight: 38, fontSize: 22 }}>Sandwiches</Text>
                 <Button
-                    buttonStyle={[styles.foodCircle, { height: 28, width: 28, marginTop: 26, backgroundColor: colors.lightRed }]}
+                    buttonStyle={[styles.foodCircle,styles.foodCircleM, {backgroundColor: colors.lightRed }]}
                     icon={<Icon name="bookmark" size={12} color={colors.white} solid />}
                 />
                 <Button
-                    buttonStyle={[styles.foodCircle, { height: 28, width: 28, marginTop: 26, backgroundColor: colors.blue }]}
+                    buttonStyle={[styles.foodCircle,styles.foodCircleM, {backgroundColor: colors.blue }]}
                     icon={<Icon name="play" size={10} color={colors.white} solid />}
                 />
             </View>
-            <View style={styles.detailsContainer}>
+            <View style={[styles.detailsContainer, {justifyContent:'center'}]}>
                 <Button
-                    buttonStyle={[styles.foodCircle, styles.detailsCircle,{backgroundColor: colors.orange }]}
-                    icon={<Icon name="thermometer-half" size={18} color={colors.white} solid />}
+                    buttonStyle={[styles.foodCircle, styles.detailsCircle, { backgroundColor: colors.orange }]}
+                    icon={<Icon name="thermometer-half" size={14} color={colors.white} solid />}
                 />
-                <Text style={{marginTop:15}}>180°C</Text>
+                <Text style={styles.detailText}> 180°C</Text>
                 <Button
-                    buttonStyle={[styles.foodCircle, styles.detailsCircle,{backgroundColor: colors.blue }]}
-                    icon={<Icon name="stopwatch" size={18} color={colors.white} solid />}
+                    buttonStyle={[styles.foodCircle, styles.detailsCircle, { backgroundColor: colors.blue }]}
+                    icon={<Icon name="stopwatch" size={14} color={colors.white} solid />}
                 />
-                <Text>20 min</Text>
+                <Text style={styles.detailText}> 20 min</Text>
                 <Button
-                    buttonStyle={[styles.foodCircle, styles.detailsCircle,{backgroundColor: colors.green }]}
-                    icon={<Icon name="step-forward" size={18} color={colors.white} solid />}
+                    buttonStyle={[styles.foodCircle, styles.detailsCircle, { backgroundColor: colors.green }]}
+                    icon={<Icon name="step-forward" size={14} color={colors.white} solid />}
                 />
-                <Text>3 Steps</Text>
+                <Text style={styles.detailText}> 3 Steps</Text>
             </View>
         </View>
     );
