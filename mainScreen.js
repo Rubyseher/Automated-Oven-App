@@ -41,9 +41,8 @@ const TemperatureSlider = (props) => {
     )
 }
 
-
-
-function mainScreen(navigation) {
+function mainScreen() {
+    const [food, setFood] = useState('Burger');
     const [time, setTime] = useState("14 min 20 sec left");
     const [topTemp, setTopTemp] = useState(180);
     const [bottomTemp, setBottomTemp] = useState(80);
@@ -63,7 +62,7 @@ function mainScreen(navigation) {
                 resizeMode='cover'
             />
             <GradientProgress value={70} trackColor={colors.white} />
-            <Text style={styles.title}>Burger</Text>
+            <Text style={styles.title}>{food}</Text>
             <Text style={styles.subtitle}>{time}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
@@ -82,7 +81,7 @@ function mainScreen(navigation) {
                     containerStyle={[styles.roundButtonPaddingM, {marginLeft:40,marginRight:40}]}
                 />
                 <Button
-                    onPress={() => {setTopTemp(0),setBottomTemp(0),setTime("Off")}}
+                    onPress={() => {setTopTemp(0),setBottomTemp(0),setTime("Off"),setFood('Empty')}}
                     icon={<Ficon name="close-a" size={16} color={colors.red}/>}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}

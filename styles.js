@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import historyScreen from './historyScreen';
 
 export const colors = {
     grey: '#e1dddd',
@@ -9,6 +10,7 @@ export const colors = {
     orange: '#ff7312',
     yellow: '#ffd800',
     blue: '#3b91fc',
+    lightBlue: '#f0fbff',
     navBarInactive: '#b9b9b9'
 }
 
@@ -76,5 +78,57 @@ export const styles = StyleSheet.create({
         padding: 2,
         // marginTop:10,
         alignSelf: 'center',
+    },
+    //   ********* historyScreen ********* 
+    heading: {
+        fontWeight: '600',
+        fontSize: 36,
+        color:colors.blue,
+        marginTop: 70,
+        marginBottom: 36,
+        marginLeft:26,
+    },
+    foodContainer: {
+        width:'80%',
+        height:'20%',
+        alignSelf: 'center',
+        backgroundColor:colors.white,
+        borderTopLeftRadius:12,
+        borderTopRightRadius:12,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 1,
+        },
+        zIndex:1,
+        shadowOpacity: 0.15,
+        shadowRadius: 3.34,
+        elevation: 4,
+    },
+    detailsContainer: {
+        width:'80%',
+        height:'10%',
+        zIndex:0,
+        alignSelf: 'center',
+        backgroundColor:colors.lightBlue,
+        borderBottomLeftRadius:12,
+        borderBottomRightRadius:12,
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    foodCircle: {
+        height: 45,
+        width: 45,
+        marginLeft:16,
+        marginTop:10,
+        borderRadius: 22,
+        padding: 0,
+        backgroundColor: colors.yellow,
     }
 });
