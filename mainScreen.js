@@ -7,10 +7,8 @@ import Wand from './assets/wand.svg'
 import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
-// import {FontAwesome5 ,Fontisto } from 'react-native-vector-icons'
 import Icon  from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
-
 
 const GradientProgress = (props) => {
     return (
@@ -43,9 +41,20 @@ const TemperatureSlider = (props) => {
     )
 }
 
-function mainScreen() {
+
+
+function mainScreen(navigation) {
+    const [time, setTime] = useState("14 min 20 sec left");
     const [topTemp, setTopTemp] = useState(180);
     const [bottomTemp, setBottomTemp] = useState(80);
+	const [pause, setpause] = useState('pause');
+	const [progress, setProgress] = useState(true);
+
+    const IconUD = (progress) => {
+        if (progress) {setpause('play'),setTime('Paused')}
+        else {setpause('pause'),setTime("14 min 20 sec left")}
+    }
+
     return (
         <View>
             <Image
@@ -55,7 +64,7 @@ function mainScreen() {
             />
             <GradientProgress value={70} trackColor={colors.white} />
             <Text style={styles.title}>Burger</Text>
-            <Text style={styles.subtitle}>14 min 34 sec left</Text>
+            <Text style={styles.subtitle}>{time}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
                 <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
@@ -67,11 +76,13 @@ function mainScreen() {
                     containerStyle={styles.roundButtonPaddingS}
                 />
                 <Button
-                    icon={<Ficon name="pause" size={26} color={colors.darkGrey} />}
+                    onPress={() => {setProgress(!progress), IconUD(progress)}}
+                    icon={<Ficon name={pause} size={26} color={colors.darkGrey} />}
                     buttonStyle={styles.roundButtonM}
                     containerStyle={[styles.roundButtonPaddingM, {marginLeft:40,marginRight:40}]}
                 />
                 <Button
+                    onPress={() => {setTopTemp(0),setBottomTemp(0),setTime("Off")}}
                     icon={<Ficon name="close-a" size={16} color={colors.red}/>}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}

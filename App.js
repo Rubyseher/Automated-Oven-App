@@ -25,7 +25,8 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   return (
     <NavigationContainer theme={NavContainerTheme}>
-      <Tab.Navigator
+      <Tab.Navigator 
+      initialRouteName="mainScreen"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
