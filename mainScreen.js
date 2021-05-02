@@ -40,8 +40,8 @@ const TemperatureSlider = (props) => {
         </Fragment>
     )
 }
-
-function mainScreen() {
+ 
+function mainScreen({navigation}) {
     const [food, setFood] = useState('Burger');
     const [time, setTime] = useState("14 min 20 sec left");
     const [topTemp, setTopTemp] = useState(180);
@@ -70,6 +70,7 @@ function mainScreen() {
             </View>
             <View style={{ flexDirection: 'row', width: '100%',alignContent:'center',justifyContent:'center'}}>
                 <Button
+                    onPress={() => navigation.navigate('history')}
                     icon={<Wand height={25} width={25} fill={colors.black}/>}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
