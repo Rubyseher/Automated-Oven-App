@@ -7,10 +7,12 @@ export const colors = {
     white: '#fff',
     black: '#000',
     red: '#c30000',
+    lightRed:'#ff303a',
     orange: '#ff7312',
     yellow: '#ffd800',
     blue: '#3b91fc',
     lightBlue: '#f0fbff',
+    green:'#30c69f',
     navBarInactive: '#b9b9b9'
 }
 
@@ -89,7 +91,7 @@ export const styles = StyleSheet.create({
         marginLeft:26,
     },
     foodContainer: {
-        width:'80%',
+        width:'85%',
         height:'20%',
         alignSelf: 'center',
         backgroundColor:colors.white,
@@ -106,9 +108,10 @@ export const styles = StyleSheet.create({
         elevation: 4,
     },
     detailsContainer: {
-        width:'80%',
+        width:'85%',
         height:'10%',
         zIndex:0,
+        flexDirection: 'row',
         alignSelf: 'center',
         backgroundColor:colors.lightBlue,
         borderBottomLeftRadius:12,
@@ -125,10 +128,14 @@ export const styles = StyleSheet.create({
     foodCircle: {
         height: 45,
         width: 45,
-        marginLeft:16,
-        marginTop:10,
+        marginLeft:14,
+        marginTop:15,
         borderRadius: 22,
         padding: 0,
         backgroundColor: colors.yellow,
+    },
+    detailsCircle:{
+        height: 24, 
+        width: 24,
     }
 });
