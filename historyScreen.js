@@ -84,7 +84,9 @@ export default function historyScreen() {
     return (
         <View >
             <Text style={styles.heading}>History</Text>
-
+            data.map((item,i) =>(
+                
+            )) 
         </View>
     );
 }
