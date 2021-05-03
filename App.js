@@ -12,6 +12,7 @@ import { Image, View, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 
+
 const NavContainerTheme = {
   ...DefaultTheme,
   colors: {
