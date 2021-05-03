@@ -13,7 +13,7 @@ export default function historyScreen() {
                     buttonStyle={styles.foodCircle}
                     icon={<Icon name="utensils" size={22} color={colors.white} />}
                 />
-                <Text style={{ fontWeight: 'bold', marginLeft: 14, marginTop: 26, marginRight: 38, fontSize: 22 }}>Sandwiches</Text>
+                <Text style={[styles.fullName,{marginTop:26}]}>Sandwiches</Text>
                 <Button
                     buttonStyle={[styles.foodCircle,styles.foodCircleM, {backgroundColor: colors.lightRed }]}
                     icon={<Icon name="bookmark" size={12} color={colors.white} solid />}

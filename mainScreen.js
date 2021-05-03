@@ -7,8 +7,9 @@ import Wand from './assets/wand.svg'
 import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
-import Icon  from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
+
 
 const GradientProgress = (props) => {
     return (
@@ -40,18 +41,18 @@ const TemperatureSlider = (props) => {
         </Fragment>
     )
 }
- 
-function mainScreen({navigation}) {
+
+function mainScreen({ navigation }) {
     const [food, setFood] = useState('Burger');
     const [time, setTime] = useState("14 min 20 sec left");
     const [topTemp, setTopTemp] = useState(180);
     const [bottomTemp, setBottomTemp] = useState(80);
-	const [pause, setpause] = useState('pause');
-	const [progress, setProgress] = useState(true);
+    const [pause, setpause] = useState('pause');
+    const [progress, setProgress] = useState(true);
 
     const IconUD = (progress) => {
-        if (progress) {setpause('play'),setTime('Paused')}
-        else {setpause('pause'),setTime("14 min 20 sec left")}
+        if (progress) { setpause('play'), setTime('Paused') }
+        else { setpause('pause'), setTime("14 min 20 sec left") }
     }
 
     return (
@@ -68,22 +69,22 @@ function mainScreen({navigation}) {
                 <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
                 <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
             </View>
-            <View style={{ flexDirection: 'row', width: '100%',alignContent:'center',justifyContent:'center'}}>
+            <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
                 <Button
-                    onPress={() => navigation.navigate('history')}
-                    icon={<Wand height={25} width={25} fill={colors.black}/>}
+                    onPress={() => navigation.navigate('automation')}
+                    icon={<Wand height={25} width={25} fill={colors.black} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
                 />
                 <Button
-                    onPress={() => {setProgress(!progress), IconUD(progress)}}
+                    onPress={() => { setProgress(!progress), IconUD(progress) }}
                     icon={<Ficon name={pause} size={26} color={colors.darkGrey} />}
                     buttonStyle={styles.roundButtonM}
-                    containerStyle={[styles.roundButtonPaddingM, {marginLeft:40,marginRight:40}]}
+                    containerStyle={[styles.roundButtonPaddingM, { marginLeft: 40, marginRight: 40 }]}
                 />
                 <Button
-                    onPress={() => {setTopTemp(0),setBottomTemp(0),setTime("Off"),setFood('Empty')}}
-                    icon={<Ficon name="close-a" size={16} color={colors.red}/>}
+                    onPress={() => { setTopTemp(0), setBottomTemp(0), setTime("Off"), setFood('Empty') }}
+                    icon={<Ficon name="close-a" size={16} color={colors.red} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
                 />

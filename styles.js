@@ -4,7 +4,7 @@ import historyScreen from './historyScreen';
 export const colors = {
     grey: '#e1dddd',
     textGrey: '#b0b2b3',
-    darkGrey: '#464749',
+    darkGrey: '#727676',
     white: '#fff',
     black: '#000',
     red: '#c30000',
@@ -14,6 +14,7 @@ export const colors = {
     blue: '#3b91fc',
     lightBlue: '#f0fbff',
     green: '#30c69f',
+    lightGreen:'#00de65',
     navBarInactive: '#b9b9b9'
 }
 
@@ -84,7 +85,7 @@ export const styles = StyleSheet.create({
     },
     //   ********* historyScreen ********* 
     heading: {
-        fontWeight: '600',
+        fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
         marginTop: 70,
@@ -148,6 +149,48 @@ export const styles = StyleSheet.create({
     detailText: {
         marginTop: 12,
         marginRight: 18,
-        color: colors.textGrey,
+        color: colors.darkGrey,
+    },
+    //  ********** profile screen *********
+    profileCircle: {
+        height: 65,
+        width: 65,
+        marginLeft: 52,
+        borderRadius: 32,
+        marginBottom:42,
+        padding: 0,
+        backgroundColor: colors.yellow,
+    },
+    fullName: {
+        fontWeight: 'bold',
+        marginLeft: 14,
+        marginRight: 38,
+        fontSize: 22
+    },
+    weekly: {
+        fontWeight: '500',
+        marginLeft: 44,
+        marginRight: 38,
+        fontSize: 22,
+        width:'40%',
+    },
+    energy:{
+        fontSize: 16,
+        color: 'grey',
+        marginBottom: 15,
+        marginTop:6,
+        textAlign:'right',
+        width:'30%',
+    },
+    recomend: {
+        height:'50%',
+        width:'100%',
+        backgroundColor: colors.yellow,
+    },
+    recomendContainer:{
+        width:'50%',
+        height:'50%',
+        backgroundColor: colors.yellow,
+        marginLeft:44,
     }
 });

@@ -10,7 +10,7 @@ import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
 import { Image, View, Text } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-
+import { createStackNavigator } from '@react-navigation/stack';
 
 const NavContainerTheme = {
   ...DefaultTheme,
@@ -21,11 +21,20 @@ const NavContainerTheme = {
 };
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+function main() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="automation" component={automationScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function App() {
   return (
     <NavigationContainer theme={NavContainerTheme}>
-      <Tab.Navigator initialRouteName="main"
+      <Tab.Navigator initialRouteName="profile"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
