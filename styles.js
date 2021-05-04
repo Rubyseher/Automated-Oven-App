@@ -94,7 +94,7 @@ export const styles = StyleSheet.create({
     },
     foodContainer: {
         width: '85%',
-        height: '20%',
+        height: 75,
         alignSelf: 'center',
         backgroundColor: colors.white,
         borderTopLeftRadius: 12,
@@ -111,9 +111,10 @@ export const styles = StyleSheet.create({
     },
     detailsContainer: {
         width: '85%',
-        height: '10%',
+        height: 43,
         zIndex: 0,
         flexDirection: 'row',
+        marginBottom:20,
         alignSelf: 'center',
         backgroundColor: colors.lightBlue,
         borderBottomLeftRadius: 12,
@@ -139,15 +140,16 @@ export const styles = StyleSheet.create({
     foodCircleM: {
         height: 28,
         width: 28,
+        borderRadius: 22,
         marginTop: 26,
     },
     detailsCircle: {
-        marginTop: 8,
+        marginTop: 12,
         height: 22,
         width: 22,
     },
     detailText: {
-        marginTop: 12,
+        marginTop: 15,
         marginRight: 18,
         color: colors.darkGrey,
     },

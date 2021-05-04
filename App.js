@@ -6,6 +6,7 @@ import profileScreen from './profileScreen'
 import historyScreen from './historyScreen'
 import mainScreen from './mainScreen'
 import energyScreen from './energyScreen'
+import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
 import { Image, View, Text } from 'react-native';
@@ -24,9 +25,10 @@ const NavContainerTheme = {
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function main() {
+function Main() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="main">
+      <Stack.Screen name="main" component={mainScreen} />
       <Stack.Screen name="automation" component={automationScreen} />
     </Stack.Navigator>
   );
@@ -35,7 +37,7 @@ function main() {
 export default function App() {
   return (
     <NavigationContainer theme={NavContainerTheme}>
-      <Tab.Navigator initialRouteName="profile"
+      <Tab.Navigator initialRouteName="history"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
@@ -87,7 +89,7 @@ export default function App() {
               </View>
             )
           }}
-          component={mainScreen} />
+          component={Main} />
         <Tab.Screen name="energy" component={energyScreen} />
         <Tab.Screen name="settings" component={settingsScreen} />
       </Tab.Navigator>

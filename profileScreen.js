@@ -36,7 +36,7 @@ export default function profileScreen() {
                 </View>
                 <BarChart style={{ height: 120 }} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.28} spacingOuter={0.99}></BarChart>
 
-                <Text style={[styles.weekly, { marginTop: 20 }]}>Recomendation</Text>
+                <Text style={[styles.weekly, { marginTop: 20 }]}>Recomendations</Text>
                 <ScrollView horizontal={true} contentContainerStyle={{ width: '100%', height: '170%' }}>
                     <View style={styles.recomend}>
                     </View>
