@@ -27,7 +27,7 @@ const Stack = createStackNavigator();
 
 function Main() {
   return (
-    <Stack.Navigator initialRouteName="main">
+    <Stack.Navigator initialRouteName="automation" headerMode='none'>
       <Stack.Screen name="main" component={mainScreen} />
       <Stack.Screen name="automation" component={automationScreen} />
     </Stack.Navigator>
@@ -37,7 +37,7 @@ function Main() {
 export default function App() {
   return (
     <NavigationContainer theme={NavContainerTheme}>
-      <Tab.Navigator initialRouteName="history"
+      <Tab.Navigator initialRouteName="energy"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;
