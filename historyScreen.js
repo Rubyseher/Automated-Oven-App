@@ -10,11 +10,11 @@ const FoodName = (props) => {
 
     useEffect(() => {
         if (!finalTemp) {
-            let avgTemp =0, duration =0
+            let avgTemp = 0, duration = 0
             props.steps.forEach(i => {
                 if (i.type == 'cook') {
-                    avgTemp= (((i.topTemp + i.bottomTemp) / 2) * i.duration) + avgTemp
-                    duration=i.duration + duration
+                    avgTemp = (((i.topTemp + i.bottomTemp) / 2) * i.duration) + avgTemp
+                    duration = i.duration + duration
                 }
             });
             setFinalTemp(avgTemp / duration)
@@ -25,10 +25,9 @@ const FoodName = (props) => {
     return (
         <Fragment>
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
-                <Button
-                    buttonStyle={styles.foodCircle}
-                    icon={<Icon name="utensils" size={22} color={colors.white} />}
-                />
+                <View style={styles.tagBadge}>
+                    <Icon name="utensils" size={22} color={colors.white} style={{padding:13}}/>
+                </View>
                 <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
                 <Button
                     buttonStyle={[styles.foodCircleM, { backgroundColor: colors.lightRed }]}
@@ -42,17 +41,17 @@ const FoodName = (props) => {
             </View>
             <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>
                 <Button
-                    buttonStyle={[styles.foodCircle, styles.detailsCircle, { backgroundColor: colors.orange }]}
+                    buttonStyle={[styles.tagBadge, styles.detailsCircle, { backgroundColor: colors.orange }]}
                     icon={<Icon name="thermometer-half" size={14} color={colors.white} solid />}
                 />
                 <Text style={styles.detailText}> {finalTemp}°C</Text>
                 <Button
-                    buttonStyle={[styles.foodCircle, styles.detailsCircle, { backgroundColor: colors.blue }]}
+                    buttonStyle={[styles.tagBadge, styles.detailsCircle, { backgroundColor: colors.blue }]}
                     icon={<Icon name="stopwatch" size={14} color={colors.white} solid />}
                 />
                 <Text style={styles.detailText}> {finalDuration} min</Text>
                 <Button
-                    buttonStyle={[styles.foodCircle, styles.detailsCircle, { backgroundColor: colors.green }]}
+                    buttonStyle={[styles.tagBadge, styles.detailsCircle, { backgroundColor: colors.green }]}
                     icon={<Icon name="step-forward" size={14} color={colors.white} solid />}
                 />
                 <Text style={styles.detailText}> {props.steps.length} Steps</Text>
@@ -84,14 +83,15 @@ export default function historyScreen() {
                 }
                 console.log(e.data);
             };
+            ws.onerror = (e) => {
+                // an error occurred
+                console.log("Error Occured");
+            };
             return () => ws.close();
         }
     });
 
-    // ws.onerror = (e) => {
-    //     // an error occurred
-    //     console.log(e.message);
-    // };
+
 
     // ws.onclose = (e) => {
     //     // connection closed

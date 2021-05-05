@@ -14,7 +14,7 @@ export const colors = {
     blue: '#3b91fc',
     lightBlue: '#f0fbff',
     green: '#30c69f',
-    lightGreen:'#00de65',
+    lightGreen: '#00de65',
     navBarInactive: '#b9b9b9'
 }
 
@@ -114,7 +114,7 @@ export const styles = StyleSheet.create({
         height: 43,
         zIndex: 0,
         flexDirection: 'row',
-        marginBottom:20,
+        marginBottom: 20,
         alignSelf: 'center',
         backgroundColor: colors.lightBlue,
         borderBottomLeftRadius: 12,
@@ -128,7 +128,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
-    foodCircle: {
+    tagBadge: {
         height: 45,
         width: 45,
         marginLeft: 14,
@@ -159,8 +159,8 @@ export const styles = StyleSheet.create({
         width: 65,
         marginLeft: 60,
         borderRadius: 32,
-        marginBottom:42,
-        padding: 0,
+        marginBottom: 42,
+        padding:20,
         backgroundColor: colors.yellow,
     },
     fullName: {
@@ -174,33 +174,21 @@ export const styles = StyleSheet.create({
         marginLeft: 36,
         marginRight: 38,
         fontSize: 22,
-        width:'40%',
+        marginBottom: 10,
+        width: '40%',
     },
-    energy:{
+    energy: {
         fontSize: 16,
         color: 'grey',
-        marginBottom: 15,
-        marginTop:6,
-        textAlign:'right',
-        width:'30%',
+        marginTop: 6,
+        textAlign: 'right',
+        width: '30%',
     },
-    // recomend: {
-    //     height:'80%',
-    //     backgroundColor: colors.red,
-    // },
-    // recomendContainer:{
-    //     marginTop:16,
-    //     width:'60%',
-    //     height:'100%',
-    //     borderRadius:10,
-    //     backgroundColor: colors.green,
-    //     marginLeft:44,
-    // }
     recomend: {
         width: '50%',
         height: '50%',
-        marginTop:20,
-        marginLeft:26,
+        marginTop: 20,
+        marginLeft: 26,
         // alignSelf: 'center',
         backgroundColor: colors.darkGrey,
         borderTopLeftRadius: 12,
@@ -209,11 +197,55 @@ export const styles = StyleSheet.create({
 
     },
     recomendContainer: {
-
         zIndex: 0,
         // alignSelf: 'center',
         backgroundColor: colors.blue,
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
+    },
+    // ********* energy screen ********
+    consumption: {
+        textAlign: 'right',
+        width: '30%',
+        fontWeight: '600',
+        fontSize: 28,
+        color: colors.black,
+        marginTop: -2
+    },
+    tagContainer: {
+        width: '85%',
+        height: 75,
+        alignSelf: 'center',
+        flexDirection: 'row',
+        marginTop:10,
+        marginBottom:8,
+        paddingTop:8,
+        backgroundColor: colors.white,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    graphLabel: {
+        fontWeight: '400',
+        marginLeft: 36,
+        marginRight: 38,
+        fontSize: 20,
+        marginBottom: 10,
+        width: '40%',
+        color: colors.darkGrey 
+    },
+    tagLabel: {
+        fontWeight: '400',
+        fontSize: 20,
+        width: '44%', 
+        marginLeft: 10,
+        marginTop:18,
+        color: colors.darkGrey 
     }
 });
