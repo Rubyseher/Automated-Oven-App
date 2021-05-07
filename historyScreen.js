@@ -104,7 +104,7 @@ export default function historyScreen() {
             {
                 data && data.map((item, i) => (
                     // <Text>{item.playbackHistory[1].timestamp}</Text>
-                    <FoodName name={item.item} steps={item.steps} />
+                    <FoodName key={i} name={item.item} steps={item.steps} />
                 ))
             }
         </View>
