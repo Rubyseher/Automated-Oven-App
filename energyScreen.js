@@ -17,24 +17,33 @@ export default function energyScreen() {
         const parseData = (d) => {
             const reducer = (accumulator, currentValue) => accumulator + currentValue;
             dates = Object.keys(d)
-            console.log("dates", dates);
+            // console.log("dates", dates);
+
+            todayDate=moment()
+            console.log(" todayDate", todayDate.format("YYYY/MM/DD"));
 
             var sum = [],last7=[]
             dates.forEach(i => {
                 console.log("i", i);
                 today = Object.values(d[i]);
-                console.log("today evergy ", today);
+                // console.log("today evergy ", today);
 
                 sum.push(today.reduce(reducer))
-                console.log("sum of", i, "is ", sum);
+                // console.log("sum of", i, "is ", sum);
+
+                last8=moment().subtract(8,'d');
+                ranges = moment(i,'YYYY-MM-DD').isBetween(last8, (todayDate.subtract(8,'d')))
+                console.log('ranges',ranges);
             });
-            console.log("sum arry", sum);
+            console.log("last7",last7);
+            // console.log("sum arry", sum);
             
             setEnergyData((sum.slice(-7)))
 
 
-            todayDate=moment().format("YYYY/MM/DD")
-            console.log(" todayDate", todayDate);
+
+
+
 
             // console.log("energyData",energyData);
             // setWeekSum(energyData.reduce(reducer))
