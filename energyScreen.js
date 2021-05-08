@@ -11,37 +11,58 @@ export default function energyScreen() {
     const energy = colors.lightGreen
     const [data, setData] = useState();
     const [energyData, setEnergyData] = useState();
-    // const [weekSum, setWeekSum] = useState();
+    const [weekSum, setWeekSum] = useState(0);
 
     useEffect(() => {
         const parseData = (d) => {
             const energySum = (accumulator, currentValue) => accumulator + currentValue;
             dates = Object.keys(d)
-            // console.log("dates", dates);
+            console.log("dates", dates);
 
-            todayDate=moment()
+            // todayDate = moment()
             // console.log(" todayDate", todayDate.format("YYYY/MM/DD"));
 
-            var sum = [], last7=[]
-            dates.slice(-7).forEach(i => {
-                // console.log("i", i);
+            var last7energy = []
 
-                todayEnergy = Object.values(d[i]);
-                // console.log("todayEnergy evergy ", todayEnergy);
-                sum.push(todayEnergy.reduce(energySum))
-                // console.log("sum of", i, "is ", sum);
+            for (m = moment().subtract(6, 'd'); m.isSameOrBefore(moment()); m.add(1, 'd')) {
+                var date = m.format('YYYY-MM-DD')
+                if (dates.slice(-7).includes(date)) {
+                    console.log(date, "is there");
+                    todayEnergy = Object.values(d[date]);
+                    // console.log("todayEnergy values ", todayEnergy);
+                    last7energy.push(todayEnergy.reduce(energySum))
+                    // console.log("last7energy of", i, "is ", last7energy);
+                }
+                else {
+                    console.log(date, "is not there")
+                    last7energy.push(0)
+                }
+            }
 
-                before7=moment().subtract(8,'d');
-                ranges = moment(i,'YYYY-MM-DD').isBetween(before7, (todayDate.add(1,'d')));
-                // console.log('ranges',ranges);
-                if(ranges) last7.push(i)
-                else last7.push([0])
-                
-            });
-            console.log("last7",last7);
+            console.log("last7energy is ", last7energy);
+            setEnergyData(last7energy)
+            setWeekSum(last7energy.reduce(energySum))
+            console.log(weekSum, "is weekSum")
 
 
-            setEnergyData((sum.slice(-7)))
+            // dates.slice(-7).forEach(i => {
+            //     // console.log("i", i);
+
+            //     todayEnergy = Object.values(d[i]);
+            //     // console.log("todayEnergy evergy ", todayEnergy);
+            //     last7energy.push(todayEnergy.reduce(energySum))
+            //     // console.log("last7energy of", i, "is ", last7energy);
+
+            //     before7=moment().subtract(7,'d');
+            //     ranges = moment(i,'YYYY-MM-DD').range(before7, (todayDate));
+            //     console.log('ranges',ranges);
+            //     if(ranges) last7.push(i)
+            //     // else last7.push([0])
+
+            // });
+            // console.log("last7",last7);
+
+
 
 
 
@@ -57,7 +78,7 @@ export default function energyScreen() {
             // var energyData = []
             // before7.forEach(i => {
             //     const energySum = (accumulator, currentValue) => accumulator + currentValue;
-            // console.log("sum is ", dates.reduce(energySum));
+            // console.log("last7energy is ", dates.reduce(energySum));
             //     energyData = Object.values(d[i])
             // });
             // console.log("energyData", energyData);
@@ -68,7 +89,7 @@ export default function energyScreen() {
             // console.log("todays energy values",todays);
 
             // const energySum = (accumulator, currentValue) => accumulator + currentValue;
-            // console.log("sum is ",todays.reduce(energySum));
+            // console.log("last7energy is ",todays.reduce(energySum));
 
         }
 
@@ -120,10 +141,12 @@ export default function energyScreen() {
             <View style={{ flexDirection: 'row', marginTop: 20, height: 36 }}>
                 <Text style={styles.graphLabel}>Weekly Energy</Text>
                 <View style={{ width: '100%' }}>
-                    <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>  1420 </Text>
+                    <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{weekSum}</Text>
                 </View>
+                
             </View>
-            {energyData && <BarChart style={{ height: 120 }} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.28} spacingOuter={0.99}></BarChart>}
+            {energyData && <BarChart style={{ height: 120}} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.28} spacingOuter={0.99}></BarChart>}
+            <View style={{ borderBottomColor:colors.grey, borderBottomWidth: 2 ,marginTop:'-3%',marginBottom:'3%',marginRight:'11%',marginLeft:'11%'}} />
 
             <View style={styles.tagContainer}>
                 <View style={[styles.tagBadge, { backgroundColor: colors.lightGreen, marginTop: 8 }]}>
