@@ -26,7 +26,7 @@ const FoodName = (props) => {
         <Fragment>
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
                 <View style={styles.tagBadge}>
-                    <Icon name="utensils" size={22} color={colors.white} style={{padding:13}}/>
+                    <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13,alignSelf:'center' }} />
                 </View>
                 <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
                 <Button
@@ -40,21 +40,21 @@ const FoodName = (props) => {
                 />
             </View>
             <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>
-                <Button
-                    buttonStyle={[styles.tagBadge, styles.detailsCircle, { backgroundColor: colors.orange }]}
-                    icon={<Icon name="thermometer-half" size={14} color={colors.white} solid />}
-                />
+                <View style={[styles.detailsCircle, { backgroundColor: colors.orange }]}>
+                    <Icon name="thermometer-half" size={14} color={colors.white} style={{ padding: 4 ,alignSelf:'center'}} />
+                </View>
                 <Text style={styles.detailText}> {finalTemp}°C</Text>
-                <Button
-                    buttonStyle={[styles.tagBadge, styles.detailsCircle, { backgroundColor: colors.blue }]}
-                    icon={<Icon name="stopwatch" size={14} color={colors.white} solid />}
-                />
+
+                <View style={[styles.detailsCircle, { backgroundColor: colors.blue }]}>
+                    <Icon name="stopwatch" size={14} color={colors.white} style={{ padding: 4 ,alignSelf:'center'}} />
+                </View>
                 <Text style={styles.detailText}> {finalDuration} min</Text>
-                <Button
-                    buttonStyle={[styles.tagBadge, styles.detailsCircle, { backgroundColor: colors.green }]}
-                    icon={<Icon name="step-forward" size={14} color={colors.white} solid />}
-                />
+
+                <View style={[styles.detailsCircle, { backgroundColor: colors.green }]}>
+                    <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4 ,alignSelf:'center'}} />
+                </View>
                 <Text style={styles.detailText}> {props.steps.length} Steps</Text>
+
             </View>
         </Fragment>
     )
@@ -100,7 +100,7 @@ export default function historyScreen() {
 
     return (
         <View >
-            <Text style={styles.heading}>History</Text>
+            <Text style={styles.heading}>Historys</Text>
             {
                 data && data.map((item, i) => (
                     // <Text>{item.playbackHistory[1].timestamp}</Text>

@@ -147,6 +147,9 @@ export const styles = StyleSheet.create({
         marginTop: 12,
         height: 22,
         width: 22,
+        marginLeft: 14,
+        borderRadius: 22,
+        padding: 0,
     },
     detailText: {
         marginTop: 15,
@@ -247,5 +250,20 @@ export const styles = StyleSheet.create({
         marginLeft: 10,
         marginTop:18,
         color: colors.darkGrey 
-    }
+    },
+    // ********* automation screen ********
+    autoContainer: {
+        width: '85%',
+        alignSelf: 'center',
+        backgroundColor: colors.white,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
 });

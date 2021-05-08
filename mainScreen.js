@@ -49,11 +49,35 @@ function mainScreen({ navigation }) {
     const [bottomTemp, setBottomTemp] = useState(80);
     const [pause, setpause] = useState('pause');
     const [progress, setProgress] = useState(true);
+    const [data, setData] = useState();
 
     const IconUD = (progress) => {
         if (progress) { setpause('play'), setTime('Paused') }
         else { setpause('pause'), setTime("14 min 20 sec left") }
     }
+
+    useEffect(() => {
+        if (!data) {
+            var ws = new WebSocket('ws://oven.local:8069');
+            ws.onopen = () => {
+                // connection opened
+                req = {
+                    user: 'John',
+                    msg: 'method',
+                    method: 'getMain'
+                }
+                ws.send(JSON.stringify(req));
+            };
+            ws.onmessage = (e) => {
+                // a message was received
+                d = JSON.parse(e.data)
+                if (d.msg == 'result') setData(d.result)
+                console.log(e.data);
+            };
+            ws.onerror = (e) => { console.log("Error Occured"); };
+            return () => ws.close();
+        }
+    });
 
     return (
         <View>
