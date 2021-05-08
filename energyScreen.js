@@ -31,11 +31,10 @@ export default function energyScreen() {
                 sum.push(today.reduce(reducer))
                 // console.log("sum of", i, "is ", sum);
 
-                last8=moment().subtract(8,'d');
-                ranges = moment(i,'YYYY-MM-DD').isBetween(last8, (todayDate.subtract(8,'d')))
+                last7=moment().subtract(8,'d');
+                ranges = moment(i,'YYYY-MM-DD').isBetween(last7, (todayDate.add(1,'d')));
                 console.log('ranges',ranges);
             });
-            console.log("last7",last7);
             // console.log("sum arry", sum);
             
             setEnergyData((sum.slice(-7)))
