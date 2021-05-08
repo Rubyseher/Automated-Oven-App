@@ -5,6 +5,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { BarChart } from 'react-native-svg-charts'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import moment from "moment";
 
 export default function energyScreen() {
     const energy = colors.lightGreen
@@ -30,6 +31,11 @@ export default function energyScreen() {
             console.log("sum arry", sum);
             
             setEnergyData((sum.slice(-7)))
+
+
+            todayDate=moment().format("YYYY/MM/DD")
+            console.log(" todayDate", todayDate);
+
             // console.log("energyData",energyData);
             // setWeekSum(energyData.reduce(reducer))
             // console.log("weekSum",weekSum);
