@@ -15,28 +15,32 @@ export default function energyScreen() {
 
     useEffect(() => {
         const parseData = (d) => {
-            const reducer = (accumulator, currentValue) => accumulator + currentValue;
+            const energySum = (accumulator, currentValue) => accumulator + currentValue;
             dates = Object.keys(d)
             // console.log("dates", dates);
 
             todayDate=moment()
-            console.log(" todayDate", todayDate.format("YYYY/MM/DD"));
+            // console.log(" todayDate", todayDate.format("YYYY/MM/DD"));
 
-            var sum = [],last7=[]
-            dates.forEach(i => {
-                console.log("i", i);
-                today = Object.values(d[i]);
-                // console.log("today evergy ", today);
+            var sum = [], last7=[]
+            dates.slice(-7).forEach(i => {
+                // console.log("i", i);
 
-                sum.push(today.reduce(reducer))
+                todayEnergy = Object.values(d[i]);
+                // console.log("todayEnergy evergy ", todayEnergy);
+                sum.push(todayEnergy.reduce(energySum))
                 // console.log("sum of", i, "is ", sum);
 
-                last7=moment().subtract(8,'d');
-                ranges = moment(i,'YYYY-MM-DD').isBetween(last7, (todayDate.add(1,'d')));
-                console.log('ranges',ranges);
+                before7=moment().subtract(8,'d');
+                ranges = moment(i,'YYYY-MM-DD').isBetween(before7, (todayDate.add(1,'d')));
+                // console.log('ranges',ranges);
+                if(ranges) last7.push(i)
+                else last7.push([0])
+                
             });
-            // console.log("sum arry", sum);
-            
+            console.log("last7",last7);
+
+
             setEnergyData((sum.slice(-7)))
 
 
@@ -45,15 +49,15 @@ export default function energyScreen() {
 
 
             // console.log("energyData",energyData);
-            // setWeekSum(energyData.reduce(reducer))
+            // setWeekSum(energyData.reduce(energySum))
             // console.log("weekSum",weekSum);
-            // last7 = reducer.slice(-7)
-            // console.log("last7", last7);
+            // before7 = energySum.slice(-7)
+            // console.log("before7", before7);
 
             // var energyData = []
-            // last7.forEach(i => {
-            //     const reducer = (accumulator, currentValue) => accumulator + currentValue;
-            // console.log("sum is ", dates.reduce(reducer));
+            // before7.forEach(i => {
+            //     const energySum = (accumulator, currentValue) => accumulator + currentValue;
+            // console.log("sum is ", dates.reduce(energySum));
             //     energyData = Object.values(d[i])
             // });
             // console.log("energyData", energyData);
@@ -63,8 +67,8 @@ export default function energyScreen() {
             // todays = Object.values(d[dates[dates.length - 1]])
             // console.log("todays energy values",todays);
 
-            // const reducer = (accumulator, currentValue) => accumulator + currentValue;
-            // console.log("sum is ",todays.reduce(reducer));
+            // const energySum = (accumulator, currentValue) => accumulator + currentValue;
+            // console.log("sum is ",todays.reduce(energySum));
 
         }
 
