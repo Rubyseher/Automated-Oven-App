@@ -1,5 +1,6 @@
-import React, { useState, Fragment } from 'react';
-import { Slider } from 'react-native-elements';
+import React, { useState, Fragment, useEffect } from 'react';
+// import { Slider } from 'react-native-elements';
+import Slider from '@react-native-community/slider'
 import { Image, View, Text } from 'react-native';
 import { Button } from 'react-native-elements';
 import { styles, colors } from './styles'
@@ -27,7 +28,7 @@ const TemperatureSlider = (props) => {
                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
 
-            <Slider
+            {/* <Slider
                 value={props.handler.value}
                 style={{ width: '100%', marginTop: -8 }}
                 maximumTrackTintColor={colors.grey}
@@ -37,6 +38,19 @@ const TemperatureSlider = (props) => {
                 trackStyle={styles.sliderTrackStyle}
                 onValueChange={value => props.handler.setValue(value)}
                 thumbStyle={{ backgroundColor: 'transparent' }}
+            /> */}
+            
+            <Slider
+                maximumValue={250}
+                minimumValue={0}
+                maximumTrackTintColor={colors.grey}
+                minimumTrackTintColor={colors.yellow}
+                step={1}
+                onValueChange={value => props.handler.setValue(value)}
+                // thumbTintColor='transparent'
+                // maximumTrackImage={require("./assets/gradient3.png")}
+                // minimumTrackImage={require("./assets/gradient2.png")}
+                value={props.handler.value}
             />
         </Fragment>
     )
@@ -45,8 +59,8 @@ const TemperatureSlider = (props) => {
 function mainScreen({ navigation }) {
     const [food, setFood] = useState('Burger');
     const [time, setTime] = useState("14 min 20 sec left");
-    const [topTemp, setTopTemp] = useState(180);
-    const [bottomTemp, setBottomTemp] = useState(80);
+    const [topTemp, setTopTemp] = useState(0);
+    const [bottomTemp, setBottomTemp] = useState(0);
     const [pause, setpause] = useState('pause');
     const [progress, setProgress] = useState(true);
     const [data, setData] = useState();
@@ -57,6 +71,13 @@ function mainScreen({ navigation }) {
     }
 
     useEffect(() => {
+        const parseData = (d) => {
+
+            // console.log("Object", (d.top));
+            setTopTemp(d.top)
+            setBottomTemp(d.bottom)
+        }
+
         if (!data) {
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
@@ -64,15 +85,19 @@ function mainScreen({ navigation }) {
                 req = {
                     user: 'John',
                     msg: 'method',
-                    method: 'getMain'
+                    method: 'getCooking'
                 }
                 ws.send(JSON.stringify(req));
             };
             ws.onmessage = (e) => {
                 // a message was received
                 d = JSON.parse(e.data)
-                if (d.msg == 'result') setData(d.result)
-                console.log(e.data);
+                if (d.msg == 'result') {
+                    console.log("result", d.result);
+                    setData(d.result)
+                    parseData(d.result)
+                }
+                // setTopTemp()
             };
             ws.onerror = (e) => { console.log("Error Occured"); };
             return () => ws.close();

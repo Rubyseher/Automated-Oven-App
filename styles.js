@@ -163,7 +163,7 @@ export const styles = StyleSheet.create({
         marginLeft: 60,
         borderRadius: 32,
         marginBottom: 42,
-        padding:20,
+        padding: 20,
         backgroundColor: colors.yellow,
     },
     fullName: {
@@ -220,9 +220,9 @@ export const styles = StyleSheet.create({
         height: 75,
         alignSelf: 'center',
         flexDirection: 'row',
-        marginTop:10,
-        marginBottom:8,
-        paddingTop:8,
+        marginTop: 10,
+        marginBottom: 8,
+        paddingTop: 8,
         backgroundColor: colors.white,
         borderRadius: 12,
         shadowColor: "#000",
@@ -241,15 +241,15 @@ export const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 10,
         width: '40%',
-        color: colors.darkGrey 
+        color: colors.darkGrey
     },
     tagLabel: {
         fontWeight: '400',
         fontSize: 20,
-        width: '44%', 
+        width: '44%',
         marginLeft: 10,
-        marginTop:18,
-        color: colors.darkGrey 
+        marginTop: 18,
+        color: colors.darkGrey
     },
     // ********* automation screen ********
     autoContainer: {
