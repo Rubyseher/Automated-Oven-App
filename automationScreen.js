@@ -5,8 +5,8 @@ import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Slider } from 'react-native-elements';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import CircleSlider from "react-native-circle-slider";
+import CircularSlider from 'react-native-circular-slider';
+import color from 'color';
 
 const TopTempSlider = (props) => {
     return (
@@ -84,7 +84,17 @@ export default function automationScreen() {
                         )}
                     </AnimatedCircularProgress> */}
 
-                    <CircleSlider btnRadius={9} dialRadius={38} dialWidth={4} value={50} max={90} strokeColor={colors.grey} meterColor={colors.blue} strokeWidth={4} />
+                    {/* <CircleSlider btnRadius={9} dialRadius={38} dialWidth={4} value={50} strokeColor={colors.grey} meterColor={colors.blue} strokeWidth={4} /> */}
+                    <CircularSlider
+                        startAngle={Math.PI * 8/6}
+                        angleLength={Math.PI * 20/6}
+                        onUpdate={({ startAngle, angleLength }) => console.log(startAngle, angleLength)}
+                        strokeWidth={6}
+                        radius={35}
+                        gradientColorFrom={colors.blue}
+                        gradientColorTo={colors.blue}
+                        bgCircleColor={colors.white}
+                    />
                 </View>
             </View>
 

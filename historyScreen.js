@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import ws from './Server'
 
 const FoodName = (props) => {
     const [finalDuration, setFinalDuration] = useState(0);
@@ -26,7 +27,7 @@ const FoodName = (props) => {
         <Fragment>
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
                 <View style={styles.tagBadge}>
-                    <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13,alignSelf:'center' }} />
+                    <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
                 </View>
                 <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
                 <Button
@@ -41,17 +42,17 @@ const FoodName = (props) => {
             </View>
             <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>
                 <View style={[styles.detailsCircle, { backgroundColor: colors.orange }]}>
-                    <Icon name="thermometer-half" size={14} color={colors.white} style={{ padding: 4 ,alignSelf:'center'}} />
+                    <Icon name="thermometer-half" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
                 </View>
                 <Text style={styles.detailText}> {finalTemp}°C</Text>
 
                 <View style={[styles.detailsCircle, { backgroundColor: colors.blue }]}>
-                    <Icon name="stopwatch" size={14} color={colors.white} style={{ padding: 4 ,alignSelf:'center'}} />
+                    <Icon name="stopwatch" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
                 </View>
                 <Text style={styles.detailText}> {finalDuration} min</Text>
 
                 <View style={[styles.detailsCircle, { backgroundColor: colors.green }]}>
-                    <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4 ,alignSelf:'center'}} />
+                    <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
                 </View>
                 <Text style={styles.detailText}> {props.steps.length} Steps</Text>
 
@@ -65,38 +66,21 @@ export default function historyScreen() {
 
     useEffect(() => {
         if (!data) {
-            var ws = new WebSocket('ws://oven.local:8069');
-            ws.onopen = () => {
-                // connection opened
-                req = {
-                    user: 'John',
-                    msg: 'method',
-                    method: 'getHistory'
-                }
-                ws.send(JSON.stringify(req));
-            };
+            req = {
+                user: 'John',
+                msg: 'method',
+                method: 'getHistory'
+            }
+            ws.send(JSON.stringify(req));
             ws.onmessage = (e) => {
-                // a message was received
                 d = JSON.parse(e.data)
                 if (d.msg == 'result') {
                     setData(d.result)
                 }
                 console.log(e.data);
             };
-            ws.onerror = (e) => {
-                // an error occurred
-                console.log("Error Occured");
-            };
-            return () => ws.close();
         }
     });
-
-
-
-    // ws.onclose = (e) => {
-    //     // connection closed
-    //     console.log(e.code, e.reason);
-    // };
 
     return (
         <View >

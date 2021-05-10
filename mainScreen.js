@@ -10,7 +10,7 @@ import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
-
+import ws from './Server'
 
 const GradientProgress = (props) => {
     return (
@@ -72,35 +72,29 @@ function mainScreen({ navigation }) {
 
     useEffect(() => {
         const parseData = (d) => {
-
-            // console.log("Object", (d.top));
             setTopTemp(d.top)
             setBottomTemp(d.bottom)
         }
-
         if (!data) {
-            var ws = new WebSocket('ws://oven.local:8069');
-            ws.onopen = () => {
-                // connection opened
-                req = {
-                    user: 'John',
-                    msg: 'method',
-                    method: 'getCooking'
-                }
+            req = {
+                user: 'John',
+                msg: 'method',
+                method: 'getCooking'
+            }
+            try {
                 ws.send(JSON.stringify(req));
-            };
-            ws.onmessage = (e) => {
-                // a message was received
-                d = JSON.parse(e.data)
-                if (d.msg == 'result') {
-                    console.log("result", d.result);
-                    setData(d.result)
-                    parseData(d.result)
-                }
-                // setTopTemp()
-            };
-            ws.onerror = (e) => { console.log("Error Occured"); };
-            return () => ws.close();
+                ws.onmessage = (e) => {
+                    d = JSON.parse(e.data)
+                    if (d.msg == 'result') {
+                        console.log("result", d.result);
+                        setData(d.result)
+                        parseData(d.result)
+                    }
+                };
+            } catch (e) {
+                console.log(e);
+            }
+            
         }
     });
 

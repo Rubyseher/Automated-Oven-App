@@ -1,18 +1,12 @@
-import React from 'react';
 
-class Server extends React.Component {
-    constructor(props) {
-        super(props);
-        var ws = new WebSocket('ws://oven.local:8069');
+const ws = new WebSocket('ws://oven.local:8069');
+ws.onopen = () => {
+    // connection opened
+    req = {
+        user: 'John',
+        msg: 'open'
     }
-    GetCooking = () => {
-        req = {
-            user: 'John',
-            msg: 'method',
-            method: 'getCooking'
-        }
-        this.ws.send(JSON.stringify(req));
-    }
-
-}
-export default Server
+    ws.send(JSON.stringify(req));
+};
+ws.onerror = (e) => { console.log(e); };
+export default ws

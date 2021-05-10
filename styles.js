@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import historyScreen from './historyScreen';
 
 export const colors = {
     grey: '#e1dddd',

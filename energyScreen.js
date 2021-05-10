@@ -6,6 +6,7 @@ import { BarChart } from 'react-native-svg-charts'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import moment from "moment";
+import ws from './Server'
 
 export default function energyScreen() {
     const energy = colors.lightGreen
@@ -52,43 +53,31 @@ export default function energyScreen() {
             })
             setMonthSum((monthEnergy / 1000).toFixed(2))
 
-            var _monthSum=(monthEnergy / 1000)
+            var _monthSum = (monthEnergy / 1000)
             var cost = 0
             if (_monthSum && _monthSum <= 1.00) cost = 70
-            else cost = ((70 * Math.floor(_monthSum)) + (( (_monthSum - Math.floor(_monthSum))/100)*80 ))
+            else cost = ((70 * Math.floor(_monthSum)) + (((_monthSum - Math.floor(_monthSum)) / 100) * 80))
             setMonthCost(cost.toFixed(1))
-            console.log("cost",cost);
+            console.log("cost", cost);
 
         }
 
         if (!data) {
-            var ws = new WebSocket('ws://oven.local:8069');
-            ws.onopen = () => {
-                // connection opened
-                req = {
-                    user: 'John',
-                    msg: 'method',
-                    method: 'getEnergy',
-                    params: []
-                }
-                ws.send(JSON.stringify(req));
-            };
+            req = {
+                user: 'John',
+                msg: 'method',
+                method: 'getEnergy',
+                params: []
+            }
+            ws.send(JSON.stringify(req));
             ws.onmessage = (e) => {
-                // a message was received
                 d = JSON.parse(e.data)
                 if (d.msg == 'result') {
                     setData(d.result)
                     parseData(d.result)
                 }
                 console.log('a message was received');
-                // console.log(e.data);
             };
-            ws.onerror = (e) => {
-                // an error occurred
-                console.log("Error Occured");
-            };
-
-            return () => ws.close();
         }
     });
     return (

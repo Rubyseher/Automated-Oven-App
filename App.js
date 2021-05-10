@@ -10,7 +10,6 @@ import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
 import { Image, View, Text } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 
 
@@ -27,7 +26,7 @@ const Stack = createStackNavigator();
 
 function Main() {
   return (
-    <Stack.Navigator initialRouteName="automation" headerMode='none'>
+    <Stack.Navigator initialRouteName="main" headerMode='none'>
       <Stack.Screen name="main" component={mainScreen} />
       <Stack.Screen name="automation" component={automationScreen} />
     </Stack.Navigator>
