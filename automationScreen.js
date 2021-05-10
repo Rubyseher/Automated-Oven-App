@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { styles, colors } from './styles'
 import OvenTop from './assets/Oven Direction Top.svg'
@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Slider } from 'react-native-elements';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import CircleSlider from "react-native-circle-slider";
-
 
 const TopTempSlider = (props) => {
     return (
@@ -46,12 +45,12 @@ const BottomTempSlider = (props) => {
                 thumbStyle={{ backgroundColor: 'transparent' }}
             />
 
-            <View style={{ flexDirection: 'row', width: '100%',marginBottom:10,marginTop:-5}}>
+            <View style={{ flexDirection: 'row', width: '100%', marginBottom: 10, marginTop: -5 }}>
                 {props.icon}
                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
 
-            
+
         </Fragment>
     )
 }
@@ -84,7 +83,8 @@ export default function automationScreen() {
                             </Fragment>
                         )}
                     </AnimatedCircularProgress> */}
-                    <CircleSlider btnRadius={10} value={90} yCenter={50} dialRadius={40} strokeColor={colors.grey} meterColor={colors.blue}strokeWidth={3}/>
+
+                    <CircleSlider btnRadius={9} dialRadius={38} dialWidth={4} value={50} max={90} strokeColor={colors.grey} meterColor={colors.blue} strokeWidth={4} />
                 </View>
             </View>
 
