@@ -11,6 +11,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import ws from './Server'
+import moment from 'moment';
 
 const GradientProgress = (props) => {
     return (
@@ -39,7 +40,7 @@ const TemperatureSlider = (props) => {
                 onValueChange={value => props.handler.setValue(value)}
                 thumbStyle={{ backgroundColor: 'transparent' }}
             /> */}
-            
+
             <Slider
                 maximumValue={250}
                 minimumValue={0}
@@ -61,13 +62,43 @@ function mainScreen({ navigation }) {
     const [time, setTime] = useState("14 min 20 sec left");
     const [topTemp, setTopTemp] = useState(0);
     const [bottomTemp, setBottomTemp] = useState(0);
-    const [pause, setpause] = useState('pause');
-    const [progress, setProgress] = useState(true);
     const [data, setData] = useState();
 
-    const IconUD = (progress) => {
-        if (progress) { setpause('play'), setTime('Paused') }
-        else { setpause('pause'), setTime("14 min 20 sec left") }
+    const cookingType = (e) => {
+        
+        // if()
+    }
+
+
+    const progressPercent = (e) => {
+        if(!data.isPaused){
+            startTime= moment.unix(data.startTime);
+            endTime= moment.unix(data.endTime);
+            totalTime=endTime.diff(startTime,'seconds')
+        
+            calculation=((moment().diff(startTime,'seconds')/totalTime)*100)
+            return calculation
+        }
+        return 0;
+    }
+
+    const pauseButton = (e) => {
+        req = {
+            user: 'John',
+            msg: 'method',
+            method: 'pauseCooking'
+        }
+        ws.send(JSON.stringify(req));       
+        ws.onmessage = (e) => {
+            d = JSON.parse(e.data)
+            console.log(d);
+            if (d.msg == 'result') {
+                console.log("result", d.result);
+            }
+        };
+        if(isPaused){
+            setTime("Paused")
+        }
     }
 
     useEffect(() => {
@@ -75,64 +106,64 @@ function mainScreen({ navigation }) {
             setTopTemp(d.top)
             setBottomTemp(d.bottom)
         }
-        if (!data) {
-            req = {
-                user: 'John',
-                msg: 'method',
-                method: 'getCooking'
-            }
-            try {
+        console.log("fetched");
+        ws.onopen = () => {
+            setInterval(() => {
+                req = {
+                    user: 'John',
+                    msg: 'method',
+                    method: 'getCooking'
+                }
                 ws.send(JSON.stringify(req));
-                ws.onmessage = (e) => {
-                    d = JSON.parse(e.data)
-                    if (d.msg == 'result') {
-                        console.log("result", d.result);
-                        setData(d.result)
-                        parseData(d.result)
-                    }
-                };
-            } catch (e) {
-                console.log(e);
+            },1000)
+
+        };
+        ws.onmessage = (e) => {
+            d = JSON.parse(e.data)
+            console.log(d);
+            if (d.msg == 'result') {
+                console.log("result", d.result);
+                setData(d.result)
+                parseData(d.result)
             }
-            
-        }
+        };
     });
 
     return (
-        <View>
+        data ? <View>
             <Image
                 style={{ width: '100%', height: '53%' }}
                 source={require('./assets/Plate.jpg')}
                 resizeMode='cover'
             />
-            <GradientProgress value={70} trackColor={colors.white} />
-            <Text style={styles.title}>{food}</Text>
-            <Text style={styles.subtitle}>{time}</Text>
+            <GradientProgress value={data.isCooking?progressPercent():0} trackColor={colors.white}  />
+            <Text style={styles.title}>{data.isCooking?data.item:'Empty'}</Text>
+            <Text style={styles.subtitle}>{data.isCooking?`${moment.unix(data.endTime).diff(moment(), 'minutes')} min ${moment.unix(data.endTime).diff(moment(), 'seconds')%60} sec left`:' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
                 <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
             </View>
             <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
-                <Button
+            {data.isCooking && <Button
                     onPress={() => navigation.navigate('automation')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
-                />
+                />}
                 <Button
-                    onPress={() => { setProgress(!progress), IconUD(progress) }}
-                    icon={<Ficon name={pause} size={26} color={colors.darkGrey} />}
+                    onPress={pauseButton}
+                    icon={<Ficon name={data.isPaused?'play':'pause'} size={26} color={colors.darkGrey} />}
                     buttonStyle={styles.roundButtonM}
                     containerStyle={[styles.roundButtonPaddingM, { marginLeft: 40, marginRight: 40 }]}
                 />
-                <Button
+               { data.isCooking && <Button
                     onPress={() => { setTopTemp(0), setBottomTemp(0), setTime("Off"), setFood('Empty') }}
                     icon={<Ficon name="close-a" size={16} color={colors.red} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
-                />
+                />}
             </View>
-        </View>
+        </View> : <View></View>
     );
 }
 
