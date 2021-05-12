@@ -1,5 +1,4 @@
 import React, { useState, Fragment, useEffect } from 'react';
-// import { Slider } from 'react-native-elements';
 import Slider from '@react-native-community/slider'
 import { Image, View, Text } from 'react-native';
 import { Button } from 'react-native-elements';
@@ -12,6 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import ws from './Server'
 import moment from 'moment';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 const GradientProgress = (props) => {
     return (
@@ -46,8 +46,8 @@ const TemperatureSlider = (props) => {
                 minimumValue={0}
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
-                step={1}
-                onValueChange={value => props.handler.setValue(value)}
+                step={5}
+                onValueChange={value => {props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight");}}
                 // thumbTintColor='transparent'
                 // maximumTrackImage={require("./assets/gradient3.png")}
                 // minimumTrackImage={require("./assets/gradient2.png")}
@@ -77,6 +77,7 @@ function mainScreen({ navigation }) {
     }
 
     const pauseButton = (e) => {
+        ReactNativeHapticFeedback.trigger("impactHeavy");
         req = {
             user: 'John',
             msg: 'method',
@@ -93,6 +94,8 @@ function mainScreen({ navigation }) {
     }
 
     const stopButton = (e) => {
+        ReactNativeHapticFeedback.trigger("impactHeavy");
+
         req = {
             user: 'John',
             msg: 'method',

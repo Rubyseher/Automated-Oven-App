@@ -3,7 +3,6 @@ import { View, Text, ScrollView } from 'react-native';
 import { styles, colors } from './styles'
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { BarChart } from 'react-native-svg-charts'
-import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import moment from "moment";
 import ws from './Server'
