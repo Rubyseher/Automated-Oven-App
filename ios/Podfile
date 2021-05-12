@@ -20,6 +20,8 @@ target 'MyTestApp' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'RNReactNativeHapticFeedback', :path => '../node_modules/react-native-haptic-feedback'
+
   target 'MyTestAppTests' do
     inherit! :complete
     # Pods for testing

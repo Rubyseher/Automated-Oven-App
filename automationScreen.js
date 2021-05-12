@@ -6,7 +6,6 @@ import OvenBottom from './assets/Oven Direction Bottom.svg'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Slider } from 'react-native-elements';
 import CircularSlider from 'react-native-circular-slider';
-import color from 'color';
 
 const TopTempSlider = (props) => {
     return (
