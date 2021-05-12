@@ -64,19 +64,13 @@ function mainScreen({ navigation }) {
     const [bottomTemp, setBottomTemp] = useState(0);
     const [data, setData] = useState();
 
-    const cookingType = (e) => {
-        
-        // if()
-    }
-
-
     const progressPercent = (e) => {
-        if(!data.isPaused){
-            startTime= moment.unix(data.startTime);
-            endTime= moment.unix(data.endTime);
-            totalTime=endTime.diff(startTime,'seconds')
-        
-            calculation=((moment().diff(startTime,'seconds')/totalTime)*100)
+        if (!data.isPaused) {
+            startTime = moment.unix(data.startTime);
+            endTime = moment.unix(data.endTime);
+            totalTime = endTime.diff(startTime, 'seconds')
+
+            calculation = ((moment().diff(startTime, 'seconds') / totalTime) * 100)
             return calculation
         }
         return 0;
@@ -86,27 +80,42 @@ function mainScreen({ navigation }) {
         req = {
             user: 'John',
             msg: 'method',
-            method: 'pauseCooking'
+            method: data.isPaused ? 'resumeCooking' : 'pauseCooking'
         }
-        ws.send(JSON.stringify(req));       
-        ws.onmessage = (e) => {
-            d = JSON.parse(e.data)
-            console.log(d);
-            if (d.msg == 'result') {
-                console.log("result", d.result);
-            }
-        };
-        if(isPaused){
-            setTime("Paused")
+        ws.send(JSON.stringify(req));
+        // ws.onmessage = (e) => {
+        //     d = JSON.parse(e.data)
+        //     console.log(d);
+        //     if (d.msg == 'result') {
+        //         console.log("result", d.result);
+        //     }
+        // };
+    }
+
+    const stopButton = (e) => {
+        req = {
+            user: 'John',
+            msg: 'method',
+            method:'stopCooking'
         }
+        ws.send(JSON.stringify(req));
+        // ws.onmessage = (e) => {
+        //     d = JSON.parse(e.data)
+        //     console.log(d);
+        //     if (d.msg == 'result') {
+        //         console.log("result", d.result);
+        //     }
+        // };
+
     }
 
     useEffect(() => {
         const parseData = (d) => {
             setTopTemp(d.top)
             setBottomTemp(d.bottom)
+            d.isPaused ? setTime('Paused') : setTime(`${moment.unix(d.endTime).diff(moment(), 'minutes')} min ${moment.unix(d.endTime).diff(moment(), 'seconds') % 60} sec left`)
+
         }
-        console.log("fetched");
         ws.onopen = () => {
             setInterval(() => {
                 req = {
@@ -115,18 +124,19 @@ function mainScreen({ navigation }) {
                     method: 'getCooking'
                 }
                 ws.send(JSON.stringify(req));
-            },1000)
-
+            }, 1000)
         };
         ws.onmessage = (e) => {
             d = JSON.parse(e.data)
-            console.log(d);
+            // console.log(d);
             if (d.msg == 'result') {
                 console.log("result", d.result);
                 setData(d.result)
                 parseData(d.result)
+
             }
         };
+
     });
 
     return (
@@ -136,15 +146,15 @@ function mainScreen({ navigation }) {
                 source={require('./assets/Plate.jpg')}
                 resizeMode='cover'
             />
-            <GradientProgress value={data.isCooking?progressPercent():0} trackColor={colors.white}  />
-            <Text style={styles.title}>{data.isCooking?data.item:'Empty'}</Text>
-            <Text style={styles.subtitle}>{data.isCooking?`${moment.unix(data.endTime).diff(moment(), 'minutes')} min ${moment.unix(data.endTime).diff(moment(), 'seconds')%60} sec left`:' '}</Text>
+            <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} />
+            <Text style={styles.title}>{data.isCooking ? data.item : 'Empty'}</Text>
+            <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
                 <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
             </View>
             <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
-            {data.isCooking && <Button
+                {data.isCooking && <Button
                     onPress={() => navigation.navigate('automation')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
                     buttonStyle={styles.roundButtonS}
@@ -152,18 +162,26 @@ function mainScreen({ navigation }) {
                 />}
                 <Button
                     onPress={pauseButton}
-                    icon={<Ficon name={data.isPaused?'play':'pause'} size={26} color={colors.darkGrey} />}
+                    icon={<Ficon name={data.isPaused ? 'play' : 'pause'} size={26} color={colors.darkGrey} />}
                     buttonStyle={styles.roundButtonM}
                     containerStyle={[styles.roundButtonPaddingM, { marginLeft: 40, marginRight: 40 }]}
                 />
-               { data.isCooking && <Button
-                    onPress={() => { setTopTemp(0), setBottomTemp(0), setTime("Off"), setFood('Empty') }}
+                {data.isCooking && <Button
+                    onPress={stopButton}
                     icon={<Ficon name="close-a" size={16} color={colors.red} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
                 />}
             </View>
-        </View> : <View></View>
+        </View> :
+            <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey }}>Oops! Couldn't Connect to The Device.{'\n'}</Text>
+                <Button
+                    title="Try Again"
+                    type="clear"
+                    titleStyle={{color:colors.blue}}
+                />
+            </View>
     );
 }
 
