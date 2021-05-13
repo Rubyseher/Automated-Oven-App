@@ -1,5 +1,5 @@
 
-const ws = new WebSocket('ws://192.168.0.164:8069');
+const ws = new WebSocket('ws://oven.local:8069');
 ws.onopen = () => {
     // connection opened
     req = {

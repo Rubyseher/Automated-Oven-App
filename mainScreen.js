@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useEffect } from 'react';
 import Slider from '@react-native-community/slider'
-import { Image, View, Text } from 'react-native';
+import { Image, View, Text, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
@@ -28,29 +28,13 @@ const TemperatureSlider = (props) => {
                 {props.icon}
                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
-
-            {/* <Slider
-                value={props.handler.value}
-                style={{ width: '100%', marginTop: -8 }}
-                maximumTrackTintColor={colors.grey}
-                minimumTrackTintColor={colors.yellow}
-                maximumValue={200}
-                minimumValue={0}
-                trackStyle={styles.sliderTrackStyle}
-                onValueChange={value => props.handler.setValue(value)}
-                thumbStyle={{ backgroundColor: 'transparent' }}
-            /> */}
-
             <Slider
                 maximumValue={250}
                 minimumValue={0}
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 step={5}
-                onValueChange={value => {props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight");}}
-                // thumbTintColor='transparent'
-                // maximumTrackImage={require("./assets/gradient3.png")}
-                // minimumTrackImage={require("./assets/gradient2.png")}
+                onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name) }}
                 value={props.handler.value}
             />
         </Fragment>
@@ -58,11 +42,12 @@ const TemperatureSlider = (props) => {
 }
 
 function mainScreen({ navigation }) {
-    const [food, setFood] = useState('Burger');
-    const [time, setTime] = useState("14 min 20 sec left");
+    const [food, setFood] = useState('Empty');
+    const [time, setTime] = useState(" ");
     const [topTemp, setTopTemp] = useState(0);
     const [bottomTemp, setBottomTemp] = useState(0);
     const [data, setData] = useState();
+    const [loading, setLoading] = useState(true);
 
     const progressPercent = (e) => {
         if (!data.isPaused) {
@@ -76,40 +61,30 @@ function mainScreen({ navigation }) {
         return 0;
     }
 
-    const pauseButton = (e) => {
-        ReactNativeHapticFeedback.trigger("impactHeavy");
+    const setTemp = (name) => {
         req = {
-            user: 'John',
-            msg: 'method',
-            method: data.isPaused ? 'resumeCooking' : 'pauseCooking'
+            msg: 'direct',
+            module: 'cook',
+            function: `set${name}Temp`
+
         }
-        ws.send(JSON.stringify(req));
-        // ws.onmessage = (e) => {
-        //     d = JSON.parse(e.data)
-        //     console.log(d);
-        //     if (d.msg == 'result') {
-        //         console.log("result", d.result);
-        //     }
-        // };
     }
 
-    const stopButton = (e) => {
+    const sendRequest = (task) => {
         ReactNativeHapticFeedback.trigger("impactHeavy");
-
-        req = {
-            user: 'John',
-            msg: 'method',
-            method:'stopCooking'
-        }
+        if (task == 'stop')
+            req = {
+                msg: 'direct',
+                module: 'cook',
+                function: 'stop'
+            }
+        else
+            req = {
+                msg: 'direct',
+                module: 'cook',
+                function: data.isPaused ? 'resume' : 'pause'
+            }
         ws.send(JSON.stringify(req));
-        // ws.onmessage = (e) => {
-        //     d = JSON.parse(e.data)
-        //     console.log(d);
-        //     if (d.msg == 'result') {
-        //         console.log("result", d.result);
-        //     }
-        // };
-
     }
 
     useEffect(() => {
@@ -117,29 +92,28 @@ function mainScreen({ navigation }) {
             setTopTemp(d.top)
             setBottomTemp(d.bottom)
             d.isPaused ? setTime('Paused') : setTime(`${moment.unix(d.endTime).diff(moment(), 'minutes')} min ${moment.unix(d.endTime).diff(moment(), 'seconds') % 60} sec left`)
-
         }
         ws.onopen = () => {
             setInterval(() => {
                 req = {
-                    user: 'John',
-                    msg: 'method',
-                    method: 'getCooking'
+                    msg: 'direct',
+                    module: 'cook',
+                    function: 'get'
                 }
                 ws.send(JSON.stringify(req));
             }, 1000)
         };
         ws.onmessage = (e) => {
             d = JSON.parse(e.data)
-            // console.log(d);
             if (d.msg == 'result') {
                 console.log("result", d.result);
                 setData(d.result)
                 parseData(d.result)
-
             }
         };
-
+        setTimeout(() => {
+            setLoading(false)
+        }, 3000);
     });
 
     return (
@@ -153,8 +127,8 @@ function mainScreen({ navigation }) {
             <Text style={styles.title}>{data.isCooking ? data.item : 'Empty'}</Text>
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
-                <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
-                <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
+                <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top'/>
+                <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom'/>
             </View>
             <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
                 {data.isCooking && <Button
@@ -164,26 +138,33 @@ function mainScreen({ navigation }) {
                     containerStyle={styles.roundButtonPaddingS}
                 />}
                 <Button
-                    onPress={pauseButton}
-                    icon={<Ficon name={data.isPaused ? 'play' : 'pause'} size={26} color={colors.darkGrey} />}
+                    onPress={() => sendRequest('pause')}
+                    icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={26} color={colors.darkGrey} />}
                     buttonStyle={styles.roundButtonM}
                     containerStyle={[styles.roundButtonPaddingM, { marginLeft: 40, marginRight: 40 }]}
                 />
                 {data.isCooking && <Button
-                    onPress={stopButton}
+                    onPress={() => sendRequest('stop')}
                     icon={<Ficon name="close-a" size={16} color={colors.red} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
                 />}
             </View>
         </View> :
+
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
-                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey }}>Oops! Couldn't Connect to The Device.{'\n'}</Text>
-                <Button
-                    title="Try Again"
-                    type="clear"
-                    titleStyle={{color:colors.blue}}
-                />
+                {loading && <ActivityIndicator size="large" />}
+                {!loading &&
+                    <Fragment>
+                        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey }}>Oops! Couldn't Connect to The Device.{'\n'}</Text>
+                        <Button
+                            title="Try Again"
+                            type="clear"
+                            titleStyle={{ color: colors.blue }}
+                        />
+                    </Fragment>
+                }
+
             </View>
     );
 }
