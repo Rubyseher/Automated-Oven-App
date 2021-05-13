@@ -5,14 +5,17 @@ import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Slider } from 'react-native-elements';
-import CircularSlider from 'react-native-circular-slider';
+// import CircularSlider from 'react-native-circular-slider';
+
+import CircularSlider from 'rn-circular-slider'
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const TopTempSlider = (props) => {
     return (
         <Fragment>
             <View style={{ flexDirection: 'row', width: '100%', marginTop: 7 }}>
                 {props.icon}
-                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
+                <Text style={{ textAlign: 'right', width: '84%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
 
             <Slider
@@ -46,10 +49,8 @@ const BottomTempSlider = (props) => {
 
             <View style={{ flexDirection: 'row', width: '100%', marginBottom: 10, marginTop: -5 }}>
                 {props.icon}
-                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
+                <Text style={{ textAlign: 'right', width: '84%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
             </View>
-
-
         </Fragment>
     )
 }
@@ -57,6 +58,8 @@ const BottomTempSlider = (props) => {
 export default function automationScreen() {
     const [topTemp, setTopTemp] = useState(180);
     const [bottomTemp, setBottomTemp] = useState(80);
+    const [timeSlider, setTimeSlider] = useState(30);
+
     return (
         <View >
             <Text style={styles.heading}>Automator</Text>
@@ -73,27 +76,25 @@ export default function automationScreen() {
                         <TopTempSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} />
                         <BottomTempSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} />
                     </View>
-                    {/* <AnimatedCircularProgress
-                        size={75} width={4} fill={70} style={{width:'35%',alignItems:'center',marginTop:30}} childrenContainerStyle={{width:'90%',textAlign:'center'}} arcSweepAngle={240} rotation={-120} tintColor={colors.blue} backgroundColor={colors.textGrey}>
-                        {(fill) => (
-                            <Fragment>
-                                <Text style={{ fontSize: 22,fontWeight:'600', color: colors.blue }}> {30} </Text>
-                                <Text style={{ fontSize: 12,fontWeight:'600', color: colors.blue,marginTop:-3 }}> min</Text>
-                            </Fragment>
-                        )}
-                    </AnimatedCircularProgress> */}
-
-                    {/* <CircleSlider btnRadius={9} dialRadius={38} dialWidth={4} value={50} strokeColor={colors.grey} meterColor={colors.blue} strokeWidth={4} /> */}
-                    <CircularSlider
-                        startAngle={Math.PI * 8/6}
-                        angleLength={Math.PI * 20/6}
-                        onUpdate={({ startAngle, angleLength }) => console.log(startAngle, angleLength)}
-                        strokeWidth={6}
-                        radius={35}
-                        gradientColorFrom={colors.blue}
-                        gradientColorTo={colors.blue}
-                        bgCircleColor={colors.white}
-                    />
+                    <View style={{paddingLeft:5,justifyContent:'center'}}>
+                        <CircularSlider
+                            step={2}
+                            min={0}
+                            max={90}
+                            value={timeSlider}
+                            onChange={setTimeSlider}
+                            contentContainerStyle={styles.contentContainerStyle}
+                            strokeWidth={4}
+                            buttonBorderColor={colors.blue}
+                            openingRadian={Math.PI / 4}
+                            buttonRadius={8}
+                            radius={40}
+                            linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
+                        >
+                            <Text style={styles.value}>{timeSlider}</Text>
+                            <Text style={styles.min}>min</Text>
+                        </CircularSlider>
+                    </View>
                 </View>
             </View>
 

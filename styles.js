@@ -265,4 +265,18 @@ export const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
+    contentContainerStyle: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    value: {
+        fontWeight: '600',
+        fontSize: 22,
+        color:colors.blue,
+    },
+    min: {
+        fontWeight: '600',
+        fontSize: 14,
+        color:colors.blue,
+    }
 });
