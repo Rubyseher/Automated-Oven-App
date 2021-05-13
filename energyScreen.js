@@ -14,6 +14,7 @@ export default function energyScreen() {
     const [weekSum, setWeekSum] = useState(0);
     const [monthSum, setMonthSum] = useState();
     const [monthCost, setMonthCost] = useState();
+    const [currrentUseage, setCurrrentUseage] = useState();
 
     useEffect(() => {
         const parseData = (d) => {
@@ -61,38 +62,52 @@ export default function energyScreen() {
 
         }
 
-        if (!data) {
+            
+        ws.onopen = () => {
             req = {
-                user: 'John',
-                msg: 'method',
-                method: 'getEnergy',
-                params: []
+                msg: 'direct',
+                module: 'energy',
+                function: 'getAll'
             }
             ws.send(JSON.stringify(req));
+            setInterval(() => {
+                req = {
+                    msg: 'direct',
+                    module: 'energy',
+                    function: 'getNow'
+                }
+                ws.send(JSON.stringify(req));
+            }, 1000)
+        };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 if (d.msg == 'result') {
-                    setData(d.result)
-                    parseData(d.result)
+                    if (d.req == 'getAll') {
+                        setData(d.result)
+                        // console.log(d.result);
+                        parseData(d.result)
+                    }
+                    else {
+                        setCurrrentUseage(parseInt(d.result))
+                        // console.log(d.result);
+                    }
+
                 }
-                console.log('a message was received');
             };
-        }
     });
     return (
-        <View >
-            <ScrollView vertical={true} contentContainerStyle={{ height: '105%' }}>
+            data  ? <ScrollView vertical={true} contentContainerStyle={{ height: '105%' }}>
                 <Text style={styles.heading}>Energy</Text>
 
-                <AnimatedCircularProgress
-                    size={260} width={5} fill={70} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
+                {currrentUseage && <AnimatedCircularProgress
+                    size={260} width={5} fill={Math.floor((currrentUseage/1350)*100)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
                     {(fill) => (
                         <Fragment>
-                            <Text style={{ fontSize: 64, fontWeight: 'bold', color: colors.lightGreen }}> {269} </Text>
+                            <Text style={{ fontSize: 64, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
                             <Text style={{ fontSize: 22, color: colors.lightGreen }}> kW</Text>
                         </Fragment>
                     )}
-                </AnimatedCircularProgress>
+                </AnimatedCircularProgress>}
                 <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-10%' }}> Current Consumption</Text>
 
                 <View style={{ flexDirection: 'row', marginTop: 20, height: 36 }}>
@@ -125,8 +140,7 @@ export default function energyScreen() {
                         <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{monthCost}</Text>
                     </View>
                 </View>
-            </ScrollView>
-        </View>
+            </ScrollView>:<View></View>
     );
 }
 

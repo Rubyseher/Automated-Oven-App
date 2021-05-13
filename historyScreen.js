@@ -67,9 +67,9 @@ export default function historyScreen() {
     useEffect(() => {
         if (!data) {
             req = {
-                user: 'John',
-                msg: 'method',
-                method: 'getHistory'
+                msg: 'direct',
+                module: 'history',
+                function: 'get'
             }
             ws.send(JSON.stringify(req));
             ws.onmessage = (e) => {
