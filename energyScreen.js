@@ -70,6 +70,12 @@ export default function energyScreen() {
                 function: 'getAll'
             }
             ws.send(JSON.stringify(req));
+            req = {
+                msg: 'direct',
+                module: 'energy',
+                function: 'getNow'
+            }
+            ws.send(JSON.stringify(req));
             setInterval(() => {
                 req = {
                     msg: 'direct',
@@ -77,7 +83,7 @@ export default function energyScreen() {
                     function: 'getNow'
                 }
                 ws.send(JSON.stringify(req));
-            }, 1000)
+            }, 3000)
         };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
@@ -100,7 +106,7 @@ export default function energyScreen() {
                 <Text style={styles.heading}>Energy</Text>
 
                 {currrentUseage && <AnimatedCircularProgress
-                    size={260} width={5} fill={Math.floor((currrentUseage/1350)*100)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
+                    size={260} width={5} fill={Math.round((currrentUseage/1350)*100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
                     {(fill) => (
                         <Fragment>
                             <Text style={{ fontSize: 64, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
