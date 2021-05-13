@@ -34,7 +34,7 @@ const TemperatureSlider = (props) => {
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 step={5}
-                onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name) }}
+                onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
                 value={props.handler.value}
             />
         </Fragment>
@@ -61,13 +61,14 @@ function mainScreen({ navigation }) {
         return 0;
     }
 
-    const setTemp = (name) => {
+    const setTemp = (name, value) => {
         req = {
             msg: 'direct',
             module: 'cook',
-            function: `set${name}Temp`
-
+            function: `set${name}Temp`,
+            params: [value]
         }
+        ws.send(JSON.stringify(req));
     }
 
     const sendRequest = (task) => {
@@ -105,7 +106,7 @@ function mainScreen({ navigation }) {
         };
         ws.onmessage = (e) => {
             d = JSON.parse(e.data)
-            if (d.msg == 'result') {
+            if (d.msg == 'result' && d.result.hasOwnProperty('isCooking')) {
                 console.log("result", d.result);
                 setData(d.result)
                 parseData(d.result)
@@ -127,8 +128,8 @@ function mainScreen({ navigation }) {
             <Text style={styles.title}>{data.isCooking ? data.item : 'Empty'}</Text>
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
-                <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top'/>
-                <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom'/>
+                <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
+                <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
             </View>
             <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
                 {data.isCooking && <Button
@@ -164,7 +165,6 @@ function mainScreen({ navigation }) {
                         />
                     </Fragment>
                 }
-
             </View>
     );
 }
