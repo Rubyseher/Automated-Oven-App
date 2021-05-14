@@ -7,31 +7,41 @@
     "id": "8af3d9",
     "steps": [
       {
-        "type": "cook",
+        "type": "Cook",
+        "color":"yellow",
+        "icon":"utensils",
         "topTemp": 170,
         "bottomTemp": 0,
         "time": 30
       },
       {
-        "type": "checkpoint",
+        "type": "Checkpoint",
+        "color":"blue",
+        "icon":"flag",
         "wait": true,
         "timeout": 30
       },
 
       {
-        "type": "cook",
+        "type": "Cook",
+        "color":"yellow",
+        "icon":"utensils",
         "topTemp": 0,
         "bottomTemp": 160,
         "time": 30
       },
       {
-        "type": "notify",
+        "type": "Notify",
+        "color":"orange",
+        "icon":"bell",
         "destination": ["person 1", "google home", "192.168.0.6"],
         "title": "title",
         "message": "test msg1 "
       },
       {
-        "type": "powerOff"
+        "type": "Power Off",
+        "color":"lightRed",
+        "icon":"power-off"
       }
     ]
   },
@@ -43,42 +53,58 @@
     "id": "8b52d9",
     "steps": [
       {
-        "type": "cook",
+        "type": "Cook",
+        "color":"yellow",
+        "icon":"utensils",
         "topTemp": 170,
         "bottomTemp": 0,
         "time": 30
       },
       {
-        "type": "checkpoint",
+        "type": "Checkpoint",
+        "color":"blue",
+        "icon":"flag",
         "wait": true,
         "timeout": 30
       },
       {
-        "type": "pause"
+        "type": "Pause",
+        "color":"grey",
+        "icon":"pause"
       },
       {
-        "type": "cook",
+        "type": "Cook",
+        "color":"yellow",
+        "icon":"utensils",
         "topTemp": 0,
         "bottomTemp": 160,
         "time": 10
       },
       {
-        "type": "notify",
+        "type": "Notify",
+        "color":"orange",
+        "icon":"bell",
         "destination": ["person 1", "google home", "192.168.0.6"],
         "title": "title",
         "message": "test msg1 "
       },
       {
-        "type": "cooling",
+        "type": "Cooling",
+        "color":"turquoise",
+        "icon":"snowflake",
         "duration": 10
       },
       {
-        "type": "checkpoint",
+        "type": "Checkpoint",
+        "color":"blue",
+        "icon":"flag",
         "wait": true,
         "timeout": 30
       },
       {
-        "type": "powerOff"
+        "type": "Power Off",
+        "color":"lightRed",
+        "icon":"power-off"
       }
     ]
   }

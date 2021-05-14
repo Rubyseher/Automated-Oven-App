@@ -12,6 +12,7 @@ export const colors = {
     yellow: '#ffd800',
     blue: '#3b91fc',
     lightBlue: '#f0fbff',
+    turquoise:'#4febff',
     green: '#30c69f',
     lightGreen: '#00de65',
     navBarInactive: '#b9b9b9'
