@@ -5,10 +5,9 @@ import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Slider } from 'react-native-elements';
-// import CircularSlider from 'react-native-circular-slider';
-
 import CircularSlider from 'rn-circular-slider'
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import Timeline from './timeline';
+const data= require('./timeline.json')
 
 const TopTempSlider = (props) => {
     return (
@@ -59,6 +58,7 @@ export default function automationScreen() {
     const [topTemp, setTopTemp] = useState(180);
     const [bottomTemp, setBottomTemp] = useState(80);
     const [timeSlider, setTimeSlider] = useState(30);
+    const [items, setitems] = useState(data);
 
     return (
         <View >
