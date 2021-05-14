@@ -14,13 +14,12 @@ export default function energyScreen() {
     const [weekSum, setWeekSum] = useState(0);
     const [monthSum, setMonthSum] = useState();
     const [monthCost, setMonthCost] = useState();
-    const [currrentUseage, setCurrrentUseage] = useState();
+    const [currrentUseage, setCurrrentUsage] = useState();
 
     useEffect(() => {
         const parseData = (d) => {
             const energySum = (accumulator, currentValue) => accumulator + currentValue;
             dates = Object.keys(d)
-            // console.log("dates", dates);
 
             var last7energy = []
             for (m = moment().subtract(6, 'd'); m.isSameOrBefore(moment()); m.add(1, 'd')) {
@@ -58,10 +57,9 @@ export default function energyScreen() {
             if (_monthSum && _monthSum <= 1.00) cost = 70
             else cost = ((70 * Math.floor(_monthSum)) + (((_monthSum - Math.floor(_monthSum)) / 100) * 80))
             setMonthCost(cost.toFixed(1))
-            console.log("cost", cost);
-
         }
 
+        console.log(ws.readyState);
             
         ws.onopen = () => {
             req = {
@@ -90,13 +88,12 @@ export default function energyScreen() {
                 if (d.msg == 'result') {
                     if (d.req == 'getAll') {
                         setData(d.result)
-                        // console.log(d.result);
                         parseData(d.result)
                     }
                     else {
-                        setCurrrentUseage(parseInt(d.result))
-                        // console.log(d.result);
+                        setCurrrentUsage(parseInt(d.result))
                     }
+                    console.log(d.result);
 
                 }
             };

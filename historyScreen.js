@@ -62,10 +62,10 @@ const FoodName = (props) => {
 }
 
 export default function historyScreen() {
-    const [data, setData] = useState();
+    const [data, setData] = useState([]);
 
     useEffect(() => {
-        if (!data) {
+        if (!data.length > 0) {
             req = {
                 msg: 'direct',
                 module: 'history',
@@ -84,12 +84,11 @@ export default function historyScreen() {
 
     return (
         <View >
-            <Text style={styles.heading}>Historys</Text>
+            <Text style={styles.heading}>History</Text>
             {
-                data && data.map((item, i) => (
-                    // <Text>{item.playbackHistory[1].timestamp}</Text>
+                data.length > 0 ? data.map((item, i) => (
                     <FoodName key={i} name={item.item} steps={item.steps} />
-                ))
+                )) : null
             }
         </View>
     );

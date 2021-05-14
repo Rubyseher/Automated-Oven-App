@@ -7,11 +7,11 @@ import Wand from './assets/wand.svg'
 import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import ws from './Server'
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+// import RNRestart from 'react-native-restart';
 
 const GradientProgress = (props) => {
     return (
@@ -94,8 +94,9 @@ function mainScreen({ navigation }) {
             setBottomTemp(d.bottom)
             d.isPaused ? setTime('Paused') : setTime(`${moment.unix(d.endTime).diff(moment(), 'minutes')} min ${moment.unix(d.endTime).diff(moment(), 'seconds') % 60} sec left`)
         }
+        console.log(ws.readyState);
         ws.onopen = () => {
-            setInterval(() => {
+            interval = setInterval(() => {
                 req = {
                     msg: 'direct',
                     module: 'cook',
@@ -120,7 +121,7 @@ function mainScreen({ navigation }) {
     return (
         data ? <View>
             <Image
-                style={{ width: '100%', height: '53%' }}
+                style={{ width: '100%', height: '50%' }}
                 source={require('./assets/Plate.jpg')}
                 resizeMode='cover'
             />
@@ -162,6 +163,10 @@ function mainScreen({ navigation }) {
                             title="Try Again"
                             type="clear"
                             titleStyle={{ color: colors.blue }}
+                            onPress={() => {
+                                ReactNativeHapticFeedback.trigger("impactHeavy");
+                                // RNRestart.Restart()
+                            }}
                         />
                     </Fragment>
                 }
