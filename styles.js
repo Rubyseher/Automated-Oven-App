@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const colors = {
     grey: '#e1dddd',
-    textGrey: '#b0b2b3',
+    textGrey: '#acadad',
     darkGrey: '#727676',
     white: '#fff',
     black: '#000',
@@ -149,7 +149,8 @@ export const styles = StyleSheet.create({
         width: 22,
         marginLeft: 14,
         borderRadius: 22,
-        padding: 0,
+        // padding: 0,
+        justifyContent:'center'
     },
     detailText: {
         marginTop: 15,
@@ -252,6 +253,11 @@ export const styles = StyleSheet.create({
         color: colors.darkGrey
     },
     // ********* automation screen ********
+    autoTitle: {
+        marginTop: 15,
+        marginRight: 18,
+        color: colors.textGrey,
+    },
     autoContainer: {
         width: '85%',
         alignSelf: 'center',
