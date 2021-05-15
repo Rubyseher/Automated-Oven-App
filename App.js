@@ -25,7 +25,7 @@ const Stack = createStackNavigator();
 
 function Main() {
   return (
-    <Stack.Navigator initialRouteName="automation" headerMode='none'>
+    <Stack.Navigator initialRouteName="main" headerMode='none'>
       <Stack.Screen name="main" component={mainScreen} />
       <Stack.Screen name="automation" component={automationScreen} />
     </Stack.Navigator>

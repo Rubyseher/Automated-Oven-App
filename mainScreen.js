@@ -26,8 +26,8 @@ const TemperatureSlider = (props) => {
         <Fragment>
             <View style={{ flexDirection: 'row', width: '100%', marginTop: 7 }}>
                 {props.icon}
-                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}> {Math.round(props.handler.value)}°C </Text>
-            </View>
+                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value==0? "OFF" : Math.round(props.handler.value)+"°C"} </Text>
+            </View> 
             <Slider
                 maximumValue={250}
                 minimumValue={0}
@@ -121,7 +121,7 @@ function mainScreen({ navigation }) {
     return (
         data ? <View>
             <Image
-                style={{ width: '100%', height: '50%' }}
+                style={{ width: '100%', height: '49%' }}
                 source={require('./assets/Plate.jpg')}
                 resizeMode='cover'
             />
