@@ -24,7 +24,7 @@ const GradientProgress = (props) => {
 const TemperatureSlider = (props) => {
     return (
         <Fragment>
-            <View style={{ flexDirection: 'row', width: '100%', marginTop: 7 }}>
+            <View style={{ flexDirection: 'row', width: '100%', marginTop: 7,marginBottom:-12 }}>
                 {props.icon}
                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value==0? "OFF" : Math.round(props.handler.value)+"°C"} </Text>
             </View> 
@@ -36,6 +36,7 @@ const TemperatureSlider = (props) => {
                 step={5}
                 onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
                 value={props.handler.value}
+                thumbTintColor="transparent"
             />
         </Fragment>
     )
@@ -129,10 +130,10 @@ function mainScreen({ navigation }) {
             <Text style={styles.title}>{data.isCooking ? data.item : 'Empty'}</Text>
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
-                <TemperatureSlider icon={<OvenTop height={28} width={28} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
-                <TemperatureSlider icon={<OvenBottom height={28} width={28} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
+                <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
+                <TemperatureSlider icon={<OvenBottom height={29} width={29} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
             </View>
-            <View style={{ flexDirection: 'row', width: '100%', alignContent: 'center', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' ,marginTop:18}}>
                 {data.isCooking && <Button
                     onPress={() => navigation.navigate('automation')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
@@ -141,9 +142,9 @@ function mainScreen({ navigation }) {
                 />}
                 <Button
                     onPress={() => sendRequest('pause')}
-                    icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={26} color={colors.darkGrey} />}
+                    icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{alignSelf:'center'}} />}
                     buttonStyle={styles.roundButtonM}
-                    containerStyle={[styles.roundButtonPaddingM, { marginLeft: 40, marginRight: 40 }]}
+                    containerStyle={[styles.roundButtonPaddingM]}
                 />
                 {data.isCooking && <Button
                     onPress={() => sendRequest('stop')}
