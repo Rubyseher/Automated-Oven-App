@@ -7,6 +7,7 @@ import OvenBottom from './assets/Oven Direction Bottom.svg'
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import CircularSlider from 'rn-circular-slider'
 import Slider from '@react-native-community/slider'
+import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
 const TemperatureSlider = (props) => {
@@ -45,6 +46,12 @@ const Title = (props) => {
                 <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
             </View>
             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
+            <Button
+                    onPress={() => console.log("remove " + props.id)}
+                    icon={<Ficon name="close-a" size={6} color={colors.white} />}
+                    buttonStyle={styles.closeButtonS}
+                    containerStyle={styles.closeButtonPaddingS}
+                />
         </View>
     )
 }
@@ -68,7 +75,7 @@ export const Cook = (props) => {
 
     return (
         <View style={[styles.autoContainer]}>
-            <Title type="Cook" color={colors.yellow} icon="utensils" />
+            <Title type="Cook" color={colors.yellow} icon="utensils" id={props.id}/>
 
             <View style={{ flexDirection: 'row', marginTop: 14 }}>
                 <View style={{ width: '60%', marginLeft: 20 }}>
@@ -93,7 +100,7 @@ export const Checkpoint = (props) => {
     const [checked, setchecked] = useState(false);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Checkpoint' color={colors.blue} icon="flag" />
+            <Title type='Checkpoint' color={colors.blue} icon="flag" id={props.id}/>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
@@ -115,7 +122,7 @@ export const Checkpoint = (props) => {
 export const Pause = (props) => {
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Pause' color={colors.textGrey} icon="pause" />
+            <Title type='Pause' color={colors.textGrey} icon="pause" id={props.id}/>
             <View style={[styles.roundButtonM, { backgroundColor: colors.textGrey, margin: 10 }]}>
                 <Ficon name="pause" size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
@@ -128,7 +135,7 @@ export const Notify = (props) => {
     const [msg, changeMsg] = useState(props.message);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Notify' color={colors.orange} icon="bell" />
+            <Title type='Notify' color={colors.orange} icon="bell" id={props.id}/>
             <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
@@ -144,7 +151,7 @@ export const Notify = (props) => {
 
                     {
                         props.destination.map((item, i) => (
-                            <View style={{ flexDirection: 'row', width: '32%' }}>
+                            <View key={i} style={{ flexDirection: 'row', width: '32%' }}>
                                 <View style={[styles.detailsCircle, { backgroundColor: colors[destiColor[i % 4]] }]}>
                                     <Icon name='check' size={10} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
                                 </View>
@@ -163,7 +170,7 @@ export const Notify = (props) => {
 export const PowerOff = (props) => {
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Power Off' color={colors.lightRed} icon="power-off" />
+            <Title type='Power Off' color={colors.lightRed} icon="power-off" id={props.id}/>
             <View style={[styles.roundButtonM, { backgroundColor: colors.lightRed, margin: 10 }]}>
                 <Icon name="power-off" size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
@@ -174,7 +181,7 @@ export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
         <View style={[styles.autoContainer]}>
-            <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" />
+            <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" id={props.id}/>
             <CircularSlider
                 step={1} min={0} max={10} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.turquoise}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise}]}

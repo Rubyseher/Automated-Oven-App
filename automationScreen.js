@@ -5,11 +5,14 @@ import { Cook, Checkpoint, Pause, Notify, PowerOff, Cooling } from './timeline';
 import { ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ficon from 'react-native-vector-icons/Fontisto';
 
 const data = require('./timeline.json')
 
 const TimelineComponent = (props) => {
     item = props.item
+    item.id = props.id
+    
     switch (item.type) {
         case "Cook": return <Cook {...item} />
         case "Checkpoint": return <Checkpoint {...item} />
@@ -21,15 +24,24 @@ const TimelineComponent = (props) => {
     }
 }
 
-export default function automationScreen() {
+export default function automationScreen({ navigation }) {
     const [items, setitems] = useState(data);
     return (
-        <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 300 }}>
-            <Text style={styles.heading}>Automator</Text>
+        <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
+            <View style={{ flexDirection: 'row', width: '100%' }}>
+                <Text style={styles.heading}>Automator</Text>
+                <Button
+                    onPress={() => navigation.goBack()}
+                    icon={<Ficon name="close-a" size={8} color={colors.white} />}
+                    buttonStyle={styles.closeButtonM}
+                    containerStyle={styles.closeButtonPaddingM}
+                />
+            </View>
+
             {
                 items[1].steps.map((item, i) => (
-                    <Fragment>
-                        <TimelineComponent item={item} />
+                    <Fragment key={i}>
+                        <TimelineComponent item={item} id={i} />
                         <View style={styles.timeThread}></View>
                     </Fragment>
                 ))

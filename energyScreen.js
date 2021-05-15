@@ -6,6 +6,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { BarChart } from 'react-native-svg-charts'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import moment from "moment";
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 export default function energyScreen() {
     const [energyData, setEnergyData] = useState();
@@ -45,6 +46,7 @@ export default function energyScreen() {
 
     useFocusEffect(
         useCallback(() => {
+            ReactNativeHapticFeedback.trigger("impactMedium");
             var intervalId = setInterval(() => {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
@@ -81,7 +83,7 @@ export default function energyScreen() {
         }, []))
 
     return (
-        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop:10 }}>
+        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 10 }}>
             <Text style={styles.heading}>Energy</Text>
 
             <AnimatedCircularProgress

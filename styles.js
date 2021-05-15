@@ -61,6 +61,34 @@ export const styles = StyleSheet.create({
         marginRight: 40,
         alignSelf: 'center',
     },
+    closeButtonM: {
+        height: 20,
+        width: 20,
+        borderRadius: 10,
+        padding: 0,
+        alignSelf: 'center',
+        backgroundColor: colors.textGrey
+    },
+    closeButtonPaddingM: {
+        height: 25,
+        width: 25,
+        padding: 5,
+        alignSelf:'flex-end'
+    },
+    closeButtonS: {
+        height: 15,
+        width: 15,
+        borderRadius: 8,
+        padding: 0,
+        alignSelf: 'center',
+        backgroundColor: colors.textGrey
+    },
+    closeButtonPaddingS: {
+        height: 18,
+        width: 18,
+        padding: 4,
+        alignSelf:'flex-end'
+    },
     roundButtonS: {
         height: 40,
         width: 40,

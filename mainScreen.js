@@ -98,6 +98,7 @@ function mainScreen({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
+            ReactNativeHapticFeedback.trigger("impactHeavy");
             const parseData = (d) => {
                 setTopTemp(d.top)
                 setBottomTemp(d.bottom)
@@ -124,7 +125,7 @@ function mainScreen({ navigation }) {
                 };
             }, 1000)
 
-            setTimeout(() => setLoading(false),5000)
+            setTimeout(() => setLoading(false), 5000)
 
             return () => {
                 clearInterval(intervalId);
@@ -140,19 +141,19 @@ function mainScreen({ navigation }) {
                 resizeMode='cover'
             />
             <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} />
-            <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ?  'Done': 'Empty')}</Text>
+            <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
                 <TemperatureSlider icon={<OvenBottom height={29} width={29} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
             </View>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 18 }}>
-                {data.isCooking && <Button
+                <Button
                     onPress={() => navigation.navigate('automation')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
-                />}
+                />
                 <Button
                     onPress={() => sendRequest('pause')}
                     icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{ alignSelf: 'center' }} />}
@@ -170,7 +171,7 @@ function mainScreen({ navigation }) {
 
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
                 <ActivityIndicator size="large" />
-                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey, marginTop:20 }}>{loading ? "Connecting to the device": "Couldn't connect to the device. Make sure it's powered on."}</Text>
+                <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey, marginTop: 20 }}>{loading ? "Connecting to the device" : "Couldn't connect to the device. Make sure it's powered on."}</Text>
             </View>
     );
 }

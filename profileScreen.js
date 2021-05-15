@@ -1,23 +1,24 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState,useCallback } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { BarChart } from 'react-native-svg-charts'
+import { useFocusEffect } from '@react-navigation/native';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 export default function profileScreen() {
     const usage = colors.blue
     const energy = colors.lightGreen
     const usageData = [180, 300, 0, 80, 30, 150,30]
     const energyData = [180, 300, 0, 80, 30, 150,30]
-    const graphData = [{
-        item: "usage",
-        data: [180, 300, 0, 80, 30, 150]
-    },
-    {
-        item: "energy",
-        data: [160, 380, 90, 180, 0, 190]
-    }]
+  
+    useFocusEffect(
+        useCallback(() => {
+            ReactNativeHapticFeedback.trigger("impactMedium");
+        }, [])
+    );
+
 
     return (
         <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop:10 }}>

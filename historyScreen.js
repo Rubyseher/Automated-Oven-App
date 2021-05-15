@@ -1,9 +1,10 @@
-import React, { Fragment, useState, useCallback,useEffect } from 'react';
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useFocusEffect } from '@react-navigation/native';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 const FoodName = (props) => {
     const [finalDuration, setFinalDuration] = useState(0);
@@ -21,7 +22,7 @@ const FoodName = (props) => {
             setFinalTemp(avgTemp / duration)
             setFinalDuration(duration)
         }
-    },[]);
+    }, []);
 
     return (
         <Fragment>
@@ -66,6 +67,8 @@ export default function historyScreen() {
 
     useFocusEffect(
         useCallback(() => {
+            ReactNativeHapticFeedback.trigger("impactMedium");
+
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 req = {
@@ -82,11 +85,11 @@ export default function historyScreen() {
                     ws.close()
                 }
             };
-        },[])
+        }, [])
     );
 
     return (
-        <View style={{ paddingHorizontal: 32, paddingTop:10}}>
+        <View style={{ paddingHorizontal: 32, paddingTop: 10 }}>
             <Text style={styles.heading}>History</Text>
             {
                 data.length > 0 ? data.map((item, i) => (
