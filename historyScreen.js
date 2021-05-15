@@ -51,7 +51,7 @@ const FoodName = (props) => {
                 </View>
                 <Text style={styles.detailText}> {finalDuration} min</Text>
 
-                <View style={[styles.detailsCircle, { backgroundColor: colors.green }]}>
+                <View style={[styles.detailsCircle, { backgroundColor: colors.teal }]}>
                     <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
                 </View>
                 <Text style={styles.detailText}> {props.steps.length} Steps</Text>
