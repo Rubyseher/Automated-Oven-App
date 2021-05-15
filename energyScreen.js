@@ -75,7 +75,7 @@ export default function energyScreen() {
                     }
                     ws.close()
                 };
-            }, 3000)
+            }, 2000)
 
             return () => {
                 clearInterval(intervalId);
@@ -91,7 +91,7 @@ export default function energyScreen() {
                 {(fill) => (
                     <Fragment>
                         <Text style={{ fontSize: 68, fontWeight: 'bold', color: colors.lightGreen }}> {currentUsage} </Text>
-                        <Text style={{ fontSize: 22, color: colors.lightGreen, marginTop: -9 }}> kW</Text>
+                        <Text style={{ fontSize: 22, color: colors.lightGreen, marginTop: -9 }}> W</Text>
                     </Fragment>
                 )}
             </AnimatedCircularProgress>

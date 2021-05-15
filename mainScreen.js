@@ -117,7 +117,6 @@ function mainScreen({ navigation }) {
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
                     if (d.msg == 'result' && d.req == 'get') {
-                        console.log("result", d.result);
                         setData(d.result)
                         parseData(d.result)
                     }

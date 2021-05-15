@@ -342,4 +342,10 @@ export const styles = StyleSheet.create({
         // padding: 0,
         justifyContent: 'center'
     },
+    listItem: {
+        padding: 15,
+        fontSize: 20,
+        color: colors.darkGrey,
+        borderColor: colors.grey
+    }
 });
