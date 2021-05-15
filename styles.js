@@ -238,8 +238,8 @@ export const styles = StyleSheet.create({
     },
     graphLabel: {
         fontWeight: '400',
-        marginLeft: 36,
-        marginRight: 38,
+        marginLeft: 18,
+        // marginRight: 38,
         fontSize: 20,
         marginBottom: 10,
         width: '40%',

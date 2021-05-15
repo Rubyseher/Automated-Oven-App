@@ -103,15 +103,15 @@ export default function energyScreen() {
                 <Text style={styles.heading}>Energy</Text>
 
                 {currrentUseage && <AnimatedCircularProgress
-                    size={270} width={5} fill={Math.round((currrentUseage/1350)*100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
+                    size={275} width={5} fill={Math.round((currrentUseage/1350)*100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
                     {(fill) => (
                         <Fragment>
-                            <Text style={{ fontSize: 64, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
+                            <Text style={{ fontSize: 68, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
                             <Text style={{ fontSize: 22, color: colors.lightGreen,marginTop:-9 }}> kW</Text>
                         </Fragment>
                     )}
                 </AnimatedCircularProgress>}
-                <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-12%',marginBottom:'10%' }}> Current Consumption</Text>
+                <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-14%',marginBottom:'10%' }}> Current Consumption</Text>
 
                 <View style={{ flexDirection: 'row', height: 36 }}>
                     <Text style={styles.graphLabel}>Weekly Energy</Text>
@@ -121,7 +121,7 @@ export default function energyScreen() {
 
                 </View>
 
-                {energyData && <BarChart style={{ height: 170 }} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.28} spacingOuter={0.99} yAccessor={({ item }) => item / 10} yMax={100} ></BarChart>}
+                {energyData && <BarChart style={{ height: 130 }} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.28} spacingOuter={0.99} yAccessor={({ item }) => item / 10} yMax={100} ></BarChart>}
                 <View style={{ borderBottomColor: colors.grey, borderBottomWidth: 2, marginTop: '-3%', marginBottom: '3%', marginRight: '11%', marginLeft: '11%' }} />
 
                 <View style={styles.tagContainer}>
