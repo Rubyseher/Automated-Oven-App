@@ -47,7 +47,7 @@ export default function automationScreen({ navigation }) {
                 ))
             }
             <Button
-                onPress={() => navigation.navigate('automation')}
+                onPress={() => console.log("Add Menu")}
                 icon={<Icon name="plus" size={18} color={colors.white} />}
                 buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue }]}
                 containerStyle={styles.roundButtonPaddingS}
