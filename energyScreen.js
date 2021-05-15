@@ -107,13 +107,13 @@ export default function energyScreen() {
                     {(fill) => (
                         <Fragment>
                             <Text style={{ fontSize: 64, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
-                            <Text style={{ fontSize: 22, color: colors.lightGreen }}> kW</Text>
+                            <Text style={{ fontSize: 22, color: colors.lightGreen,marginTop:-9 }}> kW</Text>
                         </Fragment>
                     )}
                 </AnimatedCircularProgress>}
-                <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-10%' }}> Current Consumption</Text>
+                <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-12%',marginBottom:'10%' }}> Current Consumption</Text>
 
-                <View style={{ flexDirection: 'row', marginTop: 20, height: 36 }}>
+                <View style={{ flexDirection: 'row', height: 36 }}>
                     <Text style={styles.graphLabel}>Weekly Energy</Text>
                     <View style={{ width: '100%' }}>
                         <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{(weekSum / 1000).toFixed(2)}</Text>
