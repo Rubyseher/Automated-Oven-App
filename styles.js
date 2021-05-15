@@ -38,9 +38,9 @@ export const styles = StyleSheet.create({
         borderRadius: 20,
     },
     roundButtonM: {
-        height: 60,
-        width: 60,
-        borderRadius: 30,
+        height: 70,
+        width: 70,
+        borderRadius: 35,
         padding: 0,
         alignSelf: 'center',
         backgroundColor: colors.white,
@@ -54,10 +54,11 @@ export const styles = StyleSheet.create({
         elevation: 11,
     },
     roundButtonPaddingM: {
-        height: 80,
-        width: 80,
+        height: 90,
+        width: 90,
         padding: 7,
-        // marginTop:10,
+        marginLeft: 40,
+        marginRight: 40,
         alignSelf: 'center',
     },
     roundButtonS: {
@@ -303,7 +304,7 @@ export const styles = StyleSheet.create({
         width: 5,
         backgroundColor: colors.grey,
         alignSelf: 'center',
-        marginTop:-40,
+        marginTop: -40,
     },
     close: {
         marginTop: 12,
