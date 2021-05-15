@@ -1,17 +1,17 @@
 import { StyleSheet } from 'react-native';
 
 export const colors = {
-    red: '#c30000',
-    lightRed: '#ff303a',
-    orange: '#ff7312',
-    yellow: '#ffd800',
-    green: '#30c69f',
-    lightGreen: '#00de65',
-    blue: '#3b91fc',
-    lightBlue: '#f0fbff',
-    turquoise: '#4febff',
+    red: '#e93838',
+    lightRed: '#ed4849',
+    orange: '#ff7300',
+    yellow: '#ffd600',
+    teal: '#2dc09c',
+    lightGreen: '#26d46c',
+    blue: '#3f91ff',
+    lightBlue: '#f3fbff',
+    turquoise: '#7ae8ff',
     grey: '#e1dddd',
-    textGrey: '#acadad',
+    textGrey: '#a5a5a5',
     darkGrey: '#727676',
     white: '#fff',
     black: '#000',
@@ -19,7 +19,6 @@ export const colors = {
 }
 
 export const styles = StyleSheet.create({
-
     title: {
         fontWeight: '600',
         fontSize: 36,
@@ -29,7 +28,7 @@ export const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 18,
-        color: 'grey',
+        color: colors.grey,
         marginBottom: 15,
         textAlign: 'center',
     },
@@ -184,7 +183,7 @@ export const styles = StyleSheet.create({
     },
     energy: {
         fontSize: 16,
-        color: 'grey',
+        color: colors.grey,
         marginTop: 6,
         textAlign: 'right',
         width: '30%',
