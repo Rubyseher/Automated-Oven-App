@@ -1,9 +1,9 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useCallback,useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-// import { WS } from './Server'
+import { useFocusEffect } from '@react-navigation/native';
 
 const FoodName = (props) => {
     const [finalDuration, setFinalDuration] = useState(0);
@@ -21,7 +21,7 @@ const FoodName = (props) => {
             setFinalTemp(avgTemp / duration)
             setFinalDuration(duration)
         }
-    });
+    },[]);
 
     return (
         <Fragment>
@@ -64,8 +64,8 @@ const FoodName = (props) => {
 export default function historyScreen() {
     const [data, setData] = useState([]);
 
-    useEffect(() => {
-        if (!data.length > 0) {
+    useFocusEffect(
+        useCallback(() => {
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 req = {
@@ -82,8 +82,8 @@ export default function historyScreen() {
                     ws.close()
                 }
             };
-        }
-    });
+        },[])
+    );
 
     return (
         <View >

@@ -45,9 +45,8 @@ export default function energyScreen() {
 
     useFocusEffect(
         useCallback(() => {
-            var ws
             var intervalId = setInterval(() => {
-                ws = new WebSocket('ws://oven.local:8069');
+                var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
                     req = {
                         msg: 'direct',
@@ -64,7 +63,6 @@ export default function energyScreen() {
                 };
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
-                    console.log(d.req);
                     if (d.msg === 'result') {
                         if (d.req === 'getAll') {
                             parseData(d.result)
