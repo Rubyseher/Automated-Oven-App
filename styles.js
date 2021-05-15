@@ -1,24 +1,25 @@
 import { StyleSheet } from 'react-native';
 
 export const colors = {
+    red: '#c30000',
+    lightRed: '#ff303a',
+    orange: '#ff7312',
+    yellow: '#ffd800',
+    green: '#30c69f',
+    lightGreen: '#00de65',
+    blue: '#3b91fc',
+    lightBlue: '#f0fbff',
+    turquoise: '#4febff',
     grey: '#e1dddd',
     textGrey: '#acadad',
     darkGrey: '#727676',
     white: '#fff',
     black: '#000',
-    red: '#c30000',
-    lightRed: '#ff303a',
-    orange: '#ff7312',
-    yellow: '#ffd800',
-    blue: '#3b91fc',
-    lightBlue: '#f0fbff',
-    turquoise:'#4febff',
-    green: '#30c69f',
-    lightGreen: '#00de65',
     navBarInactive: '#b9b9b9'
 }
 
 export const styles = StyleSheet.create({
+
     title: {
         fontWeight: '600',
         fontSize: 36,
@@ -150,7 +151,7 @@ export const styles = StyleSheet.create({
         marginLeft: 14,
         borderRadius: 22,
         // padding: 0,
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     detailText: {
         marginTop: 15,
@@ -256,7 +257,7 @@ export const styles = StyleSheet.create({
     autoTitle: {
         marginTop: 15,
         marginRight: 18,
-        color: colors.textGrey,
+        color: colors.darkGrey,
     },
     autoContainer: {
         width: '85%',
@@ -269,8 +270,10 @@ export const styles = StyleSheet.create({
             height: 2,
         },
         shadowOpacity: 0.25,
+        marginBottom:40,
         shadowRadius: 3.84,
         elevation: 5,
+        paddingBottom: 12
     },
     contentContainerStyle: {
         justifyContent: 'center',
@@ -279,11 +282,21 @@ export const styles = StyleSheet.create({
     value: {
         fontWeight: '600',
         fontSize: 22,
-        color:colors.blue,
+        color: colors.blue,
     },
     min: {
         fontWeight: '600',
         fontSize: 14,
-        color:colors.blue,
+        color: colors.blue,
+    },
+    notifyMsg: {
+        marginVertical: 6,
+        marginHorizontal: 16,
+        fontSize:14,
+        color: colors.black,
+        padding:10,
+        borderWidth:1,
+        borderRadius:8,
+        borderColor:colors.grey,
     }
 });

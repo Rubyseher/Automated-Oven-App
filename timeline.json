@@ -34,7 +34,7 @@
         "type": "Notify",
         "color":"orange",
         "icon":"bell",
-        "destination": ["person 1", "google home", "192.168.0.6"],
+        "destination": ["person 1","person 2","person 3", "google home", "192.168.0.6"],
         "title": "title",
         "message": "test msg1 "
       },
@@ -68,8 +68,27 @@
         "timeout": 30
       },
       {
+        "type": "Notify",
+        "color":"orange",
+        "icon":"bell",
+        "destination": ["John","Bob","Tom", "Alexa"],
+        "title": "Cooking Complete",
+        "message": "Pizza is done Cooking"
+      },
+      {
+        "type": "PowerOff",
+        "color":"lightRed",
+        "icon":"power-off"
+      },
+      {
+        "type": "Cooling",
+        "color":"turquoise",
+        "icon":"snowflake",
+        "duration": 10
+      },
+      {
         "type": "Pause",
-        "color":"grey",
+        "color":"textGrey",
         "icon":"pause"
       },
       {
@@ -80,32 +99,7 @@
         "bottomTemp": 160,
         "time": 10
       },
-      {
-        "type": "Notify",
-        "color":"orange",
-        "icon":"bell",
-        "destination": ["person 1", "google home", "192.168.0.6"],
-        "title": "title",
-        "message": "test msg1 "
-      },
-      {
-        "type": "Cooling",
-        "color":"turquoise",
-        "icon":"snowflake",
-        "duration": 10
-      },
-      {
-        "type": "Checkpoint",
-        "color":"blue",
-        "icon":"flag",
-        "wait": true,
-        "timeout": 30
-      },
-      {
-        "type": "Power Off",
-        "color":"lightRed",
-        "icon":"power-off"
-      }
+
     ]
   }
 ]
