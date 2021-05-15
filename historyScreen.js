@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import ws from './Server'
+// import { WS } from './Server'
 
 const FoodName = (props) => {
     const [finalDuration, setFinalDuration] = useState(0);
@@ -66,18 +66,21 @@ export default function historyScreen() {
 
     useEffect(() => {
         if (!data.length > 0) {
-            req = {
-                msg: 'direct',
-                module: 'history',
-                function: 'get'
-            }
-            ws.send(JSON.stringify(req));
+            var ws = new WebSocket('ws://oven.local:8069');
+            ws.onopen = () => {
+                req = {
+                    msg: 'direct',
+                    module: 'history',
+                    function: 'get'
+                }
+                ws.send(JSON.stringify(req));
+            };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 if (d.msg == 'result') {
                     setData(d.result)
+                    ws.close()
                 }
-                console.log(e.data);
             };
         }
     });
