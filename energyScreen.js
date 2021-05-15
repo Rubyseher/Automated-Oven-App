@@ -60,7 +60,7 @@ export default function energyScreen() {
         }
 
         console.log(ws.readyState);
-            
+
         ws.onopen = () => {
             req = {
                 msg: 'direct',
@@ -83,67 +83,67 @@ export default function energyScreen() {
                 ws.send(JSON.stringify(req));
             }, 3000)
         };
-            ws.onmessage = (e) => {
-                d = JSON.parse(e.data)
-                if (d.msg == 'result') {
-                    if (d.req == 'getAll') {
-                        setData(d.result)
-                        parseData(d.result)
-                    }
-                    else {
-                        setCurrrentUsage(parseInt(d.result))
-                    }
-                    console.log(d.result);
-
+        ws.onmessage = (e) => {
+            d = JSON.parse(e.data)
+            if (d.msg == 'result') {
+                if (d.req == 'getAll') {
+                    setData(d.result)
+                    parseData(d.result)
                 }
-            };
+                else {
+                    setCurrrentUsage(parseInt(d.result))
+                }
+                console.log(d.result);
+
+            }
+        };
     });
     return (
-            data  ? <ScrollView vertical={true} contentContainerStyle={{ height: '105%' ,paddingHorizontal:32}}>
-                <Text style={styles.heading}>Energy</Text>
+        data ? <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32 }}>
+            <Text style={styles.heading}>Energy</Text>
 
-                {currrentUseage && <AnimatedCircularProgress
-                    size={275} width={5} fill={Math.round((currrentUseage/1350)*100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
-                    {(fill) => (
-                        <Fragment>
-                            <Text style={{ fontSize: 68, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
-                            <Text style={{ fontSize: 22, color: colors.lightGreen,marginTop:-9 }}> kW</Text>
-                        </Fragment>
-                    )}
-                </AnimatedCircularProgress>}
-                <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-14%',marginBottom:'10%' }}> Current Consumption</Text>
+            {currrentUseage && <AnimatedCircularProgress
+                size={275} width={5} fill={Math.round((currrentUseage / 1350) * 100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
+                {(fill) => (
+                    <Fragment>
+                        <Text style={{ fontSize: 68, fontWeight: 'bold', color: colors.lightGreen }}> {currrentUseage} </Text>
+                        <Text style={{ fontSize: 22, color: colors.lightGreen, marginTop: -9 }}> kW</Text>
+                    </Fragment>
+                )}
+            </AnimatedCircularProgress>}
+            <Text style={{ fontSize: 16, color: colors.lightGreen, textAlign: 'center', marginTop: '-14%', marginBottom: '10%' }}> Current Consumption</Text>
 
-                <View style={{ flexDirection: 'row', height: 36 }}>
-                    <Text style={styles.graphLabel}>Weekly Energy</Text>
-                    <View style={{ width: '100%' }}>
-                        <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{(weekSum / 1000).toFixed(2)}</Text>
-                    </View>
-
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.graphLabel}>Weekly Energy</Text>
+                <View style={{ width: '90%' }}>
+                    <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{(weekSum / 1000).toFixed(2)}</Text>
                 </View>
+            </View>
 
-                {energyData && <BarChart style={{ height: 130 }} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.28} spacingOuter={0.99} yAccessor={({ item }) => item / 10} yMax={100} ></BarChart>}
-                <View style={{ borderBottomColor: colors.grey, borderBottomWidth: 2, marginTop: '-3%', marginBottom: '3%', marginRight: '11%', marginLeft: '11%' }} />
+            {energyData && <BarChart style={{ height: 110 }} data={energyData} svg={{ fill: energy }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.30} spacingOuter={0.6} yAccessor={({ item }) => item / 10} yMax={100} ></BarChart>}
+            <View style={{ borderBottomColor: colors.grey, borderBottomWidth: 2, marginTop: '-3%', marginBottom: '3%', marginHorizontal: '4%' }} />
 
-                <View style={styles.tagContainer}>
-                    <View style={[styles.tagBadge, { backgroundColor: colors.lightGreen, marginTop: 8 }]}>
-                        <Icon name="calendar-alt" size={22} color={colors.white} style={{ padding: 12 }} solid />
-                    </View>
-                    <Text style={styles.tagLabel}>Monthly Energy</Text>
-                    <View style={{ width: '100%' }}>
-                        <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{monthSum}</Text>
-                    </View>
+            <View style={styles.tagContainer}>
+                <View style={[styles.tagBadge, { backgroundColor: colors.lightGreen, marginTop: 8 }]}>
+                    <Icon name="calendar-alt" size={22} color={colors.white} style={{ alignSelf: 'center', marginTop: 11 }} solid />
                 </View>
-
-                <View style={styles.tagContainer}>
-                    <View style={[styles.tagBadge, { backgroundColor: colors.lightGreen, marginTop: 8 }]}>
-                        <Icon name="rupee-sign" size={22} color={colors.white} style={{ padding: 14 }} solid />
-                    </View>
-                    <Text style={styles.tagLabel}>Monthly Cost</Text>
-                    <View style={{ width: '100%' }}>
-                        <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{monthCost}</Text>
-                    </View>
+                <Text style={styles.tagLabel}>Monthly Energy</Text>
+                <View style={{ width: '90%' }}>
+                    <Text style={styles.energy}> kWh </Text><Text style={styles.consumption}>{monthSum}</Text>
                 </View>
-            </ScrollView>:<View></View>
+            </View>
+
+            <View style={styles.tagContainer}>
+                <View style={[styles.tagBadge, { backgroundColor: colors.lightGreen, marginTop: 8 }]}>
+                    <Icon name="rupee-sign" size={22} color={colors.white} style={{  alignSelf: 'center', marginTop: 11 }} solid />
+                </View>
+                <Text style={styles.tagLabel}>Monthly Cost</Text>
+                <View style={{ width: '90%' }}>
+                    <Text style={styles.energy}> <Icon name="rupee-sign" size={14} color={colors.textGrey} style={{ padding: 14 }} solid /></Text>
+                    <Text style={styles.consumption}>{monthCost}</Text>
+                </View>
+            </View>
+        </ScrollView> : <View></View>
     );
 }
 

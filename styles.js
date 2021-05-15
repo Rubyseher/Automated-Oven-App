@@ -183,7 +183,7 @@ export const styles = StyleSheet.create({
     },
     energy: {
         fontSize: 16,
-        color: colors.grey,
+        color: colors.darkGrey,
         marginTop: 6,
         textAlign: 'right',
         width: '30%',
@@ -217,13 +217,13 @@ export const styles = StyleSheet.create({
         marginTop: -2
     },
     tagContainer: {
-        width: '85%',
-        height: 75,
+        width: '94%',
+        height: 70,
         alignSelf: 'center',
         flexDirection: 'row',
         marginTop: 10,
         marginBottom: 8,
-        paddingTop: 8,
+        paddingTop: 6,
         backgroundColor: colors.white,
         borderRadius: 12,
         shadowColor: "#000",
@@ -237,17 +237,17 @@ export const styles = StyleSheet.create({
     },
     graphLabel: {
         fontWeight: '400',
-        marginLeft: 18,
+        marginLeft: 12,
         // marginRight: 38,
         fontSize: 20,
         marginBottom: 10,
-        width: '40%',
+        width: '64%',
         color: colors.darkGrey
     },
     tagLabel: {
         fontWeight: '400',
         fontSize: 20,
-        width: '44%',
+        width: '46%',
         marginLeft: 10,
         marginTop: 18,
         color: colors.darkGrey
