@@ -1,5 +1,6 @@
-import React, { useState, Fragment, useEffect } from 'react';
+import React, { useState, Fragment, useCallback } from 'react';
 import Slider from '@react-native-community/slider'
+import { useFocusEffect } from '@react-navigation/native';
 import { Image, View, Text, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
 import { styles, colors } from './styles'
@@ -8,10 +9,8 @@ import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
 import Ficon from 'react-native-vector-icons/Fontisto';
-import ws from './Server'
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-// import RNRestart from 'react-native-restart';
 
 const GradientProgress = (props) => {
     return (
@@ -24,10 +23,10 @@ const GradientProgress = (props) => {
 const TemperatureSlider = (props) => {
     return (
         <Fragment>
-            <View style={{ flexDirection: 'row', width: '100%', marginTop: 7,marginBottom:-12 }}>
+            <View style={{ flexDirection: 'row', width: '100%', marginTop: 7, marginBottom: -12 }}>
                 {props.icon}
-                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value==0? "OFF" : Math.round(props.handler.value)+"°C"} </Text>
-            </View> 
+                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value == 0 ? "OFF" : Math.round(props.handler.value) + "°C"} </Text>
+            </View>
             <Slider
                 maximumValue={250}
                 minimumValue={0}
@@ -43,7 +42,6 @@ const TemperatureSlider = (props) => {
 }
 
 function mainScreen({ navigation }) {
-    const [food, setFood] = useState('Empty');
     const [time, setTime] = useState(" ");
     const [topTemp, setTopTemp] = useState(0);
     const [bottomTemp, setBottomTemp] = useState(0);
@@ -63,61 +61,76 @@ function mainScreen({ navigation }) {
     }
 
     const setTemp = (name, value) => {
-        req = {
-            msg: 'direct',
-            module: 'cook',
-            function: `set${name}Temp`,
-            params: [value]
-        }
-        ws.send(JSON.stringify(req));
+        var ws = new WebSocket('ws://oven.local:8069');
+        ws.onopen = () => {
+            req = {
+                msg: 'direct',
+                module: 'cook',
+                function: `set${name}Temp`,
+                params: [value]
+            }
+            ws.send(JSON.stringify(req));
+            ws.close()
+        };
     }
 
     const sendRequest = (task) => {
+        var ws = new WebSocket('ws://oven.local:8069');
         ReactNativeHapticFeedback.trigger("impactHeavy");
-        if (task == 'stop')
-            req = {
-                msg: 'direct',
-                module: 'cook',
-                function: 'stop'
-            }
-        else
-            req = {
-                msg: 'direct',
-                module: 'cook',
-                function: data.isPaused ? 'resume' : 'pause'
-            }
-        ws.send(JSON.stringify(req));
-    }
-
-    useEffect(() => {
-        const parseData = (d) => {
-            setTopTemp(d.top)
-            setBottomTemp(d.bottom)
-            d.isPaused ? setTime('Paused') : setTime(`${moment.unix(d.endTime).diff(moment(), 'minutes')} min ${moment.unix(d.endTime).diff(moment(), 'seconds') % 60} sec left`)
-        }
-        console.log(ws.readyState);
         ws.onopen = () => {
-            interval = setInterval(() => {
+            if (task == 'stop')
                 req = {
                     msg: 'direct',
                     module: 'cook',
-                    function: 'get'
+                    function: 'stop'
                 }
-                ws.send(JSON.stringify(req));
-            }, 1000)
+            else
+                req = {
+                    msg: 'direct',
+                    module: 'cook',
+                    function: data.isPaused ? 'resume' : 'pause'
+                }
+            ws.send(JSON.stringify(req));
+            ws.close()
         };
-        ws.onmessage = (e) => {
-            d = JSON.parse(e.data)
-            if (d.msg == 'result' && d.result.hasOwnProperty('isCooking')) {
-                console.log("result", d.result);
-                setData(d.result)
-                parseData(d.result)
+
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            const parseData = (d) => {
+                setTopTemp(d.top)
+                setBottomTemp(d.bottom)
+                d.isPaused ? setTime('Paused') : setTime(`${moment.unix(d.endTime).diff(moment(), 'minutes')} min ${moment.unix(d.endTime).diff(moment(), 'seconds') % 60} sec left`)
             }
-        };
-        setTimeout(() => {
-            setLoading(false)
-        }, 3000);
-    });
+            var intervalId = setInterval(() => {
+                var ws = new WebSocket('ws://oven.local:8069');
+                ws.onopen = () => {
+                    req = {
+                        msg: 'direct',
+                        module: 'cook',
+                        function: 'get'
+                    }
+                    ws.send(JSON.stringify(req));
+                };
+                ws.onmessage = (e) => {
+                    d = JSON.parse(e.data)
+                    if (d.msg == 'result' && d.req == 'get') {
+                        console.log("result", d.result);
+                        setData(d.result)
+                        parseData(d.result)
+                    }
+                    ws.close()
+                };
+            }, 1000)
+
+            setTimeout(() => setLoading(false),5000)
+
+            return () => {
+                clearInterval(intervalId);
+            }
+        }, [])
+    );
 
     return (
         data ? <View>
@@ -127,13 +140,13 @@ function mainScreen({ navigation }) {
                 resizeMode='cover'
             />
             <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} />
-            <Text style={styles.title}>{data.isCooking ? data.item : 'Empty'}</Text>
+            <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ?  'Done': 'Empty')}</Text>
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
                 <TemperatureSlider icon={<OvenBottom height={29} width={29} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
             </View>
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' ,marginTop:18}}>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 18 }}>
                 {data.isCooking && <Button
                     onPress={() => navigation.navigate('automation')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
@@ -142,7 +155,7 @@ function mainScreen({ navigation }) {
                 />}
                 <Button
                     onPress={() => sendRequest('pause')}
-                    icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{alignSelf:'center'}} />}
+                    icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{ alignSelf: 'center' }} />}
                     buttonStyle={styles.roundButtonM}
                     containerStyle={[styles.roundButtonPaddingM]}
                 />
@@ -156,21 +169,8 @@ function mainScreen({ navigation }) {
         </View> :
 
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
-                {loading && <ActivityIndicator size="large" />}
-                {!loading &&
-                    <Fragment>
-                        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey }}>Oops! Couldn't Connect to The Device.{'\n'}</Text>
-                        <Button
-                            title="Try Again"
-                            type="clear"
-                            titleStyle={{ color: colors.blue }}
-                            onPress={() => {
-                                ReactNativeHapticFeedback.trigger("impactHeavy");
-                                // RNRestart.Restart()
-                            }}
-                        />
-                    </Fragment>
-                }
+                <ActivityIndicator size="large" />
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey, marginTop:20 }}>{loading ? "Connecting to the device": "Couldn't connect to the device. Make sure it's powered on."}</Text>
             </View>
     );
 }

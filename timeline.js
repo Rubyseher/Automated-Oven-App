@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, {  useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { styles, colors } from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -7,9 +7,7 @@ import OvenBottom from './assets/Oven Direction Bottom.svg'
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import CircularSlider from 'rn-circular-slider'
 import Slider from '@react-native-community/slider'
-import { ScrollView } from 'react-native';
 import Ficon from 'react-native-vector-icons/Fontisto';
-import { Button } from 'react-native-elements';
 
 const TemperatureSlider = (props) => {
     return (
@@ -43,7 +41,7 @@ const TemperatureSlider = (props) => {
 const Title = (props) => {
     return (
         <View style={{ flexDirection: 'row' }}>
-            <View style={[styles.detailsCircle, { backgroundColor: colors[props.color] }]}>
+            <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
                 <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
             </View>
             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
@@ -51,14 +49,26 @@ const Title = (props) => {
     )
 }
 
-const Cook = (props) => {
+const Checkbox = (props) => {
+    const [checked, setChecked] = useState(true)
+    return (
+        <View style={{ flexDirection: 'row' }}>
+            <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
+                <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
+            </View>
+            <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
+        </View>
+    )
+}
+
+export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
     const [timeSlider, setTimeSlider] = useState(parseInt(props.time));
 
     return (
         <View style={[styles.autoContainer]}>
-            <Title type="Cook" color={props.color} icon={props.icon} />
+            <Title type="Cook" color={colors.yellow} icon="utensils" />
 
             <View style={{ flexDirection: 'row', marginTop: 14 }}>
                 <View style={{ width: '60%', marginLeft: 20 }}>
@@ -68,7 +78,7 @@ const Cook = (props) => {
                 <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
                     <CircularSlider
                         step={2} min={0} max={90} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
-                        openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors[props.color] }, { stop: '100%', color: colors.orange }]}
+                        openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
                     >
                         <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>
                         <Text style={[styles.min, { color: colors.orange }]}>min</Text>
@@ -78,12 +88,12 @@ const Cook = (props) => {
         </View>)
 
 }
-const Checkpoint = (props) => {
+export const Checkpoint = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.timeout));
     const [checked, setchecked] = useState(false);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Checkpoint' color={props.color} icon={props.icon} />
+            <Title type='Checkpoint' color={colors.blue} icon="flag" />
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
@@ -96,29 +106,29 @@ const Checkpoint = (props) => {
                     </CircularSlider>
                 </View>
                 <View style={{ width: '60%', marginLeft: 14, marginTop: 15 }}>
-                    <Title type="Wait for conformation" color={props.color} icon="check" />
+                    <Checkbox type="Wait for conformation" color={colors.blue} icon="check" />
                 </View>
             </View>
         </View>
     )
 }
-const Pause = (props) => {
+export const Pause = (props) => {
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Pause' color={props.color} icon={props.icon} />
-            <View style={[styles.roundButtonM, { backgroundColor: colors[props.color], margin: 10 }]}>
-                <Ficon name={props.icon} size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
+            <Title type='Pause' color={colors.textGrey} icon="pause" />
+            <View style={[styles.roundButtonM, { backgroundColor: colors.textGrey, margin: 10 }]}>
+                <Ficon name="pause" size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
         </View>
     )
 }
-const Notify = (props) => {
+export const Notify = (props) => {
     const destiColor = ["lightRed", "orange", "yellow", "blue"]
     const [title, changeTitle] = useState(props.title);
     const [msg, changeMsg] = useState(props.message);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Notify' color={props.color} icon={props.icon} />
+            <Title type='Notify' color={colors.orange} icon="bell" />
             <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
@@ -150,24 +160,24 @@ const Notify = (props) => {
         </View>
     )
 }
-const PowerOff = (props) => {
+export const PowerOff = (props) => {
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Power Off' color={props.color} icon={props.icon} />
-            <View style={[styles.roundButtonM, { backgroundColor: colors[props.color], margin: 10 }]}>
-                <Icon name={props.icon} size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
+            <Title type='Power Off' color={colors.lightRed} icon="power-off" />
+            <View style={[styles.roundButtonM, { backgroundColor: colors.lightRed, margin: 10 }]}>
+                <Icon name="power-off" size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
         </View>
     )
 }
-const Cooling = (props) => {
+export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
         <View style={[styles.autoContainer]}>
-            <Title type="Cooling Time" color={props.color} icon={props.icon} />
+            <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" />
             <CircularSlider
-                step={1} min={0} max={10} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors[props.color]}
-                openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors[props.color] }]}
+                step={1} min={0} max={10} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.turquoise}
+                openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise}]}
             >
                 <Text style={styles.value}>{timeSlider}</Text>
                 <Text style={styles.min}>min</Text>
@@ -175,51 +185,3 @@ const Cooling = (props) => {
         </View>
     )
 }
-
-const TimelineThread = (props) => (
-    <View style={styles.timeThread}>
-    </View>
-)
-
-export default function Timeline(props) {
-    return (
-        <ScrollView vertical={true} contentContainerStyle={{ height: '300%', marginTop: 5 }}>
-            {
-                props.items[1].steps.map((item, i) => {
-                    switch (item.type) {
-                        case "Cook": return <Fragment>
-                            <Cook color={item.color} icon={item.icon} topTemp={item.topTemp} bottomTemp={item.bottomTemp} time={item.time} />
-                            <TimelineThread />
-                        </Fragment>
-                        case "Checkpoint": return <Fragment>
-                            <Checkpoint color={item.color} icon={item.icon} timeout={item.timeout} />
-                            <TimelineThread />
-                        </Fragment>
-                        case "Pause": return <Fragment>
-                            <Pause color={item.color} icon={item.icon} />
-                            <TimelineThread />
-                        </Fragment>
-                        case "Notify": return <Fragment>
-                            <Notify color={item.color} icon={item.icon} title={item.title} message={item.message} destination={item.destination} />
-                            <TimelineThread />
-                        </Fragment>
-                        case "PowerOff": return <Fragment><PowerOff color={item.color} icon={item.icon} />
-                            <TimelineThread />
-                        </Fragment>
-                        case "Cooling": return <Fragment><Cooling color={item.color} icon={item.icon} duration={item.duration} />
-                            <TimelineThread />
-                        </Fragment>
-                        default: null
-                    }
-                })
-            }
-            <Button
-                onPress={() => navigation.navigate('automation')}
-                icon={<Icon name="plus" size={18} color={colors.white} />}
-                buttonStyle={[styles.roundButtonS,{backgroundColor:colors.blue}]}
-                containerStyle={styles.roundButtonPaddingS}
-            />
-        </ScrollView>
-    );
-}
-

@@ -8,8 +8,8 @@ import { BarChart } from 'react-native-svg-charts'
 export default function profileScreen() {
     const usage = colors.blue
     const energy = colors.lightGreen
-    const usageData = [180, 300, 0, 80, 30, 150]
-    const energyData = [180, 300, 0, 80, 30, 150]
+    const usageData = [180, 300, 0, 80, 30, 150,30]
+    const energyData = [180, 300, 0, 80, 30, 150,30]
     const graphData = [{
         item: "usage",
         data: [180, 300, 0, 80, 30, 150]
@@ -20,7 +20,7 @@ export default function profileScreen() {
     }]
 
     return (
-        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 36 }}>
+        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop:10 }}>
             <Text style={styles.heading}>Profile</Text>
 
             <View style={{ flexDirection: 'row', marginVertical: 4 }}>

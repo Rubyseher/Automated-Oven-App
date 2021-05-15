@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
         // marginLeft: 26,
     },
     foodContainer: {
-        width: '85%',
+        width: '100%',
         height: 75,
         alignSelf: 'center',
         backgroundColor: colors.white,
@@ -112,7 +112,7 @@ export const styles = StyleSheet.create({
         elevation: 4,
     },
     detailsContainer: {
-        width: '85%',
+        width: '100%',
         height: 43,
         zIndex: 0,
         flexDirection: 'row',
@@ -259,7 +259,7 @@ export const styles = StyleSheet.create({
         color: colors.darkGrey,
     },
     autoContainer: {
-        width: '85%',
+        width: '100%',
         alignSelf: 'center',
         backgroundColor: colors.white,
         borderRadius: 12,
@@ -299,7 +299,7 @@ export const styles = StyleSheet.create({
         borderColor: colors.grey,
     },
     timeThread: {
-        height: 40,
+        height: 30,
         width: 5,
         backgroundColor: colors.grey,
         alignSelf: 'center',
