@@ -67,7 +67,7 @@ const Cook = (props) => {
                 <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
                     <CircularSlider
                         step={2} min={0} max={90} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
-                        openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.[props.color] }, { stop: '100%', color: colors.orange }]}
+                        openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors[props.color] }, { stop: '100%', color: colors.orange }]}
                     >
                         <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>
                         <Text style={[styles.min, { color: colors.orange }]}>min</Text>
