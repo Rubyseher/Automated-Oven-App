@@ -24,7 +24,7 @@ const TemperatureSlider = (props) => {
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 step={5}
-                onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
+                onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight");}}
                 value={props.handler.value}
                 style={{ marginTop: -10 }}
             />
@@ -55,7 +55,7 @@ const Cook = (props) => {
 
     return (
         <View style={[styles.autoContainer, { marginBottom: 40 }]}>
-            <Title type={props.type} color={props.color} icon={props.icon} />
+            <Title type="Cook" color={props.color} icon={props.icon} />
 
             <View style={{ flexDirection: 'row' }}>
                 <View style={{ width: '60%', marginLeft: 20 }}>
@@ -77,9 +77,10 @@ const Cook = (props) => {
 }
 const Checkpoint = (props) => {
     const [timeSlider, setTimeSlider] = useState(1);
+    const [checked, setchecked] = useState(false);
     return (
         <View style={[styles.autoContainer, { marginBottom: 40 }]}>
-            <Title type={props.type} color={props.color} icon={props.icon} />
+            <Title type='Checkpoint' color={props.color} icon={props.icon} />
             <View style={{ flexDirection: 'row' }}>
 
                 <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
@@ -92,9 +93,8 @@ const Checkpoint = (props) => {
                     </CircularSlider>
                 </View>
                 <View style={{ width: '60%', marginLeft: 20 }}>
-                    <Title type={"Send notification"} color={props.color} icon={props.icon} />
-                    <Title type={"Wait for conformation"} color={props.color} icon={props.icon} />
-
+                    <Title type={"Send notification"} color={props.color} icon={checked ? "check" : "circle"} />
+                    <Title type={"Wait for conformation"} color={props.color} icon={"check"} />
                 </View>
             </View>
         </View>
@@ -134,13 +134,17 @@ export default function Timeline(props) {
     return (
         <ScrollView vertical={true} contentContainerStyle={{ height: '300%' }}>
             {
-                props.items[1].steps.map((item, i) => (
-                    <Fragment>
-                        {/* <{item.type}/> */}
-                        <Checkpoint type={item.type} color={item.color} icon={item.icon} />
-                        {/* <Title type={item.type} color={item.color} icon={item.icon} /> */}
-                    </Fragment>
-                ))
+                props.items[1].steps.map((item, i) => {
+                    switch (item.type) {
+                        case "Cook":
+                            return <Cook color={item.color} icon={item.icon} />
+                        case "Checkpoint": return <Checkpoint color={item.color} icon={item.icon} />
+                        default: null
+                    }
+                    {/* <{item.type}/> */ }
+                    {/* <Checkpoint type={item.type} color={item.color} icon={item.icon} /> */ }
+                    {/* <Title type={item.type} color={item.color} icon={item.icon} /> */ }
+                })
             }
         </ScrollView>
     );
