@@ -84,7 +84,7 @@ export const Cook = (props) => {
                 </View>
                 <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
                     <CircularSlider
-                        step={2} min={0} max={90} value={timeSlider} onChange={(v) => { setTimeSlider(v); ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
+                        step={2} min={0} max={90} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
                         openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
                     >
                         <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>
@@ -105,7 +105,7 @@ export const Checkpoint = (props) => {
 
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
                     <CircularSlider
-                        step={5} min={0} max={60} value={timeSlider} onChange={(v) => { setTimeSlider(v); ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.blue}
+                        step={5} min={0} max={60} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 20 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.blue}
                         openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
                     >
                         <Text style={styles.value}>{timeSlider}</Text>
@@ -123,7 +123,7 @@ export const Pause = (props) => {
     return (
         <View style={[styles.autoContainer]}>
             <Title type='Pause' color={colors.textGrey} icon="pause" id={props.id} />
-            <View style={{margin: 20}}>
+            <View style={{ margin: 20 }}>
                 <Ficon name="pause" size={38} color={colors.textGrey} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
         </View>
@@ -171,7 +171,7 @@ export const PowerOff = (props) => {
     return (
         <View style={[styles.autoContainer]}>
             <Title type='Power Off' color={colors.lightRed} icon="power-off" id={props.id} />
-            <View style={{margin: 20}}>
+            <View style={{ margin: 20 }}>
                 <Icon name="power-off" size={38} color={colors.lightRed} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
         </View>
@@ -183,7 +183,7 @@ export const Cooling = (props) => {
         <View style={[styles.autoContainer]}>
             <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" id={props.id} />
             <CircularSlider
-                step={1} min={0} max={10} value={timeSlider} onChange={(v) => { setTimeSlider(v); ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.turquoise}
+                step={1} min={0} max={10} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.turquoise}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
             >
                 <Text style={styles.value}>{timeSlider}</Text>
