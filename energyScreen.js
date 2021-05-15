@@ -99,7 +99,7 @@ export default function energyScreen() {
         };
     });
     return (
-        data ? <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32 }}>
+        data ? <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 34 }}>
             <Text style={styles.heading}>Energy</Text>
 
             {currrentUseage && <AnimatedCircularProgress

@@ -90,6 +90,7 @@ export const styles = StyleSheet.create({
         fontSize: 36,
         color: colors.blue,
         marginTop: 50,
+        marginLeft:-4,
         marginBottom: 27,
         // marginLeft: 26,
     },
@@ -162,25 +163,27 @@ export const styles = StyleSheet.create({
     profileCircle: {
         height: 65,
         width: 65,
-        marginLeft: 60,
+        marginLeft: 30,
         borderRadius: 32,
         marginBottom: 42,
-        padding: 20,
+        // padding: 20,
+        paddingLeft:18,
+        justifyContent:'center',
         backgroundColor: colors.yellow,
     },
     fullName: {
         fontWeight: 'bold',
         marginLeft: 14,
         marginRight: 38,
-        fontSize: 22
+        fontSize: 21
     },
-    weekly: {
+    profileTitles: {
         fontWeight: '500',
-        marginLeft: 36,
-        marginRight: 38,
-        fontSize: 22,
+        marginLeft: 6,
+        marginRight: 22,
+        fontSize: 21,
         marginBottom: 10,
-        width: '40%',
+        width: '60%',
     },
     energy: {
         fontSize: 16,
@@ -190,11 +193,8 @@ export const styles = StyleSheet.create({
         width: '30%',
     },
     recomend: {
-        width: '50%',
+        width: '65%',
         height: '50%',
-        marginTop: 20,
-        marginLeft: 26,
-        // alignSelf: 'center',
         backgroundColor: colors.darkGrey,
         borderTopLeftRadius: 12,
         borderTopRightRadius: 12,
@@ -203,7 +203,6 @@ export const styles = StyleSheet.create({
     },
     recomendContainer: {
         zIndex: 0,
-        // alignSelf: 'center',
         backgroundColor: colors.blue,
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
