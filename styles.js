@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
-        marginTop: 60,
+        marginTop: 50,
         marginBottom: 27,
         // marginLeft: 26,
     },
