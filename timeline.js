@@ -49,8 +49,8 @@ const Title = (props) => {
 }
 
 const Cook = (props) => {
-    const [topTemp, setTopTemp] = useState(180);
-    const [bottomTemp, setBottomTemp] = useState(80);
+    const [topTemp, setTopTemp] = useState(parseInt( props.topTemp));
+    const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
     const [timeSlider, setTimeSlider] = useState(30);
 
     return (
@@ -76,7 +76,7 @@ const Cook = (props) => {
 
 }
 const Checkpoint = (props) => {
-    const [timeSlider, setTimeSlider] = useState(1);
+    const [timeSlider, setTimeSlider] = useState(parseInt( props.timeout));
     const [checked, setchecked] = useState(false);
     return (
         <View style={[styles.autoContainer, { marginBottom: 40 }]}>
@@ -85,11 +85,11 @@ const Checkpoint = (props) => {
 
                 <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
                     <CircularSlider
-                        step={2} min={0} max={10} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.blue}
+                        step={5} min={0} max={60} value={timeSlider} onChange={setTimeSlider} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.blue}
                         openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
                     >
                         <Text style={styles.value}>{timeSlider}</Text>
-                        <Text style={styles.min}>min</Text>
+                        <Text style={styles.min}>sec</Text>
                     </CircularSlider>
                 </View>
                 <View style={{ width: '60%', marginLeft: 20 }}>
@@ -137,8 +137,8 @@ export default function Timeline(props) {
                 props.items[1].steps.map((item, i) => {
                     switch (item.type) {
                         case "Cook":
-                            return <Cook color={item.color} icon={item.icon} />
-                        case "Checkpoint": return <Checkpoint color={item.color} icon={item.icon} />
+                            return <Cook color={item.color} icon={item.icon} topTemp={item.topTemp} bottomTemp={item.bottomTemp} />
+                        case "Checkpoint": return <Checkpoint color={item.color} icon={item.icon} timeout={item.timeout} />
                         default: null
                     }
                     {/* <{item.type}/> */ }
