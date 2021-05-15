@@ -35,7 +35,7 @@ function Main() {
 export default function App() {
   return (
     <NavigationContainer theme={NavContainerTheme}>
-      <Tab.Navigator initialRouteName="profile"
+      <Tab.Navigator initialRouteName="main"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let iconName;

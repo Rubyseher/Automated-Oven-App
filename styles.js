@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 18,
-        color: colors.grey,
+        color: colors.darkGrey,
         marginBottom: 15,
         textAlign: 'center',
     },
