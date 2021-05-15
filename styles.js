@@ -21,8 +21,8 @@ export const colors = {
 export const styles = StyleSheet.create({
     title: {
         fontWeight: '600',
-        fontSize: 36,
-        marginTop: 25,
+        fontSize: 41,
+        marginTop: 28,
         marginBottom: 2,
         textAlign: 'center',
     },
@@ -88,9 +88,9 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
-        marginTop: 60,
+        marginTop: 50,
         marginBottom: 27,
-        marginLeft: 26,
+        // marginLeft: 26,
     },
     foodContainer: {
         width: '85%',
