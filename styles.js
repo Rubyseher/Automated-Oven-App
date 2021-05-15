@@ -89,8 +89,8 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
-        marginTop: 70,
-        marginBottom: 36,
+        marginTop: 60,
+        marginBottom: 27,
         marginLeft: 26,
     },
     foodContainer: {
@@ -305,5 +305,14 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.grey,
         alignSelf: 'center',
         marginTop:-40,
-    }
+    },
+    close: {
+        marginTop: 12,
+        height: 18,
+        width: 18,
+        // marginLeft: 14,
+        borderRadius: 6,
+        // padding: 0,
+        justifyContent: 'center'
+    },
 });
