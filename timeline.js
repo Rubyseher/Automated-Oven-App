@@ -9,6 +9,7 @@ import CircularSlider from 'rn-circular-slider'
 import Slider from '@react-native-community/slider'
 import { ScrollView } from 'react-native';
 import Ficon from 'react-native-vector-icons/Fontisto';
+import { Button } from 'react-native-elements';
 
 const TemperatureSlider = (props) => {
     return (
@@ -105,7 +106,7 @@ const Pause = (props) => {
     return (
         <View style={[styles.autoContainer]}>
             <Title type='Pause' color={props.color} icon={props.icon} />
-            <View style={[styles.roundButtonM, { backgroundColor: colors[props.color] ,margin:10 }]}>
+            <View style={[styles.roundButtonM, { backgroundColor: colors[props.color], margin: 10 }]}>
                 <Ficon name={props.icon} size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
         </View>
@@ -118,7 +119,7 @@ const Notify = (props) => {
     return (
         <View style={[styles.autoContainer]}>
             <Title type='Notify' color={props.color} icon={props.icon} />
-            <View style={{marginTop:10}}>
+            <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
                     onChangeText={changeTitle}
@@ -134,7 +135,7 @@ const Notify = (props) => {
                     {
                         props.destination.map((item, i) => (
                             <View style={{ flexDirection: 'row', width: '32%' }}>
-                                <View style={[styles.detailsCircle, { backgroundColor: colors[destiColor[i%4]] }]}>
+                                <View style={[styles.detailsCircle, { backgroundColor: colors[destiColor[i % 4]] }]}>
                                     <Icon name='check' size={10} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
                                 </View>
                                 <Text style={styles.autoTitle}> &nbsp;{item}</Text>
@@ -153,7 +154,7 @@ const PowerOff = (props) => {
     return (
         <View style={[styles.autoContainer]}>
             <Title type='Power Off' color={props.color} icon={props.icon} />
-            <View style={[styles.roundButtonM, { backgroundColor: colors[props.color] ,margin:10}]}>
+            <View style={[styles.roundButtonM, { backgroundColor: colors[props.color], margin: 10 }]}>
                 <Icon name={props.icon} size={24} color={colors.white} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
         </View>
@@ -175,25 +176,49 @@ const Cooling = (props) => {
     )
 }
 
+const TimelineThread = (props) => (
+    <View style={styles.timeThread}>
+    </View>
+)
+
 export default function Timeline(props) {
     return (
         <ScrollView vertical={true} contentContainerStyle={{ height: '300%', marginTop: 5 }}>
             {
                 props.items[1].steps.map((item, i) => {
                     switch (item.type) {
-                        case "Cook": return <Cook color={item.color} icon={item.icon} topTemp={item.topTemp} bottomTemp={item.bottomTemp} time={item.time} />
-                        case "Checkpoint": return <Checkpoint color={item.color} icon={item.icon} timeout={item.timeout} />
-                        case "Pause": return <Pause color={item.color} icon={item.icon} />
-                        case "Notify": return <Notify color={item.color} icon={item.icon} title={item.title} message={item.message} destination={item.destination} />
-                        case "PowerOff": return <PowerOff color={item.color} icon={item.icon} />
-                        case "Cooling": return <Cooling color={item.color} icon={item.icon} duration={item.duration} />
+                        case "Cook": return <Fragment>
+                            <Cook color={item.color} icon={item.icon} topTemp={item.topTemp} bottomTemp={item.bottomTemp} time={item.time} />
+                            <TimelineThread />
+                        </Fragment>
+                        case "Checkpoint": return <Fragment>
+                            <Checkpoint color={item.color} icon={item.icon} timeout={item.timeout} />
+                            <TimelineThread />
+                        </Fragment>
+                        case "Pause": return <Fragment>
+                            <Pause color={item.color} icon={item.icon} />
+                            <TimelineThread />
+                        </Fragment>
+                        case "Notify": return <Fragment>
+                            <Notify color={item.color} icon={item.icon} title={item.title} message={item.message} destination={item.destination} />
+                            <TimelineThread />
+                        </Fragment>
+                        case "PowerOff": return <Fragment><PowerOff color={item.color} icon={item.icon} />
+                            <TimelineThread />
+                        </Fragment>
+                        case "Cooling": return <Fragment><Cooling color={item.color} icon={item.icon} duration={item.duration} />
+                            <TimelineThread />
+                        </Fragment>
                         default: null
                     }
-                    {/* <{item.type}/> */ }
-                    {/* <Checkpoint type={item.type} color={item.color} icon={item.icon} /> */ }
-                    {/* <Title type={item.type} color={item.color} icon={item.icon} /> */ }
                 })
             }
+            <Button
+                onPress={() => navigation.navigate('automation')}
+                icon={<Icon name="plus" size={18} color={colors.white} />}
+                buttonStyle={[styles.roundButtonS,{backgroundColor:colors.blue}]}
+                containerStyle={styles.roundButtonPaddingS}
+            />
         </ScrollView>
     );
 }

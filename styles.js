@@ -270,7 +270,7 @@ export const styles = StyleSheet.create({
             height: 2,
         },
         shadowOpacity: 0.25,
-        marginBottom:40,
+        marginBottom: 40,
         shadowRadius: 3.84,
         elevation: 5,
         paddingBottom: 12
@@ -292,11 +292,18 @@ export const styles = StyleSheet.create({
     notifyMsg: {
         marginVertical: 6,
         marginHorizontal: 16,
-        fontSize:14,
+        fontSize: 14,
         color: colors.black,
-        padding:10,
-        borderWidth:1,
-        borderRadius:8,
-        borderColor:colors.grey,
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: colors.grey,
+    },
+    timeThread: {
+        height: 40,
+        width: 5,
+        backgroundColor: colors.grey,
+        alignSelf: 'center',
+        marginTop:-40,
     }
 });
