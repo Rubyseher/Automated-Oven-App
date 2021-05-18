@@ -10,6 +10,8 @@ import Slider from '@react-native-community/slider'
 import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
+
+
 const TemperatureSlider = (props) => {
     return (
         <View>
@@ -47,7 +49,7 @@ const Title = (props) => {
             </View>
             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
             <Button
-                onPress={() => console.log("remove " + props.id)}
+                onPress={() =>props.removeItem(props.id)}
                 icon={<Ficon name="close-a" size={6} color={colors.white} />}
                 buttonStyle={styles.closeButtonS}
                 containerStyle={styles.closeButtonPaddingS}
@@ -75,7 +77,7 @@ export const Cook = (props) => {
 
     return (
         <View style={[styles.autoContainer]}>
-            <Title type="Cook" color={colors.yellow} icon="utensils" id={props.id} />
+            <Title type="Cook" color={colors.yellow} icon="utensils" id={props.id} removeItem={props.removeItem} />
 
             <View style={{ flexDirection: 'row', marginTop: 14 }}>
                 <View style={{ width: '60%', marginLeft: 20 }}>
@@ -100,7 +102,7 @@ export const Checkpoint = (props) => {
     const [checked, setchecked] = useState(false);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Checkpoint' color={colors.blue} icon="flag" id={props.id} />
+            <Title type='Checkpoint' color={colors.blue} icon="flag" id={props.id}  removeItem={props.removeItem} />
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
 
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
@@ -122,7 +124,7 @@ export const Checkpoint = (props) => {
 export const Pause = (props) => {
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Pause' color={colors.textGrey} icon="pause" id={props.id} />
+            <Title type='Pause' color={colors.textGrey} icon="pause" id={props.id}  removeItem={props.removeItem} />
             <View style={{ margin: 20 }}>
                 <Ficon name="pause" size={38} color={colors.textGrey} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
@@ -135,7 +137,7 @@ export const Notify = (props) => {
     const [msg, changeMsg] = useState(props.message);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Notify' color={colors.orange} icon="bell" id={props.id} />
+            <Title type='Notify' color={colors.orange} icon="bell" id={props.id}  removeItem={props.removeItem} />
             <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
@@ -170,7 +172,7 @@ export const Notify = (props) => {
 export const PowerOff = (props) => {
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Power Off' color={colors.lightRed} icon="power-off" id={props.id} />
+            <Title type='Power Off' color={colors.lightRed} icon="power-off" id={props.id}  removeItem={props.removeItem} />
             <View style={{ margin: 20 }}>
                 <Icon name="power-off" size={38} color={colors.lightRed} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
@@ -181,7 +183,7 @@ export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
         <View style={[styles.autoContainer]}>
-            <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" id={props.id} />
+            <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" id={props.id}  removeItem={props.removeItem} />
             <CircularSlider
                 step={1} min={0} max={10} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.turquoise}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}

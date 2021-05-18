@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { View, Text } from 'react-native';
-import { styles, colors } from './styles'
-import { Cook, Checkpoint, Pause, Notify, PowerOff, Cooling } from './timeline';
+import { styles, colors } from './styles';
+import { Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
 import { ScrollView } from 'react-native';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -10,9 +10,10 @@ import Ficon from 'react-native-vector-icons/Fontisto';
 const data = require('./timeline.json')
 
 const TimelineComponent = (props) => {
-    item = props.item
+    var item = props.item
     item.id = props.id
-    
+    item.removeItem=props.removeItem
+
     switch (item.type) {
         case "Cook": return <Cook {...item} />
         case "Checkpoint": return <Checkpoint {...item} />
@@ -25,7 +26,14 @@ const TimelineComponent = (props) => {
 }
 
 export default function automationScreen({ navigation }) {
-    const [items, setitems] = useState(data);
+    const [items, setItems] = useState(data[1]);
+    const [steps, setSteps] = useState(data[1].steps);
+
+    function removeItem(i) {
+        setSteps(st =>st= st.filter((s,index) => index!=i));
+        console.log("steps is :",steps);
+    }
+
     return (
         <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
             <View style={{ flexDirection: 'row', width: '100%' }}>
@@ -39,9 +47,9 @@ export default function automationScreen({ navigation }) {
             </View>
 
             {
-                items[1].steps.map((item, i) => (
+                steps.map((item, i) => (
                     <Fragment key={i}>
-                        <TimelineComponent item={item} id={i} />
+                        <TimelineComponent item={item} id={i} removeItem={removeItem}/>
                         <View style={styles.timeThread}></View>
                     </Fragment>
                 ))

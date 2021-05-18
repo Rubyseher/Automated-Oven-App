@@ -84,8 +84,8 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.textGrey
     },
     closeButtonPaddingS: {
-        height: 18,
-        width: 18,
+        height: 20,
+        width: 20,
         padding: 4,
         alignSelf:'flex-end'
     },
