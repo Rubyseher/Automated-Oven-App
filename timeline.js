@@ -10,8 +10,6 @@ import Slider from '@react-native-community/slider'
 import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
-
-
 const TemperatureSlider = (props) => {
     return (
         <View>

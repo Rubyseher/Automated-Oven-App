@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
     },
     closeButtonPaddingM: {
         height: 25,
-        width: 25,
+        width: "85%",
         padding: 5,
         alignSelf:'flex-end'
     },
@@ -347,5 +347,40 @@ export const styles = StyleSheet.create({
         fontSize: 20,
         color: colors.darkGrey,
         borderColor: colors.grey
-    }
+    },
+    overlayContainer:{
+        backgroundColor:colors.white,
+        width:'100%',
+        height:"65%",
+        bottom:0,
+        position:'absolute',
+        borderRadius:26,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 6.94,
+        elevation: 4,
+    },
+    addStep: {
+        fontWeight:'600',
+        fontSize: 30,
+        color: colors.black,
+        marginTop: 20,
+        marginBottom: 27,
+        marginLeft: 26,
+    },
+    stepCircle: {
+        height: 80,
+        width: 80,
+        // marginLeft: 30,
+        borderRadius: 40,
+        // marginBottom: 42,
+        // padding: 20,
+        // paddingLeft:18,
+        justifyContent:'center',
+        backgroundColor: colors.yellow,
+    },
 });
