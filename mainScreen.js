@@ -147,12 +147,12 @@ function mainScreen({ navigation }) {
                 <TemperatureSlider icon={<OvenBottom height={29} width={29} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
             </View>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 18 }}>
-                <Button
+                {data.isCooking && <Button
                     onPress={() => navigation.navigate('automation')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}
-                />
+                />}
                 <Button
                     onPress={() => sendRequest('pause')}
                     icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{ alignSelf: 'center' }} />}
