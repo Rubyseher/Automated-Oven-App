@@ -43,22 +43,21 @@ export default function automationScreen({ navigation }) {
 
             <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
                 <Text style={styles.addStep}>Add Step</Text>
-                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap' }}>
+                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap' ,marginLeft:34}}>
                     {
                         types.map((item, i) => (
-                            <View>
+                            <View key={i} style={{width:'42%'}}>
                                 <Button
                                     onPress={() => navigation.goBack()}
                                     icon={<Icon name="utensils" size={34} color={colors.white} />}
                                     buttonStyle={styles.stepCircle}
                                     containerStyle={styles.stepCirclePadding}
                                 />
-                                <Text style={styles.stepTitle}> &nbsp;{types[i]}</Text>
+                                <Text style={styles.stepTitle}>{types[i]}</Text>
                             </View>
                         ))
                     }
                 </View>
-
             </Overlay>
 
             <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>

@@ -373,11 +373,12 @@ export const styles = StyleSheet.create({
         marginLeft: 26,
     },
     stepTitle: {
-        marginTop: 15,
         // marginRight: 18,
+        fontSize:18,
         textAlign:'center',
         color: colors.darkGrey,
-        width:'100%'
+        width:'84%',
+        marginBottom:20
     },
     stepCircle: {
         height: 85,
