@@ -372,16 +372,28 @@ export const styles = StyleSheet.create({
         marginBottom: 27,
         marginLeft: 26,
     },
+    stepTitle: {
+        marginTop: 15,
+        // marginRight: 18,
+        textAlign:'center',
+        color: colors.darkGrey,
+        width:'100%'
+    },
     stepCircle: {
-        height: 80,
-        width: 80,
-        // marginLeft: 30,
-        borderRadius: 40,
-        // marginBottom: 42,
-        // padding: 20,
-        // paddingLeft:18,
+        height: 85,
+        width: 85,
+        borderRadius: 42.5,
         justifyContent:'center',
         backgroundColor: colors.yellow,
+    },
+    stepCirclePadding: {
+        height: 105,
+        width: 105,
+        // padding: 7,
+        // marginLeft: 60,
+        // marginRight: 40,
+        alignSelf: 'center',
+        justifyContent:'center'
     },
     closeHeading: {
         fontWeight: 'bold',

@@ -43,19 +43,25 @@ export default function automationScreen({ navigation }) {
 
             <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
                 <Text style={styles.addStep}>Add Step</Text>
-                {
-                    types.map((item, i) => (
-                        <Button
-                            onPress={() => navigation.goBack()}
-                            icon={<Icon name="utensils" size={32} color={colors.white} />}
-                            buttonStyle={styles.stepCircle}
-                            // containerStyle={styles.closeButtonPaddingM}
-                        />
-                    ))
-                }
+                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap' }}>
+                    {
+                        types.map((item, i) => (
+                            <View>
+                                <Button
+                                    onPress={() => navigation.goBack()}
+                                    icon={<Icon name="utensils" size={34} color={colors.white} />}
+                                    buttonStyle={styles.stepCircle}
+                                    containerStyle={styles.stepCirclePadding}
+                                />
+                                <Text style={styles.stepTitle}> &nbsp;{types[i]}</Text>
+                            </View>
+                        ))
+                    }
+                </View>
+
             </Overlay>
 
-            <View style={{ flexDirection: 'row',width:'100%',paddingBottom:40}}>
+            <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
                 <Text style={styles.closeHeading}>Automator</Text>
                 <Button
                     onPress={() => navigation.goBack()}
