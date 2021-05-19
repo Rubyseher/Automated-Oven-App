@@ -29,7 +29,6 @@ export default function automationScreen({ navigation }) {
     const [items, setItems] = useState(data[1]);
     const [steps, setSteps] = useState(data[1].steps);
     const [visible, setVisible] = useState(true);
-    const [types, setTypes] = useState(['Cook', 'Checkpoint', 'Pause', 'Notify', 'PowerOff', 'Cooling']);
 
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
@@ -38,19 +37,80 @@ export default function automationScreen({ navigation }) {
     const toggleOverlay = () => {
         setVisible(!visible);
     };
+
+    function addItem(i) {
+        console.log("i is ", i);
+        console.log("steps is :", steps);
+
+        switch (i) {
+            case "Cook": return setSteps(st => st = st.push(
+                {
+                    "type": "Cook",
+                    "topTemp": 170,
+                    "bottomTemp": 0,
+                    "time": 30
+                }
+            ))
+            case "Checkpoint": return setSteps(st => st = st.push(
+                {
+                    "type": "Checkpoint",
+                    "wait": true,
+                    "timeout": 30
+                }
+            ))
+
+            case "Pause": return setSteps(st => st = st.push(
+                {
+                    "type": "Pause"
+                }
+            ))
+
+            case "Notify": return setSteps(st => st = st.push(
+                {
+                    "type": "Notify",
+                    "destination": ["John", "Bob", "Tom", "Alexa"],
+                    "title": "Cooking Complete",
+                    "message": "Pizza is done Cooking"
+                }
+            ))
+
+            case "PowerOff": return setSteps(st => st = st.push(
+                {
+                    "type": "PowerOff"
+                }
+            ))
+
+            case "Cooling": return setSteps(st => st = st.push(
+                {
+                    "type": "Cooling",
+                    "duration": 10
+                }
+            ))
+
+            default: null
+        }
+        // setSteps(st => st = st.push(i));
+        // console.log("steps is :", steps);
+    }
+
+    var types = ['Cook', 'Cooling', 'Checkpoint', 'Notify', 'Pause', 'PowerOff']
+    var stepColor = ['yellow', 'turquoise', 'blue', 'orange', 'textGrey', 'red']
+    var icon = ['utensils', 'snowflake', 'flag', 'bell', 'pause', 'power-off']
+    // var ficon=['utensils', 'snowflake', 'flag', 'bell-alt', 'pause', 'power']
+
     return (
         <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
 
             <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
                 <Text style={styles.addStep}>Add Step</Text>
-                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap' ,marginLeft:38}}>
+                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', marginHorizontal: 50 }}>
                     {
                         types.map((item, i) => (
-                            <View key={i} style={{width:'42%'}}>
+                            <View key={i} style={{ width: '40%' }}>
                                 <Button
-                                    onPress={() => navigation.goBack()}
-                                    icon={<Icon name="utensils" size={34} color={colors.white} />}
-                                    buttonStyle={styles.stepCircle}
+                                    onPress={() => addItem(types[i])}
+                                    icon={<Icon name={icon[i]} size={35} color={colors.white} solid />}
+                                    buttonStyle={[styles.stepCircle, { backgroundColor: colors[stepColor[i]] }]}
                                     containerStyle={styles.stepCirclePadding}
                                 />
                                 <Text style={styles.stepTitle}>{types[i]}</Text>
