@@ -55,8 +55,8 @@ export default function automationScreen({ navigation }) {
                 }
             </Overlay>
 
-            <View style={{ flexDirection: 'row',width:'100%'}}>
-                <Text style={styles.heading}>Automator</Text>
+            <View style={{ flexDirection: 'row',width:'100%',paddingBottom:40}}>
+                <Text style={styles.closeHeading}>Automator</Text>
                 <Button
                     onPress={() => navigation.goBack()}
                     icon={<Ficon name="close-a" size={8} color={colors.white} />}

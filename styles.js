@@ -70,9 +70,8 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.textGrey
     },
     closeButtonPaddingM: {
-        height: 25,
-        width: "85%",
-        padding: 5,
+        height: 40,
+        width: 70,
         alignSelf:'flex-end'
     },
     closeButtonS: {
@@ -84,8 +83,8 @@ export const styles = StyleSheet.create({
         backgroundColor: colors.textGrey
     },
     closeButtonPaddingS: {
-        height: 20,
-        width: 20,
+        height: 26,
+        width: '18%',
         padding: 4,
         alignSelf:'flex-end'
     },
@@ -283,8 +282,9 @@ export const styles = StyleSheet.create({
     // ********* automation screen ********
     autoTitle: {
         marginTop: 15,
-        marginRight: 18,
+        // marginRight: 18,
         color: colors.darkGrey,
+        width:'74%'
     },
     autoContainer: {
         width: '100%',
@@ -382,5 +382,15 @@ export const styles = StyleSheet.create({
         // paddingLeft:18,
         justifyContent:'center',
         backgroundColor: colors.yellow,
+    },
+    closeHeading: {
+        fontWeight: 'bold',
+        fontSize: 36,
+        color: colors.blue,
+        marginTop: 50,
+        marginLeft:-4,
+        marginRight:110
+        // marginBottom: 27,
+        // marginLeft: 26,
     },
 });
