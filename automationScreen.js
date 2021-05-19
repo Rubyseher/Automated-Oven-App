@@ -43,7 +43,7 @@ export default function automationScreen({ navigation }) {
 
             <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
                 <Text style={styles.addStep}>Add Step</Text>
-                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap' ,marginLeft:34}}>
+                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap' ,marginLeft:38}}>
                     {
                         types.map((item, i) => (
                             <View key={i} style={{width:'42%'}}>
