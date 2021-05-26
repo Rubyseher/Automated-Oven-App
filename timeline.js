@@ -68,6 +68,21 @@ const Checkbox = (props) => {
     )
 }
 
+export const Preheat = (props) => {
+    const [timeSlider, setTimeSlider] = useState(parseInt(props.temp));
+    return (
+        <View style={[styles.autoContainer]}>
+            <Title type="Preheat" color={colors.orange} icon="fire-alt" id={props.id}  removeItem={props.removeItem} />
+            <CircularSlider
+                step={1} min={0} max={250} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.red}
+                openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
+            >
+                <Text style={{'color':colors.red,'fontSize':18}}>{timeSlider}°C</Text>
+                {/* <Text style={[styles.min,{color:colors.red}]}></Text> */}
+            </CircularSlider>
+        </View>
+    )
+}
 export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
@@ -119,23 +134,23 @@ export const Checkpoint = (props) => {
         </View>
     )
 }
-export const Pause = (props) => {
-    return (
-        <View style={[styles.autoContainer]}>
-            <Title type='Pause' color={colors.textGrey} icon="pause" id={props.id}  removeItem={props.removeItem} />
-            <View style={{ margin: 20 }}>
-                <Ficon name="pause" size={38} color={colors.textGrey} style={{ alignSelf: 'center', marginTop: 18 }} solid />
-            </View>
-        </View>
-    )
-}
+// export const Pause = (props) => {
+//     return (
+//         <View style={[styles.autoContainer]}>
+//             <Title type='Pause' color={colors.textGrey} icon="pause" id={props.id}  removeItem={props.removeItem} />
+//             <View style={{ margin: 20 }}>
+//                 <Ficon name="pause" size={38} color={colors.textGrey} style={{ alignSelf: 'center', marginTop: 18 }} solid />
+//             </View>
+//         </View>
+//     )
+// }
 export const Notify = (props) => {
     const destiColor = ["lightRed", "orange", "yellow", "blue"]
     const [title, changeTitle] = useState(props.title);
     const [msg, changeMsg] = useState(props.message);
     return (
         <View style={[styles.autoContainer]}>
-            <Title type='Notify' color={colors.orange} icon="bell" id={props.id}  removeItem={props.removeItem} />
+            <Title type='Notify' color={colors.purple} icon="bell" id={props.id}  removeItem={props.removeItem} />
             <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
@@ -162,8 +177,6 @@ export const Notify = (props) => {
 
                 </View>
             </View>
-
-
         </View>
     )
 }

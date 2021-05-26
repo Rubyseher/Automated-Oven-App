@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { View, Text } from 'react-native';
 import { styles, colors } from './styles';
-import { Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
+import { Preheat,Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
 import { ScrollView } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -15,9 +15,10 @@ const TimelineComponent = (props) => {
     item.removeItem = props.removeItem
 
     switch (item.type) {
+        case "Preheat": return <Preheat {...item} />
         case "Cook": return <Cook {...item} />
         case "Checkpoint": return <Checkpoint {...item} />
-        case "Pause": return <Pause {...item} />
+        // case "Pause": return <Pause {...item} />
         case "Notify": return <Notify {...item} />
         case "PowerOff": return <PowerOff {...item} />
         case "Cooling": return <Cooling {...item} />
@@ -43,6 +44,12 @@ export default function automationScreen({ navigation }) {
         console.log("steps is :", steps);
 
         switch (i) {
+            case "Preheat": return setSteps(st => st = st.push(
+                {
+                    "type": "Preheat",
+                    "temp": 60
+                }
+            ))
             case "Cook": return setSteps(st => st = st.push(
                 {
                     "type": "Cook",
@@ -59,11 +66,11 @@ export default function automationScreen({ navigation }) {
                 }
             ))
 
-            case "Pause": return setSteps(st => st = st.push(
-                {
-                    "type": "Pause"
-                }
-            ))
+            // case "Pause": return setSteps(st => st = st.push(
+            //     {
+            //         "type": "Pause"
+            //     }
+            // ))
 
             case "Notify": return setSteps(st => st = st.push(
                 {
@@ -93,9 +100,9 @@ export default function automationScreen({ navigation }) {
         // console.log("steps is :", steps);
     }
 
-    var types = ['Cook', 'Cooling', 'Checkpoint', 'Notify', 'Pause', 'PowerOff']
-    var stepColor = ['yellow', 'turquoise', 'blue', 'orange', 'textGrey', 'red']
-    var icon = ['utensils', 'snowflake', 'flag', 'bell', 'pause', 'power-off']
+    var types = ['Cook', 'Notify', 'Checkpoint', 'Preheat', 'Cooling', 'PowerOff']
+    var stepColor = ['yellow', 'purple', 'blue', 'orange', 'turquoise', 'red']
+    var icon = ['utensils', 'bell', 'flag', 'fire-alt', 'snowflake', 'power-off']
     // var ficon=['utensils', 'snowflake', 'flag', 'bell-alt', 'pause', 'power']
 
     return (
