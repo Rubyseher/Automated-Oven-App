@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { View, Text } from 'react-native';
 import { styles, colors } from './styles';
-import { Preheat,Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
+import { Preheat, Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
 import { ScrollView } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -27,77 +27,66 @@ const TimelineComponent = (props) => {
 }
 
 export default function automationScreen({ navigation }) {
-    const [items, setItems] = useState(data[1]);
     const [steps, setSteps] = useState(data[1].steps);
     const [visible, setVisible] = useState(true);
 
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
-        console.log("steps is :", steps);
     }
     const toggleOverlay = () => {
         setVisible(!visible);
     };
 
     function addItem(i) {
-        console.log("i is ", i);
-        console.log("steps is :", steps);
+        var content={}
+        var st=steps;
 
         switch (i) {
-            case "Preheat": return setSteps(st => st = st.push(
-                {
+            case "Preheat": content = {
                     "type": "Preheat",
                     "temp": 60
                 }
-            ))
-            case "Cook": return setSteps(st => st = st.push(
-                {
+                break;
+            case "Cook":content = {
                     "type": "Cook",
                     "topTemp": 170,
                     "bottomTemp": 0,
                     "time": 30
                 }
-            ))
-            case "Checkpoint": return setSteps(st => st = st.push(
-                {
+                break;
+
+            case "Checkpoint":content = {
                     "type": "Checkpoint",
                     "wait": true,
                     "timeout": 30
                 }
-            ))
+                break;
+            case "Notify":
+                content = {
+                        "type": "Notify",
+                        "destination": ["John", "Bob", "Tom", "Alexa"],
+                        "title": "Cooking Complete",
+                        "message": "Pizza is done Cooking"
+                    }
+                break;
 
-            // case "Pause": return setSteps(st => st = st.push(
-            //     {
-            //         "type": "Pause"
-            //     }
-            // ))
+            case "PowerOff":
+                content = {
+                        "type": "PowerOff"
+                    }
+                break;
 
-            case "Notify": return setSteps(st => st = st.push(
-                {
-                    "type": "Notify",
-                    "destination": ["John", "Bob", "Tom", "Alexa"],
-                    "title": "Cooking Complete",
-                    "message": "Pizza is done Cooking"
-                }
-            ))
-
-            case "PowerOff": return setSteps(st => st = st.push(
-                {
-                    "type": "PowerOff"
-                }
-            ))
-
-            case "Cooling": return setSteps(st => st = st.push(
-                {
-                    "type": "Cooling",
-                    "duration": 10
-                }
-            ))
+            case "Cooling":
+                content = {
+                        "type": "Cooling",
+                        "duration": 10
+                    }
+                break;
 
             default: null
         }
-        // setSteps(st => st = st.push(i));
-        // console.log("steps is :", steps);
+        st.push( content )
+        setSteps(st)
     }
 
     var types = ['Cook', 'Notify', 'Checkpoint', 'Preheat', 'Cooling', 'PowerOff']
@@ -145,6 +134,7 @@ export default function automationScreen({ navigation }) {
                     </Fragment>
                 ))
             }
+
             <Button
                 onPress={toggleOverlay}
                 icon={<Icon name="plus" size={18} color={colors.white} />}
