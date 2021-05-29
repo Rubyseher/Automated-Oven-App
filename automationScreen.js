@@ -87,6 +87,7 @@ export default function automationScreen({ navigation }) {
         }
         st.push( content )
         setSteps(st)
+        setVisible(!visible);
     }
 
     var types = ['Cook', 'Notify', 'Checkpoint', 'Preheat', 'Cooling', 'PowerOff']
