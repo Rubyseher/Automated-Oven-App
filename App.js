@@ -23,11 +23,20 @@ const NavContainerTheme = {
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function Main() {
+function Main({navigation}) {
+  // navigation.setOptions({ tabBarVisible: false })
+  // const { screen, setScreen } = React.useContext(Context)
+  // if (screen == 0) {
+  //   navigation.setOptions({ tabBarVisible: true })
+  // } else {
+  //   navigation.setOptions({ tabBarVisible: false })
+  // }
   return (
     <Stack.Navigator initialRouteName="automation" headerMode='none'>
       <Stack.Screen name="main" component={mainScreen} />
-      <Stack.Screen name="automation" component={automationScreen} />
+      <Stack.Screen name="automation" component={automationScreen} 
+          options={navigation.setOptions({ tabBarVisible: false })}
+      />
     </Stack.Navigator>
   );
 }
