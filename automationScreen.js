@@ -1,7 +1,8 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useCallback } from 'react';
 import { View, Text } from 'react-native';
 import { styles, colors } from './styles';
 import { Preheat, Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -28,7 +29,29 @@ const TimelineComponent = (props) => {
 
 export default function automationScreen({ navigation }) {
     const [steps, setSteps] = useState(data[1].steps);
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            var ws = new WebSocket('ws://oven.local:8069');
+            ws.onopen = () => {
+                req = {
+                    msg: 'direct',
+                    module: 'automations',
+                    function: 'get'
+                }
+                ws.send(JSON.stringify(req));
+            };
+            ws.onmessage = (e) => {
+                d = JSON.parse(e.data)
+                if (d.msg == 'result') {
+                    // setData(d.result)
+                    console.log(d.result);
+                    ws.close()
+                }
+            };
+        }, [])
+    );
 
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
