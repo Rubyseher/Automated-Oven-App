@@ -11,6 +11,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import jsdom from 'jsdom-jscore-rn';
+import { getCookingDetails } from './webScraper';
 
 const GradientProgress = (props) => {
     return (
@@ -98,6 +100,35 @@ function mainScreen({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
+            const { JSDOM } = jsdom;
+
+            fetch("https://www.indianhealthyrecipes.com/pizza-recipe-make-pizza/")
+                .then(res => res.text())
+                .then(data => {
+                    const dom = new JSDOM(data);
+
+                    var instClass
+
+                    if (url.includes("allrecipes"))
+                        instClass = ".instructions-section"
+                    else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
+                        instClass = ".tasty-recipes-instructions-body"
+                    else if (url.includes("recipetineats"))
+                        instClass = ".wprm-recipe-instructions"
+                    else if (url.includes("delish"))
+                        instClass = ".direction-lists"
+                    else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
+                        instClass = ".wprm-recipe-instructions"
+                    else {
+                        console.log("Unsupported Website");
+                        return
+                    }
+
+                    const inst = dom.window.document.querySelectorAll(instClass)
+
+                    console.log(getCookingDetails(inst));
+
+                })
             ReactNativeHapticFeedback.trigger("impactHeavy");
             const parseData = (d) => {
                 setTopTemp(d.top)
