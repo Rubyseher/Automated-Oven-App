@@ -365,6 +365,22 @@ export const styles = StyleSheet.create({
         shadowRadius: 6.94,
         elevation: 4,
     },
+    saveContainer:{
+        backgroundColor:colors.white,
+        width:'100%',
+        height:180,
+        bottom:0,
+        position:'absolute',
+        borderRadius:26,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.4,
+        shadowRadius: 6.94,
+        elevation: 4,
+    },
     addStep: {
         fontWeight:'600',
         fontSize: 30,
