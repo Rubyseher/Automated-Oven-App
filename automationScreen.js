@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import { styles, colors } from './styles';
 import { Preheat, Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
 import { ScrollView } from 'react-native';
@@ -26,9 +26,10 @@ const TimelineComponent = (props) => {
     }
 }
 
-export default function automationScreen({ navigation }) {
+export default function automationScreen({ navigation }, props) {
     const [steps, setSteps] = useState(data[1].steps);
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
+    const [foodName, changeFoodname] = useState(data[1].name);
 
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
@@ -95,6 +96,7 @@ export default function automationScreen({ navigation }) {
     var icon = ['utensils', 'bell', 'flag', 'fire-alt', 'snowflake', 'power-off']
     // var ficon=['utensils', 'snowflake', 'flag', 'bell-alt', 'pause', 'power']
 
+
     return (
         <View>
             <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
@@ -146,7 +148,16 @@ export default function automationScreen({ navigation }) {
 
             </ScrollView>
             <View style={styles.saveContainer}>
-                <Text style={styles.addStep}>Cake</Text>
+                <TextInput
+                    style={styles.saveAuto}
+                    onChangeText={changeFoodname}
+                    value={foodName}
+                />
+                <Button
+                    title="Save"
+                    // buttonStyle={styles.saveButton}
+                    containerStyle={styles.saveButton}
+                />
             </View>
         </View>
 

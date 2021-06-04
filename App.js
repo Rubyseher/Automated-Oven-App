@@ -32,7 +32,7 @@ function Main({navigation}) {
   //   navigation.setOptions({ tabBarVisible: false })
   // }
   return (
-    <Stack.Navigator initialRouteName="main" headerMode='none'>
+    <Stack.Navigator initialRouteName="automation" headerMode='none'>
       <Stack.Screen name="main" component={mainScreen} />
       <Stack.Screen name="automation" component={automationScreen} 
           options={navigation.setOptions({ tabBarVisible: false })}
