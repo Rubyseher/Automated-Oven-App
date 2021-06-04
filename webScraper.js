@@ -1,5 +1,5 @@
 
-const parseLi = (para) => {
+export const parseLi = (para,url) => {
     var params = {
         preheat: false,
         temp: 0,
@@ -43,22 +43,22 @@ const parseLi = (para) => {
     return params
 }
 
-const getCookingDetails = (inst) => {
+export const getCookingDetails = (inst,url) => {
     let finalParams = {
         preheat: false,
         temp: 0,
         time: 0,
         bake: false
     }
-    inst.forEach(i => {
-        const para = [...i.querySelectorAll("li")]
-        let res = parseLi(para)
+    inst._toArray().forEach(i => {
+        const para = [...i.querySelectorAll("li")._toArray()]
+        let res = parseLi(para,url)
         finalParams.preheat = finalParams.preheat || res.preheat
         finalParams.bake = finalParams.bake || res.bake
         finalParams.temp = Math.max(finalParams.temp, res.temp)
         finalParams.time = Math.max(finalParams.time, res.time)
     })
     return finalParams
-}
 
-export default getCookingDetails
+
+}

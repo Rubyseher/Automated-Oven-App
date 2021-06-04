@@ -100,33 +100,33 @@ function mainScreen({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
-            const { JSDOM } = jsdom;
-
-            fetch("https://www.indianhealthyrecipes.com/pizza-recipe-make-pizza/")
+            let url = "https://www.allrecipes.com/recipe/11432/twisty-cookies/"
+            fetch(url)
                 .then(res => res.text())
                 .then(data => {
-                    const dom = new JSDOM(data);
+                    jsdom.env(data, (errors, window) => {
+                        var instClass
 
-                    var instClass
+                        if (url.includes("allrecipes"))
+                            instClass = ".instructions-section"
+                        else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
+                            instClass = ".tasty-recipes-instructions-body"
+                        else if (url.includes("recipetineats"))
+                            instClass = ".wprm-recipe-instructions"
+                        else if (url.includes("delish"))
+                            instClass = ".direction-lists"
+                        else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
+                            instClass = ".wprm-recipe-instructions"
+                        else {
+                            console.log("Unsupported Website");
+                            return
+                        }
 
-                    if (url.includes("allrecipes"))
-                        instClass = ".instructions-section"
-                    else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
-                        instClass = ".tasty-recipes-instructions-body"
-                    else if (url.includes("recipetineats"))
-                        instClass = ".wprm-recipe-instructions"
-                    else if (url.includes("delish"))
-                        instClass = ".direction-lists"
-                    else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
-                        instClass = ".wprm-recipe-instructions"
-                    else {
-                        console.log("Unsupported Website");
-                        return
-                    }
+                        const inst = window.document.querySelectorAll(instClass)
+                        console.log(getCookingDetails(inst,url));
+                    })
 
-                    const inst = dom.window.document.querySelectorAll(instClass)
-
-                    console.log(getCookingDetails(inst));
+                   
 
                 })
             ReactNativeHapticFeedback.trigger("impactHeavy");
