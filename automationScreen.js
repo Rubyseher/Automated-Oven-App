@@ -153,6 +153,12 @@ export default function automationScreen({ navigation }, props) {
                     />
                 </View>
 
+                <TextInput
+                    style={styles.saveAuto}
+                    onChangeText={changeFoodname}
+                    value={foodName}
+                />
+
                 {
                     steps.map((item, i) => (
                         <Fragment key={i}>
@@ -170,17 +176,15 @@ export default function automationScreen({ navigation }, props) {
                 />
 
             </ScrollView>
-            <View style={styles.saveContainer}>
-                <TextInput
-                    style={styles.saveAuto}
-                    onChangeText={changeFoodname}
-                    value={foodName}
-                />
+            <View style={styles.saveOverlay}>
+
                 <Button
                     title="Save"
-                    // buttonStyle={styles.saveButton}
-                    containerStyle={styles.saveButton}
+                    titleStyle={styles.saveText}
+                    buttonStyle={styles.saveButton}
+                    // containerStyle={styles.saveButton}
                 />
+
             </View>
         </View>
 

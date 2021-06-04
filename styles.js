@@ -9,7 +9,8 @@ export const colors = {
     lightGreen: '#26d46c',
     blue: '#3f91ff',
     lightBlue: '#f3fbff',
-    purple:'#634dd3',
+    darkBlue:'#065ff6',
+    purple: '#634dd3',
     turquoise: '#7ae8ff',
     grey: '#e1dddd',
     textGrey: '#a5a5a5',
@@ -73,7 +74,7 @@ export const styles = StyleSheet.create({
     closeButtonPaddingM: {
         height: 40,
         width: 70,
-        alignSelf:'flex-end'
+        alignSelf: 'flex-end'
     },
     closeButtonS: {
         height: 15,
@@ -87,7 +88,7 @@ export const styles = StyleSheet.create({
         height: 26,
         width: '18%',
         padding: 4,
-        alignSelf:'flex-end'
+        alignSelf: 'flex-end'
     },
     roundButtonS: {
         height: 40,
@@ -118,7 +119,7 @@ export const styles = StyleSheet.create({
         fontSize: 36,
         color: colors.blue,
         marginTop: 50,
-        marginLeft:-4,
+        marginLeft: -4,
         marginBottom: 27,
         // marginLeft: 26,
     },
@@ -195,8 +196,8 @@ export const styles = StyleSheet.create({
         borderRadius: 32,
         marginBottom: 42,
         // padding: 20,
-        paddingLeft:18,
-        justifyContent:'center',
+        paddingLeft: 18,
+        justifyContent: 'center',
         backgroundColor: colors.yellow,
     },
     fullName: {
@@ -285,7 +286,7 @@ export const styles = StyleSheet.create({
         marginTop: 15,
         // marginRight: 18,
         color: colors.darkGrey,
-        width:'74%'
+        width: '74%'
     },
     autoContainer: {
         width: '100%',
@@ -349,13 +350,13 @@ export const styles = StyleSheet.create({
         color: colors.darkGrey,
         borderColor: colors.grey
     },
-    overlayContainer:{
-        backgroundColor:colors.white,
-        width:'100%',
-        height:"65%",
-        bottom:0,
-        position:'absolute',
-        borderRadius:26,
+    overlayContainer: {
+        backgroundColor: colors.white,
+        width: '100%',
+        height: "65%",
+        bottom: 0,
+        position: 'absolute',
+        borderRadius: 26,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -365,13 +366,16 @@ export const styles = StyleSheet.create({
         shadowRadius: 6.94,
         elevation: 4,
     },
-    saveContainer:{
-        backgroundColor:colors.white,
-        width:'100%',
-        height:180,
-        bottom:0,
-        position:'absolute',
-        borderRadius:26,
+    saveOverlay: {
+        backgroundColor: colors.white,
+        width: '100%',
+        bottom: 0,
+        position: 'absolute',
+        paddingTop: 20,
+        paddingBottom: 30,
+        borderTopRightRadius: 26,
+        borderTopLeftRadius: 26,
+        // borderRadius:26,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -381,17 +385,19 @@ export const styles = StyleSheet.create({
         shadowRadius: 6.94,
         elevation: 4,
     },
-    saveButton:{
-        color:colors.red,
-        backgroundColor:colors.blue,
-        width:'90%',
-        borderRadius:12,
-        fontSize:50,
-        fontWeight:'bold',
-        alignSelf:'center',
+    saveButton: {
+        backgroundColor: colors.darkBlue,
+        width: '90%',
+        padding:15,
+        borderRadius: 12,
+        alignSelf: 'center',
+    },
+    saveText: {
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     addStep: {
-        fontWeight:'600',
+        fontWeight: '600',
         fontSize: 30,
         color: colors.black,
         marginTop: 20,
@@ -399,12 +405,10 @@ export const styles = StyleSheet.create({
         marginLeft: 26,
     },
     saveAuto: {
-        fontWeight:'600',
+        fontWeight: '600',
         fontSize: 30,
         color: colors.black,
-        // marginTop: 20,
-        marginVertical: 20,
-        marginHorizontal: 16,
+        marginBottom: 20,
         padding: 10,
         borderWidth: 1,
         borderRadius: 8,
@@ -412,17 +416,17 @@ export const styles = StyleSheet.create({
     },
     stepTitle: {
         // marginRight: 18,
-        fontSize:18,
-        textAlign:'center',
+        fontSize: 18,
+        textAlign: 'center',
         color: colors.darkGrey,
-        width:'84%',
-        marginBottom:20
+        width: '84%',
+        marginBottom: 20
     },
     stepCircle: {
         height: 85,
         width: 85,
         borderRadius: 42.5,
-        justifyContent:'center',
+        justifyContent: 'center',
         backgroundColor: colors.yellow,
     },
     stepCirclePadding: {
@@ -432,15 +436,15 @@ export const styles = StyleSheet.create({
         // marginLeft: 60,
         // marginRight: 40,
         alignSelf: 'center',
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     closeHeading: {
         fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
         marginTop: 50,
-        marginLeft:-4,
-        marginRight:110
+        marginLeft: -4,
+        marginRight: 110
         // marginBottom: 27,
         // marginLeft: 26,
     },
