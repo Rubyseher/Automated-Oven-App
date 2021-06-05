@@ -1,193 +1,106 @@
-import { View, Text, TextInput } from 'react-native';
-import React, { Fragment, useState, useCallback } from 'react';
-import { styles, colors } from './styles';
-import { Preheat, Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
-import { useFocusEffect } from '@react-navigation/native';
-import { ScrollView } from 'react-native';
-import { Button, Overlay } from 'react-native-elements';
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import { styles, colors } from './styles'
+import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useFocusEffect } from '@react-navigation/native';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
-const data = require('./timeline.json')
+const FoodName = (props) => {
+  const [finalDuration, setFinalDuration] = useState(0);
+  const [finalTemp, setFinalTemp] = useState(0);
 
-const TimelineComponent = (props) => {
-    var item = props.item
-    item.id = props.id
-    item.removeItem = props.removeItem
-
-    switch (item.type) {
-        case "Preheat": return <Preheat {...item} />
-        case "Cook": return <Cook {...item} />
-        case "Checkpoint": return <Checkpoint {...item} />
-        // case "Pause": return <Pause {...item} />
-        case "Notify": return <Notify {...item} />
-        case "PowerOff": return <PowerOff {...item} />
-        case "Cooling": return <Cooling {...item} />
-        default: null
-    }
-}
-
-export default function automationScreen({ navigation }, props) {
-    const [steps, setSteps] = useState(data[1].steps);
-    const [visible, setVisible] = useState(false);
-    const [foodName, changeFoodname] = useState(data[1].name);
-
-    useFocusEffect(
-        useCallback(() => {
-            var ws = new WebSocket('ws://oven.local:8069');
-            ws.onopen = () => {
-                req = {
-                    msg: 'direct',
-                    module: 'automations',
-                    function: 'get'
-                }
-                ws.send(JSON.stringify(req));
-            };
-            ws.onmessage = (e) => {
-                d = JSON.parse(e.data)
-                if (d.msg == 'result') {
-                    // setData(d.result)
-                    console.log(d.result);
-                    ws.close()
-                }
-            };
-        }, [])
-    );
-
-    function removeItem(i) {
-        setSteps(st => st = st.filter((s, index) => index != i));
-    }
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
-
-    function addItem(i) {
-        var content = {}
-        var st = steps;
-
-        switch (i) {
-            case "Preheat": content = {
-                "type": "Preheat",
-                "temp": 60
-            }
-                break;
-            case "Cook": content = {
-                "type": "Cook",
-                "topTemp": 170,
-                "bottomTemp": 0,
-                "time": 30
-            }
-                break;
-
-            case "Checkpoint": content = {
-                "type": "Checkpoint",
-                "wait": true,
-                "timeout": 30
-            }
-                break;
-            case "Notify":
-                content = {
-                    "type": "Notify",
-                    "destination": ["John", "Bob", "Tom", "Alexa"],
-                    "title": "Cooking Complete",
-                    "message": "Pizza is done Cooking"
-                }
-                break;
-
-            case "PowerOff":
-                content = {
-                    "type": "PowerOff"
-                }
-                break;
-
-            case "Cooling":
-                content = {
-                    "type": "Cooling",
-                    "duration": 10
-                }
-                break;
-
-            default: null
+  useEffect(() => {
+    if (!finalTemp) {
+      let avgTemp = 0, duration = 0
+      props.steps.forEach(i => {
+        if (i.type == 'Cook') {
+          avgTemp = (((i.topTemp + i.bottomTemp) / 2) * i.time) + avgTemp
+          duration = i.time + duration
         }
-        st.push(content)
-        setSteps(st)
-        setVisible(!visible);
+      });
+      setFinalTemp(Math.round(avgTemp / duration))
+      setFinalDuration(duration)
     }
+  }, []);
 
-    var types = ['Cook', 'Notify', 'Checkpoint', 'Preheat', 'Cooling', 'PowerOff']
-    var stepColor = ['yellow', 'purple', 'blue', 'orange', 'turquoise', 'red']
-    var icon = ['utensils', 'bell', 'flag', 'fire-alt', 'snowflake', 'power-off']
-    // var ficon=['utensils', 'snowflake', 'flag', 'bell-alt', 'pause', 'power']
-
-
-    return (
-        <View>
-            <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
-
-                <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
-                    <Text style={styles.addStep}>Add Step</Text>
-                    <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', marginHorizontal: 50 }}>
-                        {
-                            types.map((item, i) => (
-                                <View key={i} style={{ width: '40%' }}>
-                                    <Button
-                                        onPress={() => addItem(types[i])}
-                                        icon={<Icon name={icon[i]} size={35} color={colors.white} solid />}
-                                        buttonStyle={[styles.stepCircle, { backgroundColor: colors[stepColor[i]] }]}
-                                        containerStyle={styles.stepCirclePadding}
-                                    />
-                                    <Text style={styles.stepTitle}>{types[i]}</Text>
-                                </View>
-                            ))
-                        }
-                    </View>
-                </Overlay>
-
-                <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
-                    <Text style={styles.closeHeading}>Automator</Text>
-                    <Button
-                        onPress={() => navigation.goBack()}
-                        icon={<Ficon name="close-a" size={8} color={colors.white} />}
-                        buttonStyle={styles.closeButtonM}
-                        containerStyle={styles.closeButtonPaddingM}
-                    />
-                </View>
-
-                <TextInput
-                    style={styles.saveAuto}
-                    onChangeText={changeFoodname}
-                    value={foodName}
-                />
-
-                {
-                    steps.map((item, i) => (
-                        <Fragment key={i}>
-                            <TimelineComponent item={item} id={i} removeItem={removeItem} />
-                            <View style={styles.timeThread}></View>
-                        </Fragment>
-                    ))
-                }
-
-                <Button
-                    onPress={toggleOverlay}
-                    icon={<Icon name="plus" size={18} color={colors.white} />}
-                    buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue }]}
-                    containerStyle={styles.roundButtonPaddingS}
-                />
-
-            </ScrollView>
-            <View style={styles.saveOverlay}>
-
-                <Button
-                    title="Save"
-                    titleStyle={styles.saveText}
-                    buttonStyle={styles.saveButton}
-                    // containerStyle={styles.saveButton}
-                />
-
-            </View>
+  return (
+    <Fragment>
+      <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
+        <View style={styles.tagBadge}>
+          <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
         </View>
+        <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
+        <Button
+          buttonStyle={[styles.foodCircleM, { backgroundColor: colors.lightRed }]}
+          icon={<Icon name="bookmark" size={12} color={colors.white} solid />}
+          containerStyle={{ alignItems: 'flex-end', width: '10%', marginRight: 8 }}
+        />
+        <Button
+          buttonStyle={[styles.foodCircleM, { backgroundColor: colors.blue }]}
+          icon={<Icon name="play" size={10} color={colors.white} solid />}
+        />
+      </View>
+      <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>
+        <View style={[styles.detailsCircle, { backgroundColor: colors.orange }]}>
+          <Icon name="thermometer-half" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
+        </View>
+        <Text style={styles.detailText}> {finalTemp}°C</Text>
 
-    );
+        <View style={[styles.detailsCircle, { backgroundColor: colors.blue }]}>
+          <Icon name="stopwatch" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
+        </View>
+        <Text style={styles.detailText}> {finalDuration} min</Text>
+
+        <View style={[styles.detailsCircle, { backgroundColor: colors.teal }]}>
+          <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
+        </View>
+        <Text style={styles.detailText}> {props.steps.length} Steps</Text>
+      </View>
+    </Fragment>
+  )
 }
+export default function automationScreen(props) {
+  const [data, setData] = useState([]);
 
+  useFocusEffect(
+    useCallback(() => {
+      var ws = new WebSocket('ws://oven.local:8069');
+      ws.onopen = () => {
+        req = {
+          msg: 'direct',
+          module: 'automations',
+          function: 'get'
+        }
+        ws.send(JSON.stringify(req));
+      };
+      ws.onmessage = (e) => {
+        d = JSON.parse(e.data)
+        if (d.msg == 'result') {
+          setData(d.result)
+          console.log(d.result);
+          ws.close()
+        }
+      };
+    }, [])
+  );
+
+  return (
+    <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
+      <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
+        <Text style={styles.closeHeading}>Automator</Text>
+        <Button
+          onPress={() => navigation.goBack()}
+          icon={<Ficon name="close-a" size={8} color={colors.white} />}
+          buttonStyle={styles.closeButtonM}
+          containerStyle={styles.closeButtonPaddingM}
+        />
+      </View>
+      {
+        data.length > 0 ? data.map((item, i) => (
+          <FoodName key={i} name={item.name} steps={item.steps} />
+        )) : null
+      }
+    </ScrollView>
+  );
+}

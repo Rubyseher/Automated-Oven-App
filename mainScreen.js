@@ -179,7 +179,7 @@ function mainScreen({ navigation }) {
             </View>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 18 }}>
                 {data.isCooking && <Button
-                    onPress={() => navigation.navigate('automation')}
+                    onPress={() => navigation.navigate('automationScreen')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}
                     buttonStyle={styles.roundButtonS}
                     containerStyle={styles.roundButtonPaddingS}

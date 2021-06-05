@@ -56,7 +56,6 @@ const FoodName = (props) => {
                     <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
                 </View>
                 <Text style={styles.detailText}> {props.steps.length} Steps</Text>
-
             </View>
         </Fragment>
     )

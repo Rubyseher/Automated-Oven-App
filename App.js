@@ -6,6 +6,7 @@ import profileScreen from './profileScreen'
 import historyScreen from './historyScreen'
 import mainScreen from './mainScreen'
 import energyScreen from './energyScreen'
+import automationEditScreen from './automationEditScreen'
 import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
@@ -32,10 +33,10 @@ function Main({navigation}) {
   //   navigation.setOptions({ tabBarVisible: false })
   // }
   return (
-    <Stack.Navigator initialRouteName="automation" headerMode='none'>
+    <Stack.Navigator initialRouteName="automationScreen" headerMode='none'>
       <Stack.Screen name="main" component={mainScreen} />
-      <Stack.Screen name="automation" component={automationScreen} 
-      />
+      <Stack.Screen name="automationScreen" component={automationScreen} />
+      <Stack.Screen name="automationEdit" component={automationEditScreen} />
     </Stack.Navigator>
   );
 }
