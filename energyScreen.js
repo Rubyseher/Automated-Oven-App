@@ -46,8 +46,7 @@ export default function energyScreen() {
 
     useFocusEffect(
         useCallback(() => {
-            ReactNativeHapticFeedback.trigger("impactMedium");
-            var intervalId = setInterval(() => {
+            const getData = () => {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
                     req = {
@@ -75,7 +74,10 @@ export default function energyScreen() {
                     }
                     ws.close()
                 };
-            }, 2000)
+            }
+            ReactNativeHapticFeedback.trigger("impactMedium");
+            getData()
+            var intervalId = setInterval(getData, 2000)
 
             return () => {
                 clearInterval(intervalId);
@@ -87,7 +89,7 @@ export default function energyScreen() {
             <Text style={styles.heading}>Energy</Text>
 
             <AnimatedCircularProgress
-                size={275} width={5} fill={Math.round((currentUsage / 1350) * 100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
+                size={275} width={5} fill={Math.round((currentUsage / 650) * 100, 0)} style={{ alignItems: 'center' }} childrenContainerStyle={{ textAlign: 'center', width: '100%' }} arcSweepAngle={240} rotation={-120} tintColor={colors.lightGreen} backgroundColor={colors.grey}>
                 {(fill) => (
                     <Fragment>
                         <Text style={{ fontSize: 68, fontWeight: 'bold', color: colors.lightGreen }}> {currentUsage} </Text>
