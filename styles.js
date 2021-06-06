@@ -288,6 +288,14 @@ export const styles = StyleSheet.create({
         color: colors.darkGrey,
         width: '74%'
     },
+    autoRecipe: {
+        fontWeight: 'bold',
+        marginLeft: 14,
+        marginRight: 38,
+        fontSize: 21,
+        marginTop: 26,
+        width: '40%'
+    },
     autoContainer: {
         width: '100%',
         alignSelf: 'center',
