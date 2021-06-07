@@ -125,9 +125,6 @@ function mainScreen({ navigation }) {
                         const inst = window.document.querySelectorAll(instClass)
                         console.log(getCookingDetails(inst,url));
                     })
-
-                   
-
                 })
             ReactNativeHapticFeedback.trigger("impactHeavy");
             const parseData = (d) => {

@@ -8,8 +8,6 @@ import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
-const data = require('./timeline.json')
-
 const TimelineComponent = (props) => {
     var item = props.item
     item.id = props.id
@@ -25,35 +23,17 @@ const TimelineComponent = (props) => {
         case "Cooling": return <Cooling {...item} />
         default: null
     }
+    return null;
 }
 
-export default function automationEditScreen({ navigation }, props) {
-    const [steps, setSteps] = useState(data[1].steps);
+export default function automationEditScreen({ navigation,route }, props) {
+    const {iData} = route.params;
+    // const [data, setData] = useState();
+    const [steps, setSteps] = useState(iData.steps);
     const [visible, setVisible] = useState(false);
-    const [foodName, changeFoodname] = useState(data[1].name);
-
-    useFocusEffect(
-        useCallback(() => {
-            var ws = new WebSocket('ws://oven.local:8069');
-            ws.onopen = () => {
-                req = {
-                    msg: 'direct',
-                    module: 'automations',
-                    function: 'get'
-                }
-                ws.send(JSON.stringify(req));
-            };
-            ws.onmessage = (e) => {
-                d = JSON.parse(e.data)
-                if (d.msg == 'result') {
-                    // setData(d.result)
-                    console.log(d.result);
-                    ws.close()
-                }
-            };
-        }, [])
-    );
-
+    const [foodName, changeFoodname] = useState(iData.name);
+    console.log("steps is ",foodName);
+    
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
     }

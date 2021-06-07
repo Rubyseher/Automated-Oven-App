@@ -28,17 +28,12 @@ const FoodName = (props) => {
     }
   }, []);
 
+  // navigation.navigate('automationEdit', { itemId: props.id })
   return (
     <Fragment >
       <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
-        {/* <TouchableWithoutFeedback onPress={() => navigation.navigate('automationEditScreen')}>
-          <View style={styles.tagBadge}>
-            <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-          </View>
-          <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
-        </TouchableWithoutFeedback> */}
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('automationEdit')}>
-          <View style={{flexDirection:'row'}}>
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('automationEdit', {iData: props.iData })}>
+          <View style={{ flexDirection: 'row' }}>
             <View style={styles.tagBadge}>
               <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
             </View>
@@ -74,8 +69,10 @@ const FoodName = (props) => {
     </Fragment>
   )
 }
+
 export default function automationScreen({ navigation }, props) {
   const [data, setData] = useState([]);
+  const [keys, setKeys] = useState([]);
   useFocusEffect(
     useCallback(() => {
       var ws = new WebSocket('ws://oven.local:8069');
@@ -90,8 +87,8 @@ export default function automationScreen({ navigation }, props) {
       ws.onmessage = (e) => {
         d = JSON.parse(e.data)
         if (d.msg == 'result') {
-          setData(d.result)
-          console.log(d.result);
+          setData(Object.values(d.result))
+          setKeys(Object.keys(d.result))
           ws.close()
         }
       };
@@ -111,9 +108,14 @@ export default function automationScreen({ navigation }, props) {
       </View>
       {
         data.length > 0 ? data.map((item, i) => (
-          <FoodName key={i} name={item.name} steps={item.steps} />
+          <FoodName key={i} name={item.name} steps={item.steps} id={keys[i]} iData={item} />
         )) : null
       }
+      {/* {
+        Object.values(data).length > 0 ? Object.values(data).map((item, i) => (
+          <FoodName key={i} name={item.name} steps={item.steps} id={Object.keys(data)[i]} iData={item} />
+        )) : null
+      } */}
     </ScrollView>
   );
 }
