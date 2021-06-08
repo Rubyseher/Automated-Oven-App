@@ -13,6 +13,8 @@ import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
 import { getCookingDetails } from './webScraper';
+import Clipboard from '@react-native-clipboard/clipboard';
+
 
 const GradientProgress = (props) => {
     return (
@@ -49,6 +51,57 @@ function mainScreen({ navigation }) {
     const [bottomTemp, setBottomTemp] = useState(0);
     const [data, setData] = useState();
     const [loading, setLoading] = useState(true);
+
+    const FetchUrl = async () => {
+        const url = await Clipboard.getString();
+        console.log("url ", url);
+        // let url = "https://www.allrecipes.com/recipe/11432/twisty-cookies/"
+        fetch(url)
+            .then(res => res.text())
+            .then(data => {
+                jsdom.env(data, (errors, window) => {
+                    var instClass
+
+                    if (url.includes("allrecipes"))
+                        instClass = ".instructions-section"
+                    else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
+                        instClass = ".tasty-recipes-instructions-body"
+                    else if (url.includes("recipetineats"))
+                        instClass = ".wprm-recipe-instructions"
+                    else if (url.includes("delish"))
+                        instClass = ".direction-lists"
+                    else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
+                        instClass = ".wprm-recipe-instructions"
+                    else {
+                        console.log("Unsupported Website");
+                        return
+                    }
+                    const inst = window.document.querySelectorAll(instClass)
+                    console.log("url is", url);
+                    console.log("getcooking details called", getCookingDetails(inst, url)[temp]);
+                    // var ws = new WebSocket('ws://oven.local:8069');
+                    // bothTemp = getCookingDetails(inst, url)[temp]
+                    // ws.onopen = () => {
+                    //     req = {
+                    //         msg: 'direct',
+                    //         module: 'cook',
+                    // function: `set${name}Temp`,
+                    //     params: {
+                    //         "bottom": bothTemp,
+                    //         "cooktype":getCookingDetails(inst, url)[bake]?"Bake":"Cook",
+                    //         "endTime": getCookingDetails(inst, url)[time],
+                    //         "isCooking": false,
+                    //         "isPaused": false,
+                    //         "startTime": 0,
+                    //         "top": bothTemp
+                    //     }
+                    // }
+                    // ws.send(JSON.stringify(req));
+                    // ws.close()
+                    // };
+                })
+            })
+    }
 
     const progressPercent = (e) => {
         if (!data.isPaused) {
@@ -100,32 +153,7 @@ function mainScreen({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
-            let url = "https://www.allrecipes.com/recipe/11432/twisty-cookies/"
-            fetch(url)
-                .then(res => res.text())
-                .then(data => {
-                    jsdom.env(data, (errors, window) => {
-                        var instClass
-
-                        if (url.includes("allrecipes"))
-                            instClass = ".instructions-section"
-                        else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
-                            instClass = ".tasty-recipes-instructions-body"
-                        else if (url.includes("recipetineats"))
-                            instClass = ".wprm-recipe-instructions"
-                        else if (url.includes("delish"))
-                            instClass = ".direction-lists"
-                        else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
-                            instClass = ".wprm-recipe-instructions"
-                        else {
-                            console.log("Unsupported Website");
-                            return
-                        }
-
-                        const inst = window.document.querySelectorAll(instClass)
-                        console.log(getCookingDetails(inst,url));
-                    })
-                })
+            FetchUrl()
             ReactNativeHapticFeedback.trigger("impactHeavy");
             const parseData = (d) => {
                 setTopTemp(d.top)
@@ -162,6 +190,7 @@ function mainScreen({ navigation }) {
 
     return (
         data ? <View>
+            
             <Image
                 style={{ width: '100%', height: '49%' }}
                 source={require('./assets/Plate.jpg')}
@@ -200,6 +229,7 @@ function mainScreen({ navigation }) {
                 <ActivityIndicator size="large" />
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey, marginTop: 20 }}>{loading ? "Connecting to the device" : "Couldn't connect to the device. Make sure it's powered on."}</Text>
             </View>
+
     );
 }
 
