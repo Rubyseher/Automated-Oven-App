@@ -25,7 +25,7 @@ const TemperatureSlider = (props) => {
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 step={5}
-                onValueChange={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); }}
+                onSlidingComplete={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); }}
                 value={props.handler.value}
                 style={{ marginBottom: -12 }}
                 thumbTintColor="transparent"

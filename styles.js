@@ -9,7 +9,7 @@ export const colors = {
     lightGreen: '#26d46c',
     blue: '#3f91ff',
     lightBlue: '#f3fbff',
-    darkBlue:'#065ff6',
+    darkBlue: '#065ff6',
     purple: '#634dd3',
     turquoise: '#7ae8ff',
     grey: '#e1dddd',
@@ -396,7 +396,7 @@ export const styles = StyleSheet.create({
     saveButton: {
         backgroundColor: colors.darkBlue,
         width: '90%',
-        padding:15,
+        padding: 15,
         borderRadius: 12,
         alignSelf: 'center',
     },
@@ -456,4 +456,44 @@ export const styles = StyleSheet.create({
         // marginBottom: 27,
         // marginLeft: 26,
     },
+    // *********** welocme screen *******
+    welcomeTitle: {
+        fontWeight: 'bold',
+        fontSize: 36,
+        marginBottom:24,
+        color:colors.white
+    },
+    welcomeContainer: {
+        padding:50,
+        alignItems:'center',
+        marginVertical:'50%',
+        marginHorizontal:30,
+        borderRadius: 12,
+        backgroundColor: colors.blue,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    welcomeText: {
+        fontSize: 20,
+        fontWeight:'500',
+        paddingBottom:12,
+        color:colors.white,
+    },
+    newName:{
+        fontSize: 22,
+        color:colors.white,
+        fontWeight:'500',
+        padding:8,
+        margin:10,
+        textAlign:'center',
+        width:'80%',
+        borderBottomWidth:4,
+        borderColor:colors.white
+    }
 });

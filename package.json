@@ -16,6 +16,7 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
     "jsdom-jscore-rn": "github:iamcco/jsdom-jscore-rn#master",
+    "localstorage-polyfill": "^1.0.1",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "17.0.1",
