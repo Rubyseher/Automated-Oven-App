@@ -120,10 +120,7 @@ function AllScreen() {
 }
 
 export default function App() {
-  // const userName = localStorage.getItem('name');
-  // console.log("name is ", userName);
   const [userName, setUserName] = useState()
-
   useEffect(async() => {
     const user = await AsyncStorage.getItem('name')
     console.log("Storage iss ", user);
