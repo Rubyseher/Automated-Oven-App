@@ -71,7 +71,6 @@ export default function historyScreen() {
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 req = {
-                    msg: 'direct',
                     module: 'history',
                     function: 'get'
                 }
@@ -79,7 +78,7 @@ export default function historyScreen() {
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
-                if (d.msg == 'result') {
+                if (d.type == 'result') {
                     setData(d.result)
                     ws.close()
                 }

@@ -36,7 +36,7 @@ export default function settingsScreen() {
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
-                msg: 'direct',
+               
                 module: 'display',
                 function: `set${name}`,
                 params: [value]
@@ -53,7 +53,7 @@ export default function settingsScreen() {
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 req = {
-                    msg: 'direct',
+                   
                     module: 'display',
                     function: 'getBacklight',
                     params: []
@@ -62,9 +62,9 @@ export default function settingsScreen() {
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
-                console.log("msg", d.msg);
+                console.log("msg", d.type);
 
-                if (d.msg == 'result') {
+                if (d.type == 'result') {
                     setBacklight(d.result)
                     console.log("backlight", d.result);
                     ws.close()

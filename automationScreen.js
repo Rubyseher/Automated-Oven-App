@@ -78,7 +78,6 @@ export default function automationScreen({ navigation }, props) {
       var ws = new WebSocket('ws://oven.local:8069');
       ws.onopen = () => {
         req = {
-          msg: 'direct',
           module: 'automations',
           function: 'get'
         }
@@ -86,7 +85,7 @@ export default function automationScreen({ navigation }, props) {
       };
       ws.onmessage = (e) => {
         d = JSON.parse(e.data)
-        if (d.msg == 'result') {
+        if (d.type == 'result') {
           setData(Object.values(d.result))
           setKeys(Object.keys(d.result))
           ws.close()

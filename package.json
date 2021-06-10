@@ -10,13 +10,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-clipboard/clipboard": "^1.8.1",
     "@react-native-community/slider": "^3.0.3",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
     "jsdom-jscore-rn": "github:iamcco/jsdom-jscore-rn#master",
-    "localstorage-polyfill": "^1.0.1",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",
     "react": "17.0.1",

@@ -22,6 +22,8 @@ target 'MyTestApp' do
 
   pod 'RNReactNativeHapticFeedback', :path => '../node_modules/react-native-haptic-feedback'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
+
   target 'MyTestAppTests' do
     inherit! :complete
     # Pods for testing

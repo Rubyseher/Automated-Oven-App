@@ -50,13 +50,11 @@ export default function energyScreen() {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
                     req = {
-                        msg: 'direct',
                         module: 'energy',
                         function: 'getAll'
                     }
                     ws.send(JSON.stringify(req));
                     req = {
-                        msg: 'direct',
                         module: 'energy',
                         function: 'getNow'
                     }
@@ -64,7 +62,7 @@ export default function energyScreen() {
                 };
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
-                    if (d.msg === 'result') {
+                    if (d.type === 'result') {
                         if (d.req === 'getAll') {
                             parseData(d.result)
                         }

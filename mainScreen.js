@@ -83,7 +83,6 @@ function mainScreen({ navigation }) {
                     // bothTemp = getCookingDetails(inst, url)[temp]
                     // ws.onopen = () => {
                     //     req = {
-                    //         msg: 'direct',
                     //         module: 'cook',
                     // function: `set${name}Temp`,
                     //     params: {
@@ -119,7 +118,6 @@ function mainScreen({ navigation }) {
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
-                msg: 'direct',
                 module: 'cook',
                 function: `set${name}Temp`,
                 params: [value]
@@ -135,13 +133,13 @@ function mainScreen({ navigation }) {
         ws.onopen = () => {
             if (task == 'stop')
                 req = {
-                    msg: 'direct',
+                   
                     module: 'cook',
                     function: 'stop'
                 }
             else
                 req = {
-                    msg: 'direct',
+                   
                     module: 'cook',
                     function: data.isPaused ? 'resume' : 'pause'
                 }
@@ -164,7 +162,7 @@ function mainScreen({ navigation }) {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
                     req = {
-                        msg: 'direct',
+                       
                         module: 'cook',
                         function: 'get'
                     }
@@ -172,7 +170,7 @@ function mainScreen({ navigation }) {
                 };
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
-                    if (d.msg == 'result' && d.req == 'get') {
+                    if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
                         parseData(d.result)
                     }
