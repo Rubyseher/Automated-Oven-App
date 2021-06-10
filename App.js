@@ -129,7 +129,7 @@ export default function App() {
       var ws = new WebSocket('ws://oven.local:8069');
       ws.onopen = () => {
           req = {
-              module: 'init',
+              module: 'other',
               function: 'setUserName',
               params: [user]
           }

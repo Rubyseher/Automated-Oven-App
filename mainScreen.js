@@ -14,7 +14,7 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
 import { getCookingDetails } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
-
+import Carousel from 'react-native-snap-carousel';
 
 const GradientProgress = (props) => {
     return (
@@ -133,13 +133,11 @@ function mainScreen({ navigation }) {
         ws.onopen = () => {
             if (task == 'stop')
                 req = {
-                   
                     module: 'cook',
                     function: 'stop'
                 }
             else
                 req = {
-                   
                     module: 'cook',
                     function: data.isPaused ? 'resume' : 'pause'
                 }
@@ -162,7 +160,6 @@ function mainScreen({ navigation }) {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
                     req = {
-                       
                         module: 'cook',
                         function: 'get'
                     }
@@ -172,6 +169,7 @@ function mainScreen({ navigation }) {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
+                        console.log(d.result);
                         parseData(d.result)
                     }
                     ws.close()
@@ -186,16 +184,69 @@ function mainScreen({ navigation }) {
         }, [])
     );
 
+
+
+
+
+    const Entries = [
+        {
+            title: "Item 1",
+            text: "Text 1",
+        },
+        {
+            title: "Item 2",
+            text: "Text 2",
+        },
+        {
+            title: "Item 3",
+            text: "Text 3",
+        },
+        {
+            title: "Item 4",
+            text: "Text 4",
+        },
+        {
+            title: "Item 5",
+            text: "Text 5",
+        },
+    ]
+    console.log("item.title", Entries[0].title);
+
+    const rItem = ({item}) => {
+        // console.log("item.title", item[i].title);
+        return (
+            <View style={{
+                backgroundColor: colors.lightBlue,
+                borderRadius: 12,
+                height: 350,
+                padding: 50,
+                // marginLeft: 25,
+                // marginRight: 25,
+            }}>
+                <Text style={{ fontSize: 30 }}>{item.type}</Text>
+                <Text>{item.type}</Text>
+            </View>
+
+        )
+    }
+
     return (
         data ? <View>
-            
-            <Image
-                style={{ width: '100%', height: '49%' }}
-                source={require('./assets/Plate.jpg')}
-                resizeMode='cover'
-            />
-            <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} />
+
             <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
+
+            <Carousel
+                layout={"default"}
+                ref={ref => this.carousel = ref}
+                data={data.steps}
+                sliderWidth={300}
+                itemWidth={300}
+                renderItem={rItem}
+            // onSnapToItem={index => this.setState({ activeIndex: index })} 
+            />
+
+            {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
+
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
@@ -222,7 +273,6 @@ function mainScreen({ navigation }) {
                 />}
             </View>
         </View> :
-
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
                 <ActivityIndicator size="large" />
                 <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 24, color: colors.textGrey, marginTop: 20 }}>{loading ? "Connecting to the device" : "Couldn't connect to the device. Make sure it's powered on."}</Text>

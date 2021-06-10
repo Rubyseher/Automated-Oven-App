@@ -24,8 +24,8 @@ export const styles = StyleSheet.create({
     title: {
         fontWeight: '600',
         fontSize: 41,
-        marginTop: 28,
-        marginBottom: 2,
+        marginTop: 48,
+        marginBottom: 10,
         textAlign: 'center',
     },
     subtitle: {
