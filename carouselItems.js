@@ -84,7 +84,7 @@ export const Preheat = (props) => {
 export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
-    const [timeSlider, setTimeSlider] = useState(parseInt(props.time));
+    const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
 
     return (
         <View >
@@ -104,13 +104,11 @@ export const Cook = (props) => {
 
 }
 export const Checkpoint = (props) => {
-    const [timeSlider, setTimeSlider] = useState(parseInt(props.timeout));
+    const [timeSlider, setTimeSlider] = useState(parseInt(props.maxWaitTime));
     const [checked, setchecked] = useState(false);
     return (
         <View >
-            <Title type='Checkpoint' color={colors.blue} icon="flag" id={props.id}  removeItem={props.removeItem} />
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
-
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
                     <CircularSlider
                         step={5} min={0} max={60} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 20 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.blue}
@@ -120,9 +118,7 @@ export const Checkpoint = (props) => {
                         <Text style={styles.min}>sec</Text>
                     </CircularSlider>
                 </View>
-                <View style={{ width: '60%', marginLeft: 14, marginTop: 15 }}>
-                    <Checkbox type="Wait for conformation" color={colors.blue} icon="check" />
-                </View>
+
             </View>
         </View>
     )
@@ -156,7 +152,7 @@ export const Notify = (props) => {
                     value={msg}
                 />
                 <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
-
+{/* 
                     {
                         props.destination.map((item, i) => (
                             <View key={i} style={{ flexDirection: 'row', width: '32%' }}>
@@ -166,7 +162,7 @@ export const Notify = (props) => {
                                 <Text style={styles.autoTitle}> &nbsp;{item}</Text>
                             </View>
                         ))
-                    }
+                    } */}
 
                 </View>
             </View>
