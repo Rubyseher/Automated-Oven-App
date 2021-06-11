@@ -34,10 +34,23 @@ export const styles = StyleSheet.create({
         marginBottom: 15,
         textAlign: 'center',
     },
+    carouselTitle: {
+        fontWeight: '400',
+        padding:10,
+        textAlign:'center',
+        fontSize: 21
+    },
     sliderTrackStyle: {
         backgroundColor: colors.grey,
         height: 12,
         borderRadius: 20,
+    },
+    carouselCircle: {
+        height: 95,
+        width: 95,
+        borderRadius: 47.5,
+        justifyContent: 'center',
+        backgroundColor: colors.yellow,
     },
     roundButtonM: {
         height: 70,
@@ -112,6 +125,23 @@ export const styles = StyleSheet.create({
         padding: 2,
         // marginTop:10,
         alignSelf: 'center',
+    },
+    mainCardContainer: {
+        height: 350,
+        width:300,
+        borderRadius:20,
+        alignItems:'center',
+        marginVertical:10,
+        padding: 50,
+        backgroundColor: colors.white,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.4,
+        shadowRadius: 6.94,
+        elevation: 4,
     },
     //   ********* historyScreen ********* 
     heading: {

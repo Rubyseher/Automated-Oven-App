@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useCallback } from 'react';
 import Slider from '@react-native-community/slider'
 import { useFocusEffect } from '@react-navigation/native';
-import { Image, View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
@@ -9,12 +9,28 @@ import OvenTop from './assets/Oven Direction Top.svg'
 import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
 import Ficon from 'react-native-vector-icons/Fontisto';
+import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './carouselItems';
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
 import { getCookingDetails } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
+const TimelineComponent = (props) => {
+    var item = props.item
+    switch (item) {
+        case "preheat": return <Preheat {...item} />
+        case "cook": return <Cook {...item} />
+        case "checkpoint": return <Checkpoint {...item} />
+        case "notify": return <Notify {...item} />
+        case "powerOff": return <PowerOff {...item} />
+        case "cooling": return <Cooling {...item} />
+        default: null
+    }
+    return null;
+}
 
 const GradientProgress = (props) => {
     return (
@@ -169,7 +185,7 @@ function mainScreen({ navigation }) {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
-                        console.log(d.result);
+                        console.log("data steps", d.result.steps);
                         parseData(d.result)
                     }
                     ws.close()
@@ -184,49 +200,46 @@ function mainScreen({ navigation }) {
         }, [])
     );
 
+    String.prototype.capitalize = function() {
+        return this.charAt(0).toUpperCase() + this.slice(1);
+    }
 
-
-
-
-    const Entries = [
-        {
-            title: "Item 1",
-            text: "Text 1",
-        },
-        {
-            title: "Item 2",
-            text: "Text 2",
-        },
-        {
-            title: "Item 3",
-            text: "Text 3",
-        },
-        {
-            title: "Item 4",
-            text: "Text 4",
-        },
-        {
-            title: "Item 5",
-            text: "Text 5",
-        },
-    ]
-    console.log("item.title", Entries[0].title);
-
-    const rItem = ({item}) => {
-        // console.log("item.title", item[i].title);
+    const mainCard = ({ item }) => {
+        var stepColor = {
+            cook: {
+                color: 'yellow',
+                icon: 'utensils'
+            },
+            notify: {
+                color: 'purple',
+                icon: 'bell'
+            },
+            checkpoint: {
+                color: 'blue',
+                icon: 'flag'
+            },
+            preheat: {
+                color: 'orange',
+                icon: 'fire-alt'
+            },
+            cooling: {
+                color: 'turquoise',
+                icon: 'snowflake'
+            },
+            powerOff: {
+                color: 'red',
+                icon: 'power-off'
+            }
+        }
         return (
-            <View style={{
-                backgroundColor: colors.lightBlue,
-                borderRadius: 12,
-                height: 350,
-                padding: 50,
-                // marginLeft: 25,
-                // marginRight: 25,
-            }}>
-                <Text style={{ fontSize: 30 }}>{item.type}</Text>
-                <Text>{item.type}</Text>
+            <View style={styles.mainCardContainer}>
+                <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
+                    <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{alignSelf:'center'}}/>
+                </View>
+                <Text style={styles.carouselTitle}>{item.type.capitalize()}</Text>
+                <Text style={styles.carouselTitle}>{item.temp}</Text>
+                <TimelineComponent item={item.type} item={item.temp}/>
             </View>
-
         )
     }
 
@@ -239,10 +252,10 @@ function mainScreen({ navigation }) {
                 layout={"default"}
                 ref={ref => this.carousel = ref}
                 data={data.steps}
-                sliderWidth={300}
-                itemWidth={300}
-                renderItem={rItem}
-            // onSnapToItem={index => this.setState({ activeIndex: index })} 
+                sliderWidth={400}
+                itemWidth={400}
+                renderItem={mainCard}
+                contentContainerCustomStyle={{ marginLeft: 45 }}
             />
 
             {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
