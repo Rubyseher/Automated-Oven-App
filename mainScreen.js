@@ -18,7 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const TimelineComponent = (props) => {
     var item = props.item
-    console.log("item",item);
+    console.log("item", item);
     switch (item.type) {
         case "preheat": return <Preheat {...item} />
         case "cook": return <Cook {...item} />
@@ -185,6 +185,8 @@ function mainScreen({ navigation }) {
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
                         console.log("data steps", d.result.steps);
+                        console.log("d.result.currentStep",d.result.currentStep);
+                        this._carousel.snapToItem(d.result.currentStep); 
                         parseData(d.result)
                     }
                     ws.close()
@@ -199,7 +201,7 @@ function mainScreen({ navigation }) {
         }, [])
     );
 
-    String.prototype.capitalize = function() {
+    String.prototype.capitalize = function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
     }
 
@@ -233,7 +235,7 @@ function mainScreen({ navigation }) {
         return (
             <View style={styles.mainCardContainer}>
                 <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
-                    <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{alignSelf:'center'}}/>
+                    <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
                 </View>
                 <Text style={styles.carouselTitle}>{item.type.capitalize()}</Text>
                 <TimelineComponent item={item} />
@@ -246,16 +248,21 @@ function mainScreen({ navigation }) {
 
             <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
 
-           { data.steps && <Carousel
-                layout={"default"}
-                ref={ref => this.carousel = ref}
-                data={data.steps}
-                sliderWidth={400}
-                itemWidth={400}
-                renderItem={mainCard}
-                contentContainerCustomStyle={{ marginLeft: 45 }}
-            />
-}
+            {
+                data.steps && <Fragment>
+                    <Carousel
+                        layout={"default"}
+                        // ref={ref => this.carousel = ref}
+                        ref={(c) => { this._carousel = c; }}
+                        data={data.steps}
+                        sliderWidth={400}
+                        itemWidth={400}
+                        renderItem={mainCard}
+                        contentContainerCustomStyle={{ marginLeft: 45 }}
+                    />
+                </Fragment>
+            }
+
             {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
 
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
@@ -263,7 +270,7 @@ function mainScreen({ navigation }) {
                 <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
                 <TemperatureSlider icon={<OvenBottom height={29} width={29} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
             </View> */}
-            
+
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 18 }}>
                 {data.isCooking && <Button
                     onPress={() => navigation.navigate('automationScreen')}
