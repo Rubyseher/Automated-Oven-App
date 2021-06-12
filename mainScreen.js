@@ -11,10 +11,14 @@ import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './carousel
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
-import { getCookingDetails, getInstructionClass } from './webScraper';
+import { getCookingDetails, getInstructionClass, isAcceptedURL } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+
+String.prototype.capitalize = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 const TimelineComponent = (props) => {
     var item = props.item
@@ -82,27 +86,16 @@ function mainScreen({ navigation }) {
 
     const fetchFromUrl = async () => {
         const url = await Clipboard.getString();
-        // let url = "https://www.allrecipes.com/recipe/11432/twisty-cookies/"
 
-        var acceptedURLs = ["allrecipes", "sallysbaking", "gimmesomeoven", "recipetineats", "delish", "indianhealthyrecipes", "vegrecipesofindia"]
         var regexURL = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
 
-        if (acceptedURLs.some(el => url.includes(el)) && url.match(regexURL)) {
-            fetch(url)
-                .then(res => res.text())
-                .then(data => {
-                    jsdom.env(data, (errors, window) => {
-                        var instClass = getInstructionClass(url)
-                        if (!instClass) return
-
-                        const inst = window.document.querySelectorAll(instClass)
-
-                        var cookingValues = getCookingDetails(inst, url)
-
-                        if (cookingValues['temp'] > 0 && cookingValues['time'] > 0)  sendCookingFromURL(cookingValues)
-                    })
+        if (isAcceptedURL(url) && url.match(regexURL))
+            fetch(url).then(res => res.text()).then(data => {
+                jsdom.env(data, (err, window) => {
+                    var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
+                    if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) sendCookingFromURL(cookingValues)
                 })
-        }
+            })
     }
 
     const progressPercent = (e) => {
@@ -189,10 +182,6 @@ function mainScreen({ navigation }) {
             }
         }, [])
     );
-
-    String.prototype.capitalize = function () {
-        return this.charAt(0).toUpperCase() + this.slice(1);
-    }
 
     const mainCard = ({ item }) => {
         var stepColor = {

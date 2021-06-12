@@ -17,17 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const AuthContext = createContext(null)
 
 export const stateConditionString = state => {
-    let navigateTo = '';
-    if (state.isLoading) {
-        navigateTo = 'LOAD_APP';
-    }
-    if (state.isSignedIn && state.userName) {
-        navigateTo = 'LOAD_HOME';
-    }
-    if (!state.isSignedIn) {
-        navigateTo = 'LOAD_LOGIN';
-    }
-    return navigateTo;
+    if (state.isLoading) return 'LOAD_APP';
+    if (state.isSignedIn) return state.userName ? 'LOAD_HOME' : 'LOAD_LOGIN';
 };
 
 const NavContainerTheme = {

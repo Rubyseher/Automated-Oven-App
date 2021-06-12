@@ -76,3 +76,8 @@ export const getInstructionClass = (url) => {
         return ".wprm-recipe-instructions"
     else return
 }
+
+export const isAcceptedURL = (url) => {
+    var acceptedURLs = ["allrecipes", "sallysbaking", "gimmesomeoven", "recipetineats", "delish", "indianhealthyrecipes", "vegrecipesofindia"]
+    return acceptedURLs.some(el => url.includes(el))
+}
