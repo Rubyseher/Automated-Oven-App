@@ -11,7 +11,7 @@ import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './carousel
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
-import { getCookingDetails } from './webScraper';
+import { getCookingDetails, getInstructionClass } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -67,54 +67,42 @@ function mainScreen({ navigation }) {
     const [data, setData] = useState();
     const [loading, setLoading] = useState(true);
 
-    const FetchUrl = async () => {
-        const url = await Clipboard.getString();
-        console.log("url ", url);
-        // let url = "https://www.allrecipes.com/recipe/11432/twisty-cookies/"
-        fetch(url)
-            .then(res => res.text())
-            .then(data => {
-                jsdom.env(data, (errors, window) => {
-                    var instClass
+    const sendCookingFromURL = (values) => {
+        var ws = new WebSocket('ws://oven.local:8069');
+        ws.onopen = () => {
+            req = {
+                module: 'cook',
+                function: 'startCustom',
+                params: [values]
+            }
+            ws.send(JSON.stringify(req));
+            ws.close()
+        };
+    }
 
-                    if (url.includes("allrecipes"))
-                        instClass = ".instructions-section"
-                    else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
-                        instClass = ".tasty-recipes-instructions-body"
-                    else if (url.includes("recipetineats"))
-                        instClass = ".wprm-recipe-instructions"
-                    else if (url.includes("delish"))
-                        instClass = ".direction-lists"
-                    else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
-                        instClass = ".wprm-recipe-instructions"
-                    else {
-                        console.log("Unsupported Website");
-                        return
-                    }
-                    const inst = window.document.querySelectorAll(instClass)
-                    console.log("url is", url);
-                    console.log("getcooking details called", getCookingDetails(inst, url)[temp]);
-                    // var ws = new WebSocket('ws://oven.local:8069');
-                    // bothTemp = getCookingDetails(inst, url)[temp]
-                    // ws.onopen = () => {
-                    //     req = {
-                    //         module: 'cook',
-                    // function: `set${name}Temp`,
-                    //     params: {
-                    //         "bottom": bothTemp,
-                    //         "cooktype":getCookingDetails(inst, url)[bake]?"Bake":"Cook",
-                    //         "endTime": getCookingDetails(inst, url)[time],
-                    //         "isCooking": false,
-                    //         "isPaused": false,
-                    //         "startTime": 0,
-                    //         "top": bothTemp
-                    //     }
-                    // }
-                    // ws.send(JSON.stringify(req));
-                    // ws.close()
-                    // };
+    const fetchFromUrl = async () => {
+        const url = await Clipboard.getString();
+        // let url = "https://www.allrecipes.com/recipe/11432/twisty-cookies/"
+
+        var acceptedURLs = ["allrecipes", "sallysbaking", "gimmesomeoven", "recipetineats", "delish", "indianhealthyrecipes", "vegrecipesofindia"]
+        var regexURL = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
+
+        if (acceptedURLs.some(el => url.includes(el)) && url.match(regexURL)) {
+            fetch(url)
+                .then(res => res.text())
+                .then(data => {
+                    jsdom.env(data, (errors, window) => {
+                        var instClass = getInstructionClass(url)
+                        if (!instClass) return
+
+                        const inst = window.document.querySelectorAll(instClass)
+
+                        var cookingValues = getCookingDetails(inst, url)
+
+                        if (cookingValues['temp'] > 0 && cookingValues['time'] > 0)  sendCookingFromURL(cookingValues)
+                    })
                 })
-            })
+        }
     }
 
     const progressPercent = (e) => {
@@ -164,7 +152,6 @@ function mainScreen({ navigation }) {
 
     useFocusEffect(
         useCallback(() => {
-            FetchUrl()
             ReactNativeHapticFeedback.trigger("impactHeavy");
             const parseData = (d) => {
                 setTopTemp(d.top)
@@ -184,9 +171,11 @@ function mainScreen({ navigation }) {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
+                        if (!d.result.isCooking)
+                            fetchFromUrl()
                         console.log("data steps", d.result.steps);
-                        console.log("d.result.currentStep",d.result.currentStep);
-                        this._carousel.snapToItem(d.result.currentStep); 
+                        console.log("d.result.currentStep", d.result.currentStep);
+                        this._carousel.snapToItem(d.result.currentStep);
                         parseData(d.result)
                     }
                     ws.close()
