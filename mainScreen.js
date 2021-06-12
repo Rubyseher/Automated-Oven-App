@@ -5,8 +5,6 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
-import OvenTop from './assets/Oven Direction Top.svg'
-import OvenBottom from './assets/Oven Direction Bottom.svg'
 import LinearGradient from 'react-native-linear-gradient';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './carouselItems';

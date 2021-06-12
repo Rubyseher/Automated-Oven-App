@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { styles, colors } from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -11,6 +11,18 @@ import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
 const TemperatureSlider = (props) => {
+    const setTemp = (value) => {
+        var ws = new WebSocket('ws://oven.local:8069');
+        ws.onopen = () => {
+            req = {
+                module: 'cook',
+                function: `setTemp`,
+                params: [(props.name=="top"?"top":"bottom"), value]
+            }
+            ws.send(JSON.stringify(req));
+            ws.close()
+        };
+    }
     return (
         <View>
             {
@@ -22,10 +34,11 @@ const TemperatureSlider = (props) => {
             <Slider
                 maximumValue={250}
                 minimumValue={0}
+                onValueChange={(v)=> props.handler.setValue(v)}
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 step={5}
-                onSlidingComplete={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); }}
+                onSlidingComplete={value => { setTemp(value); ReactNativeHapticFeedback.trigger("impactLight"); }}
                 value={props.handler.value}
                 style={{ marginBottom: -12 }}
                 thumbTintColor="transparent"
@@ -39,6 +52,7 @@ const TemperatureSlider = (props) => {
         </View>
     )
 }
+
 const Title = (props) => {
     return (
         <View style={{ flexDirection: 'row' }}>
@@ -47,7 +61,7 @@ const Title = (props) => {
             </View>
             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
             <Button
-                onPress={() =>props.removeItem(props.id)}
+                onPress={() => props.removeItem(props.id)}
                 icon={<Ficon name="close-a" size={6} color={colors.white} />}
                 buttonStyle={styles.closeButtonS}
                 containerStyle={styles.closeButtonPaddingS}
@@ -70,13 +84,27 @@ const Checkbox = (props) => {
 
 export const Preheat = (props) => {
     const [tempSlider, setTempSlider] = useState(parseInt(props.temp));
+    const setTemp = (value) => {
+        var ws = new WebSocket('ws://oven.local:8069');
+        ws.onopen = () => {
+            req = {
+                module: 'cook',
+                function: `setTemp`,
+                params: ["preheat",value]
+            }
+            ws.send(JSON.stringify(req));
+            ws.close()
+        };
+    }
     return (
         <View >
             <CircularSlider
-                step={1} min={0} max={250} value={tempSlider} onChange={(v) => { setTempSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.red}
+                step={1} min={0} max={250} value={tempSlider}
+                onChange={(v) => { setTemp(v); setTempSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }}
+                contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.red}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
             >
-                <Text style={{'color':colors.red,'fontSize':18}}>{tempSlider}°C</Text>
+                <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{tempSlider}°C</Text>
             </CircularSlider>
         </View>
     )
@@ -85,23 +113,35 @@ export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
-
+    const setTemp = (value) => {
+        var ws = new WebSocket('ws://oven.local:8069');
+        ws.onopen = () => {
+            req = {
+                module: 'cook',
+                function: `setTime`,
+                params: ["cook",value]
+            }
+            ws.send(JSON.stringify(req));
+            ws.close()
+        };
+    }
     return (
         <View >
-            <View style={{ flexDirection: 'row', marginTop: 14 }}>
-
-                <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
-                    <CircularSlider
-                        step={2} min={0} max={90} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
-                        openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
-                    >
-                        <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>
-                        <Text style={[styles.min, { color: colors.orange }]}>min</Text>
-                    </CircularSlider>
-                </View>
+            <View style={{ width: '100%', marginLeft: 20 }}>
+                <TemperatureSlider top icon={<OvenTop height={22} width={22} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} name="top"/>
+                <TemperatureSlider bottom icon={<OvenBottom height={22} width={22} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} name="bottom"/>
             </View>
-        </View>)
-
+            <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
+                <CircularSlider
+                    step={2} min={0} max={90} value={timeSlider} onChange={(v) => {setTemp(v); setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
+                    openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
+                >
+                    <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>
+                    <Text style={[styles.min, { color: colors.orange }]}>min</Text>
+                </CircularSlider>
+            </View>
+        </View>
+    )
 }
 export const Checkpoint = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.maxWaitTime));
@@ -111,14 +151,16 @@ export const Checkpoint = (props) => {
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
                     <CircularSlider
-                        step={5} min={0} max={60} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 20 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.blue}
-                        openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
+                        step={5} min={0} max={60} value={timeSlider} 
+                        contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} 
+                        buttonBorderColor={colors.blue} openingRadian={Math.PI / 4} 
+                        buttonRadius={8} radius={40} 
+                        linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
                     >
                         <Text style={styles.value}>{timeSlider}</Text>
                         <Text style={styles.min}>sec</Text>
                     </CircularSlider>
                 </View>
-
             </View>
         </View>
     )
@@ -137,10 +179,10 @@ export const Notify = (props) => {
     const destiColor = ["lightRed", "orange", "yellow", "blue"]
     const [title, changeTitle] = useState(props.title);
     const [msg, changeMsg] = useState(props.message);
+
     return (
         <View >
-            <Title type='Notify' color={colors.purple} icon="bell" id={props.id}  removeItem={props.removeItem} />
-            <View style={{ marginTop: 10 }}>
+            {/* <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
                     onChangeText={changeTitle}
@@ -152,7 +194,6 @@ export const Notify = (props) => {
                     value={msg}
                 />
                 <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
-{/* 
                     {
                         props.destination.map((item, i) => (
                             <View key={i} style={{ flexDirection: 'row', width: '32%' }}>
@@ -162,35 +203,31 @@ export const Notify = (props) => {
                                 <Text style={styles.autoTitle}> &nbsp;{item}</Text>
                             </View>
                         ))
-                    } */}
-
+                    }
                 </View>
-            </View>
+            </View> */}
         </View>
     )
 }
 export const PowerOff = (props) => {
     return (
-        <View >
-            <Title type='Power Off' color={colors.lightRed} icon="power-off" id={props.id}  removeItem={props.removeItem} />
             <View style={{ margin: 20 }}>
                 <Icon name="power-off" size={38} color={colors.lightRed} style={{ alignSelf: 'center', marginTop: 18 }} solid />
             </View>
-        </View>
     )
 }
 export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
-        <View >
-            <Title type="Cooling Time" color={colors.turquoise} icon="snowflake" id={props.id}  removeItem={props.removeItem} />
             <CircularSlider
-                step={1} min={0} max={10} value={timeSlider} onChange={(v) => { setTimeSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.turquoise}
-                openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
+                step={1} min={0} max={10} value={timeSlider} contentContainerStyle={styles.contentContainerStyle} 
+                strokeWidth={4} buttonBorderColor={colors.turquoise} openingRadian={Math.PI / 4} buttonRadius={8} radius={40} 
+                linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
             >
                 <Text style={styles.value}>{timeSlider}</Text>
                 <Text style={styles.min}>min</Text>
             </CircularSlider>
-        </View>
     )
 }
+
+

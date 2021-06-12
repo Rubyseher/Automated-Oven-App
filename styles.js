@@ -36,7 +36,8 @@ export const styles = StyleSheet.create({
     },
     carouselTitle: {
         fontWeight: '400',
-        padding:10,
+        paddingTop:14,
+        paddingBottom:20,
         textAlign:'center',
         fontSize: 21
     },
@@ -127,12 +128,13 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     mainCardContainer: {
-        height: 350,
+        height: 420,
         width:300,
         borderRadius:20,
         alignItems:'center',
         marginVertical:10,
-        padding: 50,
+        paddingHorizontal: 26,
+        paddingVertical: 50,
         backgroundColor: colors.white,
         shadowColor: "#000",
         shadowOffset: {
