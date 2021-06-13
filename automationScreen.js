@@ -17,7 +17,7 @@ const FoodName = (props) => {
       let avgTemp = 0, duration = 0
       {
         props.steps && props.steps.forEach(i => {
-          if (i.type == 'Cook') {
+          if (i.type == 'cook') {
             avgTemp = (((i.topTemp + i.bottomTemp) / 2) * i.time) + avgTemp
             duration = i.time + duration
           }

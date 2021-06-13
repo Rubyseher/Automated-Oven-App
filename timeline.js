@@ -86,7 +86,7 @@ export const Preheat = (props) => {
 export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
-    const [timeSlider, setTimeSlider] = useState(parseInt(props.time));
+    const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
 
     return (
         <View style={[styles.autoContainer]}>
@@ -162,7 +162,7 @@ export const Notify = (props) => {
                     onChangeText={changeMsg}
                     value={msg}
                 />
-                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
+                {/* <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
 
                     {
                         props.destination.map((item, i) => (
@@ -175,7 +175,7 @@ export const Notify = (props) => {
                         ))
                     }
 
-                </View>
+                </View> */}
             </View>
         </View>
     )

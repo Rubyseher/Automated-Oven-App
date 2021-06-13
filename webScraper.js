@@ -1,5 +1,5 @@
 
-export const parseLi = (para,url) => {
+export const parseLi = (para, url) => {
     var params = {
         preheat: false,
         temp: 0,
@@ -43,7 +43,7 @@ export const parseLi = (para,url) => {
     return params
 }
 
-export const getCookingDetails = (inst,url) => {
+export const getCookingDetails = (inst, url) => {
     let finalParams = {
         preheat: false,
         temp: 0,
@@ -52,7 +52,7 @@ export const getCookingDetails = (inst,url) => {
     }
     inst._toArray().forEach(i => {
         const para = [...i.querySelectorAll("li")._toArray()]
-        let res = parseLi(para,url)
+        let res = parseLi(para, url)
         finalParams.preheat = finalParams.preheat || res.preheat
         finalParams.bake = finalParams.bake || res.bake
         finalParams.temp = Math.max(finalParams.temp, res.temp)
@@ -61,4 +61,23 @@ export const getCookingDetails = (inst,url) => {
     return finalParams
 
 
+}
+
+export const getInstructionClass = (url) => {
+    if (url.includes("allrecipes"))
+        return ".instructions-section"
+    else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
+        return ".tasty-recipes-instructions-body"
+    else if (url.includes("recipetineats"))
+        return ".wprm-recipe-instructions"
+    else if (url.includes("delish"))
+        return ".direction-lists"
+    else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia"))
+        return ".wprm-recipe-instructions"
+    else return
+}
+
+export const isAcceptedURL = (url) => {
+    var acceptedURLs = ["allrecipes", "sallysbaking", "gimmesomeoven", "recipetineats", "delish", "indianhealthyrecipes", "vegrecipesofindia"]
+    return acceptedURLs.some(el => url.includes(el))
 }

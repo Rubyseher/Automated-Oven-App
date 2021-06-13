@@ -157,7 +157,7 @@ export const Cook = (props) => {
     )
 }
 export const Checkpoint = (props) => {
-    const [timeSlider, setTimeSlider] = useState(parseInt(props.maxWaitTime));
+    const [timeSlider, setTimeSlider] = useState(parseInt(props.timeout));
     const [checked, setchecked] = useState(false);
     return (
         <View >

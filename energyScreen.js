@@ -22,7 +22,7 @@ export default function energyScreen() {
         var last7energy = []
         for (m = moment().subtract(6, 'd'); m.isSameOrBefore(moment()); m.add(1, 'd')) {
             var date = m.format('YYYY-MM-DD')
-            if (dates.slice(-7).includes(date)) last7energy.push(Object.values(d[date]).reduce(energySum))
+            if (dates.slice(-7).includes(date))  last7energy.push(Object.values(d[date]).map(e => e.watts).reduce(energySum))
             else last7energy.push(0)
         }
         setEnergyData(last7energy)
@@ -31,8 +31,7 @@ export default function energyScreen() {
         var monthValues, monthEnergy = 0
         dates.slice(-31).forEach(i => {
             if (moment(i, 'YYYY-MM-DD').isSame(moment(), 'month')) {
-                monthValues = Object.values(d[i]);
-                monthEnergy = monthValues.reduce(energySum) + monthEnergy
+                monthEnergy +=Object.values(d[i]).map(e => e.watts).reduce(energySum)
             }
         })
         setMonthSum((monthEnergy / 1000).toFixed(2))

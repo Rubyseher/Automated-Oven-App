@@ -79,14 +79,15 @@ export default function settingsScreen() {
                 <SettingSlider icon={<Ficon name="day-sunny" size={24} color={colors.darkGrey} />} handler={{ value: backlight, setValue: setBacklight }} sendHandler={setPivalue} name='Backlight'/>
                 <SettingSlider icon={<Ficon name="volume-up" size={16} color={colors.darkGrey} />} handler={{ value: backlight, setValue: setBacklight }} sendHandler={setPivalue} name='Volume' />
             </View>
+            {/* restart button */}
             <FlatList style={{ height: '140%' }}
                 data={[
-                    { key: 'Display' },
-                    // { key: 'backlight' },
+                    { key: 'Oven URL' }, 
                     { key: 'Profile' },
                     { key: 'Sleep' },
                     { key: 'History' },
                     { key: 'Detection' },
+                    { key: 'Developer' }, // debug mode, logs
                     { key: 'Preferences' },
                     { key: 'Sounds' },
                     { key: 'Safety Alerts' },
