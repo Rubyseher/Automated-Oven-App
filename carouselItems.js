@@ -17,7 +17,7 @@ const TemperatureSlider = (props) => {
             req = {
                 module: 'cook',
                 function: `setTemp`,
-                params: [(props.name=="top"?"top":"bottom"), value]
+                params: [(props.name == "top" ? "top" : "bottom"), value]
             }
             ws.send(JSON.stringify(req));
             ws.close()
@@ -34,7 +34,7 @@ const TemperatureSlider = (props) => {
             <Slider
                 maximumValue={250}
                 minimumValue={0}
-                onValueChange={(v)=> props.handler.setValue(v)}
+                onValueChange={(v) => props.handler.setValue(v)}
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.yellow}
                 step={5}
@@ -55,17 +55,16 @@ const TemperatureSlider = (props) => {
 
 const Title = (props) => {
     return (
-        <View style={{ flexDirection: 'row' }}>
-            <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
-                <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
-            </View>
-            <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
-            <Button
-                onPress={() => props.removeItem(props.id)}
-                icon={<Ficon name="close-a" size={6} color={colors.white} />}
-                buttonStyle={styles.closeButtonS}
-                containerStyle={styles.closeButtonPaddingS}
-            />
+        <View >
+            {/* <CircularSlider
+                step={1} min={0} max={100} value={60}
+                contentContainerStyle={styles.contentContainerStyle}
+                strokeWidth={4}
+                // buttonBorderColor={transparent}
+                openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
+            >
+                <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
+            </CircularSlider> */}
         </View>
     )
 }
@@ -90,7 +89,7 @@ export const Preheat = (props) => {
             req = {
                 module: 'cook',
                 function: `setTemp`,
-                params: ["preheat",value]
+                params: ["preheat", value]
             }
             ws.send(JSON.stringify(req));
             ws.close()
@@ -99,12 +98,12 @@ export const Preheat = (props) => {
     return (
         <View >
             <CircularSlider
-                step={1} min={0} max={250} value={tempSlider}
-                onChange={(v) => { setTemp(v); setTempSlider(v); if (v % 2 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }}
-                contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.red}
+                step={1} min={0} max={100} value={60}
+                contentContainerStyle={styles.contentContainerStyle}
+                strokeWidth={4}
+                // buttonBorderColor={transparent}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
             >
-                <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{tempSlider}°C</Text>
             </CircularSlider>
         </View>
     )
@@ -119,7 +118,7 @@ export const Cook = (props) => {
             req = {
                 module: 'cook',
                 function: `setTime`,
-                params: ["cook",value]
+                params: ["cook", value]
             }
             ws.send(JSON.stringify(req));
             ws.close()
@@ -127,13 +126,27 @@ export const Cook = (props) => {
     }
     return (
         <View >
+            <CircularSlider
+                step={1} min={0} max={100} value={65}
+                contentContainerStyle={styles.contentContainerStyle}
+                strokeWidth={10}
+                openingRadian={Math.PI / 4}
+                 buttonRadius={0}
+                 radius={56} 
+                linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
+            >
+                <View style={[styles.carouselCircle, { backgroundColor: colors.yellow }]}>
+                    <Icon name="utensils" color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
+                </View>
+            </CircularSlider>
+
             <View style={{ width: '100%', marginLeft: 20 }}>
-                <TemperatureSlider top icon={<OvenTop height={22} width={22} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} name="top"/>
-                <TemperatureSlider bottom icon={<OvenBottom height={22} width={22} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} name="bottom"/>
+                <TemperatureSlider top icon={<OvenTop height={22} width={22} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} name="top" />
+                <TemperatureSlider bottom icon={<OvenBottom height={22} width={22} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} name="bottom" />
             </View>
             <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
                 <CircularSlider
-                    step={2} min={0} max={90} value={timeSlider} onChange={(v) => {setTemp(v); setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
+                    step={2} min={0} max={90} value={timeSlider} onChange={(v) => { setTemp(v); setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
                     openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
                 >
                     <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>
@@ -151,10 +164,10 @@ export const Checkpoint = (props) => {
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
                 <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
                     <CircularSlider
-                        step={5} min={0} max={60} value={timeSlider} 
-                        contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} 
-                        buttonBorderColor={colors.blue} openingRadian={Math.PI / 4} 
-                        buttonRadius={8} radius={40} 
+                        step={5} min={0} max={60} value={timeSlider}
+                        contentContainerStyle={styles.contentContainerStyle} strokeWidth={4}
+                        buttonBorderColor={colors.blue} openingRadian={Math.PI / 4}
+                        buttonRadius={8} radius={40}
                         linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
                     >
                         <Text style={styles.value}>{timeSlider}</Text>
@@ -211,22 +224,22 @@ export const Notify = (props) => {
 }
 export const PowerOff = (props) => {
     return (
-            <View style={{ margin: 20 }}>
-                <Icon name="power-off" size={38} color={colors.lightRed} style={{ alignSelf: 'center', marginTop: 18 }} solid />
-            </View>
+        <View style={{ margin: 20 }}>
+            <Icon name="power-off" size={38} color={colors.lightRed} style={{ alignSelf: 'center', marginTop: 18 }} solid />
+        </View>
     )
 }
 export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
-            <CircularSlider
-                step={1} min={0} max={10} value={timeSlider} contentContainerStyle={styles.contentContainerStyle} 
-                strokeWidth={4} buttonBorderColor={colors.turquoise} openingRadian={Math.PI / 4} buttonRadius={8} radius={40} 
-                linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
-            >
-                <Text style={styles.value}>{timeSlider}</Text>
-                <Text style={styles.min}>min</Text>
-            </CircularSlider>
+        <CircularSlider
+            step={1} min={0} max={10} value={timeSlider} contentContainerStyle={styles.contentContainerStyle}
+            strokeWidth={4} buttonBorderColor={colors.turquoise} openingRadian={Math.PI / 4} buttonRadius={8} radius={40}
+            linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
+        >
+            <Text style={styles.value}>{timeSlider}</Text>
+            <Text style={styles.min}>min</Text>
+        </CircularSlider>
     )
 }
 
