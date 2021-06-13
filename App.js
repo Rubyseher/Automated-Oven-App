@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createContext, useReducer, useMemo, useContext } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import profileScreen from './profileScreen'
@@ -53,10 +54,9 @@ function LoginScreen() {
     );
 }
 
-function Main() {
+function AutomationStack() {
     return (
-        <Stack.Navigator initialRouteName="main" headerMode='none'>
-            <Stack.Screen name="main" component={mainScreen} />
+        <Stack.Navigator initialRouteName="automationScreen" headerMode='none'>
             <Stack.Screen name="automationScreen" component={automationScreen} />
             <Stack.Screen name="automationEdit" component={automationEditScreen} />
         </Stack.Navigator>
@@ -69,8 +69,8 @@ function mainTabs() {
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
-                    if (route.name === 'profile') {
-                        iconName = 'user';
+                    if (route.name === 'automations') {
+                        return <IonIcon name="color-wand" size={size+4} color={color} />;
                     } else if (route.name === 'history') {
                         iconName = 'history';
                     } else if (route.name === 'energy') {
@@ -87,8 +87,8 @@ function mainTabs() {
                 inactiveTintColor: colors.navBarInactive,
                 style: { borderTopWidth: 0 }
             }}>
-            <Tab.Screen name="profile" component={profileScreen} />
             <Tab.Screen name="history" component={historyScreen} />
+            <Tab.Screen name="automations" component={AutomationStack} />
             <Tab.Screen name="main"
                 options={{
                     tabBarIcon: ({ color }) => (
@@ -116,7 +116,7 @@ function mainTabs() {
                         </View>
                     )
                 }}
-                component={Main} />
+                component={mainScreen} />
             <Tab.Screen name="energy" component={energyScreen} />
             <Tab.Screen name="settings" component={settingsScreen} />
         </Tab.Navigator>

@@ -98,12 +98,12 @@ export default function automationScreen({ navigation }, props) {
     <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
       <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
         <Text style={styles.closeHeading}>Automator</Text>
-        <Button
+        {/* <Button
           onPress={() => navigation.goBack()}
           icon={<Ficon name="close-a" size={8} color={colors.white} />}
           buttonStyle={styles.closeButtonM}
           containerStyle={styles.closeButtonPaddingM}
-        />
+        /> */}
       </View>
       {
         data.length > 0 ? data.map((item, i) => (

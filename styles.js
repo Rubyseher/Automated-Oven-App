@@ -323,10 +323,9 @@ export const styles = StyleSheet.create({
     autoRecipe: {
         fontWeight: 'bold',
         marginLeft: 14,
-        marginRight: 38,
         fontSize: 21,
         marginTop: 26,
-        width: '40%'
+        width: '60%'
     },
     autoContainer: {
         width: '100%',

@@ -63,6 +63,7 @@ const FoodName = (props) => {
 
 export default function historyScreen() {
     const [data, setData] = useState([]);
+    const [names, setNames] = useState([]);
 
     useFocusEffect(
         useCallback(() => {
@@ -79,7 +80,8 @@ export default function historyScreen() {
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 if (d.type == 'result') {
-                    setData(d.result)
+                    setData(Object.values(d.result))
+                    setNames(Object.keys(d.result))
                     ws.close()
                 }
             };
@@ -90,8 +92,8 @@ export default function historyScreen() {
         <View style={{ paddingHorizontal: 32, paddingTop: 10 }}>
             <Text style={styles.heading}>History</Text>
             {
-                data.length > 0 ? data.map((item, i) => (
-                    <FoodName key={i} name={item.item} steps={item.steps} />
+                names.length > 0 ? data.map((item, i) => (
+                    <FoodName key={i} name={names[i]} steps={item.steps} />
                 )) : null
             }
         </View>
