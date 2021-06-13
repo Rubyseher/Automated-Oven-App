@@ -1,8 +1,7 @@
 import { View, Text, TextInput } from 'react-native';
-import React, { Fragment, useState, useCallback } from 'react';
+import React, { Fragment, useState } from 'react';
 import { styles, colors } from './styles';
-import { Preheat, Cook, Checkpoint, Pause, Notify, PowerOff, Cooling, timelineData } from './timeline';
-import { useFocusEffect } from '@react-navigation/native';
+import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './timeline';
 import { ScrollView } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -14,13 +13,13 @@ const TimelineComponent = (props) => {
     item.removeItem = props.removeItem
 
     switch (item.type) {
-        case "Preheat": return <Preheat {...item} />
-        case "Cook": return <Cook {...item} />
-        case "Checkpoint": return <Checkpoint {...item} />
+        case "preheat": return <Preheat {...item} />
+        case "cook": return <Cook {...item} />
+        case "checkpoint": return <Checkpoint {...item} />
         // case "Pause": return <Pause {...item} />
-        case "Notify": return <Notify {...item} />
-        case "PowerOff": return <PowerOff {...item} />
-        case "Cooling": return <Cooling {...item} />
+        case "notify": return <Notify {...item} />
+        case "power off": return <PowerOff {...item} />
+        case "cooling": return <Cooling {...item} />
         default: null
     }
     return null;
@@ -46,43 +45,43 @@ export default function automationEditScreen({ navigation,route }, props) {
         var st = steps;
 
         switch (i) {
-            case "Preheat": content = {
-                "type": "Preheat",
+            case "preheat": content = {
+                "type": "preheat",
                 "temp": 60
             }
                 break;
-            case "Cook": content = {
-                "type": "Cook",
+            case "cook": content = {
+                "type": "cook",
                 "topTemp": 170,
                 "bottomTemp": 0,
                 "time": 30
             }
                 break;
 
-            case "Checkpoint": content = {
-                "type": "Checkpoint",
+            case "checkpoint": content = {
+                "type": "checkpoint",
                 "wait": true,
                 "timeout": 30
             }
                 break;
-            case "Notify":
+            case "notify":
                 content = {
-                    "type": "Notify",
+                    "type": "notify",
                     "destination": ["John", "Bob", "Tom", "Alexa"],
                     "title": "Cooking Complete",
                     "message": "Pizza is done Cooking"
                 }
                 break;
 
-            case "PowerOff":
+            case "power off":
                 content = {
-                    "type": "PowerOff"
+                    "type": "power off"
                 }
                 break;
 
-            case "Cooling":
+            case "cooling":
                 content = {
-                    "type": "Cooling",
+                    "type": "cooling",
                     "duration": 10
                 }
                 break;
@@ -94,7 +93,7 @@ export default function automationEditScreen({ navigation,route }, props) {
         setVisible(!visible);
     }
 
-    var types = ['Cook', 'Notify', 'Checkpoint', 'Preheat', 'Cooling', 'PowerOff']
+    var types = ['cook', 'notify', 'checkpoint', 'preheat', 'cooling', 'power off']
     var stepColor = ['yellow', 'purple', 'blue', 'orange', 'turquoise', 'red']
     var icon = ['utensils', 'bell', 'flag', 'fire-alt', 'snowflake', 'power-off']
 
