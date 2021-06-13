@@ -11,7 +11,7 @@ import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './carousel
 import moment from 'moment';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
-import { getCookingDetails, getInstructionClass, isAcceptedURL } from './webScraper';
+import { getCookingDetails, getInstructionClass, isAcceptedURL, getTitleClass, cleanTitle } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -106,6 +106,7 @@ function mainScreen({ navigation }) {
             fetch(url).then(res => res.text()).then(data => {
                 jsdom.env(data, (err, window) => {
                     var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
+                    cookingValues.item = cleanTitle(window.document.querySelector(getTitleClass(url)).textContent)
                     if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) sendCookingFromURL(cookingValues)
                 })
             })

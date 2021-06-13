@@ -22,7 +22,7 @@ export default function energyScreen() {
         var last7energy = []
         for (m = moment().subtract(6, 'd'); m.isSameOrBefore(moment()); m.add(1, 'd')) {
             var date = m.format('YYYY-MM-DD')
-            if (dates.slice(-7).includes(date))  last7energy.push(Object.values(d[date]).map(e => e.watts).reduce(energySum))
+            if (dates.slice(-7).includes(date)) last7energy.push(Object.values(d[date]).map(e => e.watts).reduce(energySum))
             else last7energy.push(0)
         }
         setEnergyData(last7energy)
@@ -31,7 +31,7 @@ export default function energyScreen() {
         var monthEnergy = 0
         dates.slice(-31).forEach(i => {
             if (moment(i, 'YYYY-MM-DD').isSame(moment(), 'month')) {
-                monthEnergy +=Object.values(d[i]).map(e => e.watts).reduce(energySum)
+                monthEnergy += Object.values(d[i]).map(e => e.watts).reduce(energySum)
             }
         })
         setMonthSum((monthEnergy / 1000).toFixed(2))
@@ -61,14 +61,8 @@ export default function energyScreen() {
                 };
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
-                    if (d.type === 'result') {
-                        if (d.req === 'getAll') {
-                            parseData(d.result)
-                        }
-                        else {
-                            setCurrentUsage(parseInt(d.result))
-                        }
-                    }
+                    if (d.type === 'result')
+                        (d.req === 'getAll') ? parseData(d.result) : setCurrentUsage(parseInt(d.result))
                     ws.close()
                 };
             }

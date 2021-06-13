@@ -69,7 +69,7 @@ const FoodName = (props) => {
     )
 }
 
-export default function automationScreen({ navigation }, props) {
+export default function automationScreen() {
     const [data, setData] = useState([]);
     const [keys, setKeys] = useState([]);
     useFocusEffect(
@@ -109,11 +109,6 @@ export default function automationScreen({ navigation }, props) {
                     <FoodName key={i} name={item.name} steps={item.steps} id={keys[i]} iData={item} />
                 )) : null
             }
-            {/* {
-        Object.values(data).length > 0 ? Object.values(data).map((item, i) => (
-          <FoodName key={i} name={item.name} steps={item.steps} id={Object.keys(data)[i]} iData={item} />
-        )) : null
-      } */}
         </ScrollView>
     );
 }
