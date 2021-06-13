@@ -21,49 +21,61 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+const progressPercent = (start, end) => {
+    if (start && end) {
+        startTime = moment.unix(start);
+        endTime = moment.unix(end);
+        totalTime = endTime.diff(startTime, 'seconds')
+
+        calculation = ((moment().diff(startTime, 'seconds') / totalTime) * 100)
+        return calculation
+    }
+    return 0;
+}
+
 const TimelineComponent = (props) => {
     var item = props.item
-    console.log("item", item);
+    // console.log("item", item);
     switch (item.type) {
-        case "preheat": return <Preheat {...item} />
-        case "cook": return <Cook {...item} />
-        case "checkpoint": return <Checkpoint {...item} />
-        case "notify": return <Notify {...item} />
-        case "powerOff": return <PowerOff {...item} />
-        case "cool": return <Cooling {...item} />
+        case "preheat": return <Preheat {...item} percent={props.percent} />
+        case "cook": return <Cook {...item} percent={props.percent} />
+        case "checkpoint": return <Checkpoint {...item} percent={props.percent}/>
+        case "notify": return <Notify {...item} percent={props.percent}/>
+        case "powerOff": return <PowerOff {...item} percent={props.percent}/>
+        case "cool": return <Cooling {...item} percent={props.percent}/>
         default: null
     }
     return null;
 }
 
-const GradientProgress = (props) => {
-    return (
-        <View style={[{ width: '100%', height: 12, backgroundColor: props.trackColor ? props.trackColor : '#e1dddd' }, props.trackStyle]}>
-            <LinearGradient colors={[colors.yellow, colors.orange]} start={{ x: 0, y: 0 }} locations={[0.5, 1]} style={{ width: `${props.value}%`, height: '100%' }}></LinearGradient>
-        </View>
-    )
-}
+// const GradientProgress = (props) => {
+//     return (
+//         <View style={[{ width: '100%', height: 12, backgroundColor: props.trackColor ? props.trackColor : '#e1dddd' }, props.trackStyle]}>
+//             <LinearGradient colors={[colors.yellow, colors.orange]} start={{ x: 0, y: 0 }} locations={[0.5, 1]} style={{ width: `${props.value}%`, height: '100%' }}></LinearGradient>
+//         </View>
+//     )
+// }
 
-const TemperatureSlider = (props) => {
-    return (
-        <Fragment>
-            <View style={{ flexDirection: 'row', width: '100%', marginTop: 7, marginBottom: -12 }}>
-                {props.icon}
-                <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value == 0 ? "OFF" : Math.round(props.handler.value) + "°C"} </Text>
-            </View>
-            <Slider
-                maximumValue={250}
-                minimumValue={0}
-                maximumTrackTintColor={colors.grey}
-                minimumTrackTintColor={colors.yellow}
-                step={5}
-                onSlidingComplete={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
-                value={props.handler.value}
-                thumbTintColor="transparent"
-            />
-        </Fragment>
-    )
-}
+// const TemperatureSlider = (props) => {
+//     return (
+//         <Fragment>
+//             <View style={{ flexDirection: 'row', width: '100%', marginTop: 7, marginBottom: -12 }}>
+//                 {props.icon}
+//                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value == 0 ? "OFF" : Math.round(props.handler.value) + "°C"} </Text>
+//             </View>
+//             <Slider
+//                 maximumValue={250}
+//                 minimumValue={0}
+//                 maximumTrackTintColor={colors.grey}
+//                 minimumTrackTintColor={colors.yellow}
+//                 step={5}
+//                 onSlidingComplete={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
+//                 value={props.handler.value}
+//                 thumbTintColor="transparent"
+//             />
+//         </Fragment>
+//     )
+// }
 
 function mainScreen({ navigation }) {
     const [time, setTime] = useState(" ");
@@ -99,30 +111,18 @@ function mainScreen({ navigation }) {
             })
     }
 
-    const progressPercent = (e) => {
-        if (!data.isPaused) {
-            startTime = moment.unix(data.startTime);
-            endTime = moment.unix(data.endTime);
-            totalTime = endTime.diff(startTime, 'seconds')
-
-            calculation = ((moment().diff(startTime, 'seconds') / totalTime) * 100)
-            return calculation
-        }
-        return 0;
-    }
-
-    const setTemp = (name, value) => {
-        var ws = new WebSocket('ws://oven.local:8069');
-        ws.onopen = () => {
-            req = {
-                module: 'cook',
-                function: `set${name}Temp`,
-                params: [value]
-            }
-            ws.send(JSON.stringify(req));
-            ws.close()
-        };
-    }
+    // const setTemp = (name, value) => {
+    //     var ws = new WebSocket('ws://oven.local:8069');
+    //     ws.onopen = () => {
+    //         req = {
+    //             module: 'cook',
+    //             function: `set${name}Temp`,
+    //             params: [value]
+    //         }
+    //         ws.send(JSON.stringify(req));
+    //         ws.close()
+    //     };
+    // }
 
     const sendRequest = (task) => {
         var ws = new WebSocket('ws://oven.local:8069');
@@ -167,8 +167,8 @@ function mainScreen({ navigation }) {
                         setData(d.result)
                         if (!d.result.isCooking)
                             fetchFromUrl()
-                        console.log("data steps", d.result.steps);
-                        console.log("d.result.currentStep", d.result.currentStep);
+                        console.log("data", d.result);
+                        // console.log("d.result.currentStep", d.result.currentStep);
                         this._carousel.snapToItem(d.result.currentStep);
                         parseData(d.result)
                     }
@@ -223,21 +223,19 @@ function mainScreen({ navigation }) {
                     <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
                 </CircularSlider> */}
                 {
-                /* <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
-                    <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
-                </View> */
+                    /* <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
+                        <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
+                    </View> */
                 }
                 <Text style={styles.carouselTitle}>{item.type.capitalize()}</Text>
-                <TimelineComponent item={item} />
+                <TimelineComponent item={item} percent={progressPercent(item.startTime, item.endTime)} />
             </View>
         )
     }
 
     return (
         data ? <View>
-
             <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
-
             {
                 data.steps && <Fragment>
                     <Carousel
@@ -252,9 +250,7 @@ function mainScreen({ navigation }) {
                     />
                 </Fragment>
             }
-
             {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
-
             <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
             {/* <View style={{ width: '80%', alignSelf: 'center' }}>
                 <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />

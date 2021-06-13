@@ -9,6 +9,7 @@ import CircularSlider from 'rn-circular-slider'
 import Slider from '@react-native-community/slider'
 import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
+import moment from 'moment';
 
 const TemperatureSlider = (props) => {
     const setTemp = (value) => {
@@ -53,33 +54,33 @@ const TemperatureSlider = (props) => {
     )
 }
 
-const Title = (props) => {
-    return (
-        <View >
-            {/* <CircularSlider
-                step={1} min={0} max={100} value={60}
-                contentContainerStyle={styles.contentContainerStyle}
-                strokeWidth={4}
-                // buttonBorderColor={transparent}
-                openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
-            >
-                <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
-            </CircularSlider> */}
-        </View>
-    )
-}
+// const Title = (props) => {
+//     return (
+//         <View >
+//             {/* <CircularSlider
+//                 step={1} min={0} max={100} value={60}
+//                 contentContainerStyle={styles.contentContainerStyle}
+//                 strokeWidth={4}
+//                 // buttonBorderColor={transparent}
+//                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
+//             >
+//                 <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
+//             </CircularSlider> */}
+//         </View>
+//     )
+// }
 
-const Checkbox = (props) => {
-    const [checked, setChecked] = useState(true)
-    return (
-        <View style={{ flexDirection: 'row' }}>
-            <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
-                <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
-            </View>
-            <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
-        </View>
-    )
-}
+// const Checkbox = (props) => {
+//     const [checked, setChecked] = useState(true)
+//     return (
+//         <View style={{ flexDirection: 'row' }}>
+//             <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
+//                 <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
+//             </View>
+//             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
+//         </View>
+//     )
+// }
 
 export const Preheat = (props) => {
     const [tempSlider, setTempSlider] = useState(parseInt(props.temp));
@@ -95,8 +96,32 @@ export const Preheat = (props) => {
             ws.close()
         };
     }
+    const progressPercent = (e) => {
+        if (!data.isPaused) {
+            startTime = moment.unix(data.startTime);
+            endTime = moment.unix(data.endTime);
+            totalTime = endTime.diff(startTime, 'seconds')
+
+            calculation = ((moment().diff(startTime, 'seconds') / totalTime) * 100)
+            return calculation
+        }
+        return 0;
+    }
     return (
         <View >
+            <CircularSlider
+                step={1} min={0} max={100} value={65}
+                contentContainerStyle={styles.contentContainerStyle}
+                strokeWidth={10}
+                openingRadian={Math.PI / 4}
+                buttonRadius={0}
+                radius={56}
+                linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
+            >
+                <View style={[styles.carouselCircle, { backgroundColor: colors.yellow }]}>
+                    <Icon name="utensils" color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
+                </View>
+            </CircularSlider>
             <CircularSlider
                 step={1} min={0} max={100} value={60}
                 contentContainerStyle={styles.contentContainerStyle}
@@ -124,15 +149,16 @@ export const Cook = (props) => {
             ws.close()
         };
     }
+
     return (
         <View >
             <CircularSlider
-                step={1} min={0} max={100} value={65}
+                step={1} min={0} max={100} value={props.percent}
                 contentContainerStyle={styles.contentContainerStyle}
                 strokeWidth={10}
                 openingRadian={Math.PI / 4}
-                 buttonRadius={0}
-                 radius={56} 
+                buttonRadius={0}
+                radius={56}
                 linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
             >
                 <View style={[styles.carouselCircle, { backgroundColor: colors.yellow }]}>
@@ -188,6 +214,7 @@ export const Checkpoint = (props) => {
 //         </View>
 //     )
 // }
+
 export const Notify = (props) => {
     const destiColor = ["lightRed", "orange", "yellow", "blue"]
     const [title, changeTitle] = useState(props.title);
@@ -222,6 +249,7 @@ export const Notify = (props) => {
         </View>
     )
 }
+
 export const PowerOff = (props) => {
     return (
         <View style={{ margin: 20 }}>
@@ -229,6 +257,7 @@ export const PowerOff = (props) => {
         </View>
     )
 }
+
 export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
@@ -243,4 +272,13 @@ export const Cooling = (props) => {
     )
 }
 
-
+// function carouselItems({ navigation }) {
+//     useEffect(() => {
+//         effect
+//         return () => {
+//             cleanup
+//         }
+//     }, [input])
+// return(null)
+// }
+// export default carouselItems
