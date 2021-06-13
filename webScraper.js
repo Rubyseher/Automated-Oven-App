@@ -81,3 +81,21 @@ export const isAcceptedURL = (url) => {
     var acceptedURLs = ["allrecipes", "sallysbaking", "gimmesomeoven", "recipetineats", "delish", "indianhealthyrecipes", "vegrecipesofindia"]
     return acceptedURLs.some(el => url.includes(el))
 }
+
+export const getTitleClass = (url) => {
+    if (url.includes("allrecipes"))
+        return ".recipe-title"
+    else if (url.includes("sallysbaking") || url.includes("gimmesomeoven"))
+        return ".posttitle"
+    else if (url.includes("delish"))
+        return ".recipe-hed"
+    else if (url.includes("indianhealthyrecipes") || url.includes("vegrecipesofindia") || url.includes("recipetineats"))
+        return ".entry-title"
+}
+
+export const cleanTitle = (title) => {
+    var filterWords = ['best','baked','bake','oven','cook','how','to','make','recipe','easy']
+    var titleSplit = title.split('|')[0].split(" ")
+    var newTitle = titleSplit.filter(w => !filterWords.includes(w.toLowerCase()))
+    return newTitle.join(" ")
+}
