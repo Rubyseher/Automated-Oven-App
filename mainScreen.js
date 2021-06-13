@@ -13,7 +13,7 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import jsdom from 'jsdom-jscore-rn';
 import { getCookingDetails, getInstructionClass, isAcceptedURL, getTitleClass, cleanTitle } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import CircularSlider from 'rn-circular-slider'
 
@@ -21,14 +21,16 @@ String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
-const progressPercent = (start, end) => {
+const progressPercent = (start, end, useTemp = false) => {
+    if (useTemp) {
+        return Math.round(start / end)
+    }
     if (start && end) {
         startTime = moment.unix(start);
         endTime = moment.unix(end);
         totalTime = endTime.diff(startTime, 'seconds')
 
-        calculation = ((moment().diff(startTime, 'seconds') / totalTime) * 100)
-        return calculation
+        return Math.round((moment().diff(startTime, 'seconds') / totalTime) * 100)
     }
     return 0;
 }
@@ -39,10 +41,10 @@ const TimelineComponent = (props) => {
     switch (item.type) {
         case "preheat": return <Preheat {...item} percent={props.percent} />
         case "cook": return <Cook {...item} percent={props.percent} />
-        case "checkpoint": return <Checkpoint {...item} percent={props.percent}/>
-        case "notify": return <Notify {...item} percent={props.percent}/>
-        case "powerOff": return <PowerOff {...item} percent={props.percent}/>
-        case "cool": return <Cooling {...item} percent={props.percent}/>
+        case "checkpoint": return <Checkpoint {...item} percent={props.percent} />
+        case "notify": return <Notify {...item} percent={props.percent} />
+        case "powerOff": return <PowerOff {...item} percent={props.percent} />
+        case "cool": return <Cooling {...item} percent={props.percent} />
         default: null
     }
     return null;
@@ -56,31 +58,8 @@ const TimelineComponent = (props) => {
 //     )
 // }
 
-// const TemperatureSlider = (props) => {
-//     return (
-//         <Fragment>
-//             <View style={{ flexDirection: 'row', width: '100%', marginTop: 7, marginBottom: -12 }}>
-//                 {props.icon}
-//                 <Text style={{ textAlign: 'right', width: '90%', color: 'grey' }}>{props.handler.value == 0 ? "OFF" : Math.round(props.handler.value) + "°C"} </Text>
-//             </View>
-//             <Slider
-//                 maximumValue={250}
-//                 minimumValue={0}
-//                 maximumTrackTintColor={colors.grey}
-//                 minimumTrackTintColor={colors.yellow}
-//                 step={5}
-//                 onSlidingComplete={value => { props.handler.setValue(value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
-//                 value={props.handler.value}
-//                 thumbTintColor="transparent"
-//             />
-//         </Fragment>
-//     )
-// }
-
 function mainScreen({ navigation }) {
-    const [time, setTime] = useState(" ");
-    const [topTemp, setTopTemp] = useState(0);
-    const [bottomTemp, setBottomTemp] = useState(0);
+    const [time, setTime] = useState(0);
     const [data, setData] = useState();
     const [loading, setLoading] = useState(true);
 
@@ -112,19 +91,6 @@ function mainScreen({ navigation }) {
             })
     }
 
-    // const setTemp = (name, value) => {
-    //     var ws = new WebSocket('ws://oven.local:8069');
-    //     ws.onopen = () => {
-    //         req = {
-    //             module: 'cook',
-    //             function: `set${name}Temp`,
-    //             params: [value]
-    //         }
-    //         ws.send(JSON.stringify(req));
-    //         ws.close()
-    //     };
-    // }
-
     const sendRequest = (task) => {
         var ws = new WebSocket('ws://oven.local:8069');
         ReactNativeHapticFeedback.trigger("impactHeavy");
@@ -149,9 +115,11 @@ function mainScreen({ navigation }) {
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactHeavy");
             const parseData = (d) => {
-                setTopTemp(d.top)
-                setBottomTemp(d.bottom)
-                d.isPaused ? setTime('Paused') : setTime(`${moment.unix(d.endTime).diff(moment(), 'minutes')} min ${moment.unix(d.endTime).diff(moment(), 'seconds') % 60} sec left`)
+                _time = 0
+                firstStepStart = moment.unix(Math.round(d.steps[0].startTime))
+                d.steps.filter(s => s.type == 'cook').forEach(step => _time += step.duration * 60)
+                firstStepStart.add(_time, 'm')
+                setTime(firstStepStart.diff(moment(), 'seconds'))
             }
             var intervalId = setInterval(() => {
                 var ws = new WebSocket('ws://oven.local:8069');
@@ -166,12 +134,13 @@ function mainScreen({ navigation }) {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
-                        if (!d.result.isCooking)
-                            fetchFromUrl()
-                        console.log("data", d.result);
-                        // console.log("d.result.currentStep", d.result.currentStep);
-                        this._carousel.snapToItem(d.result.currentStep);
-                        parseData(d.result)
+                        if (!d.result.isCooking) fetchFromUrl()
+                        console.log("data", d.result)
+                        if (data) {
+                            if (data.currentStep == d.result.currentStep - 1)
+                                this._carousel.snapToItem(d.result.currentStep);
+                        }
+                        if (d.isCooking) parseData(d.result)
                     }
                     ws.close()
                 };
@@ -185,80 +154,41 @@ function mainScreen({ navigation }) {
         }, [])
     );
 
-    const mainCard = ({ item }) => {
-        var stepColor = {
-            cook: {
-                color: 'yellow',
-                icon: 'utensils'
-            },
-            notify: {
-                color: 'purple',
-                icon: 'bell'
-            },
-            checkpoint: {
-                color: 'blue',
-                icon: 'flag'
-            },
-            preheat: {
-                color: 'orange',
-                icon: 'fire-alt'
-            },
-            cool: {
-                color: 'turquoise',
-                icon: 'snowflake'
-            },
-            powerOff: {
-                color: 'red',
-                icon: 'power-off'
-            }
-        }
-        return (
-            <View style={styles.mainCardContainer}>
-                {/* <CircularSlider
-                    step={1} min={0} max={100} value={60}
-                    contentContainerStyle={styles.contentContainerStyle} 
-                    strokeWidth={4} 
-                    // buttonBorderColor={transparent}
-                    openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
-                >
-                    <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
-                </CircularSlider> */}
-                {
-                    /* <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
-                        <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
-                    </View> */
-                }
-                <Text style={styles.carouselTitle}>{item.type.capitalize()}</Text>
-                <TimelineComponent item={item} percent={progressPercent(item.startTime, item.endTime)} />
-            </View>
-        )
-    }
-
     return (
         data ? <View>
-            <Text style={styles.title}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
+            <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
             {
                 data.steps && <Fragment>
                     <Carousel
-                        layout={"default"}
-                        // ref={ref => this.carousel = ref}
-                        ref={(c) => { this._carousel = c; }}
+                        ref={(c) => this._carousel = c}
                         data={data.steps}
                         sliderWidth={400}
                         itemWidth={400}
-                        renderItem={mainCard}
-                        contentContainerCustomStyle={{ marginLeft: 45 }}
+                        renderItem={({ item }) => <TimelineComponent item={item} percent={item.isDone ? 100 : (item.type == 'preheat' ? progressPercent(data.currentTempTop, item.temp, true) : progressPercent(item.startTime, item.endTime))} />}
+                        containerCustomStyle={{ flexGrow: 0 }}
                     />
+                    <Pagination
+                        dotsLength={data.steps.length}
+                        activeDotIndex={data.currentStep}
+                        dotStyle={{
+                            width: 15,
+                            height: 15,
+                            borderRadius: 8,
+                            marginHorizontal: 6,
+                            backgroundColor: colors.blue
+                        }}
+                        tappableDots={true}
+                        carouselRef={this._carousel}
+                        inactiveDotStyle={{ backgroundColor: colors.darkGrey }}
+                        inactiveDotScale={1} 
+                        containerStyle={{paddingVertical: 0}}
+                        />
                 </Fragment>
             }
             {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
-            <Text style={styles.subtitle}>{data.isCooking ? time : ' '}</Text>
-            {/* <View style={{ width: '80%', alignSelf: 'center' }}>
-                <TemperatureSlider icon={<OvenTop height={29} width={29} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} sendHandler={setTemp} name='Top' />
-                <TemperatureSlider icon={<OvenBottom height={29} width={29} fill={colors.black} />} handler={{ value: bottomTemp, setValue: setBottomTemp }} sendHandler={setTemp} name='Bottom' />
-            </View> */}
+            <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
 
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 18 }}>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 12 }}>
                 {data.isCooking && <Button
                     onPress={() => navigation.navigate('automationScreen')}
                     icon={<Wand height={25} width={25} fill={colors.black} />}

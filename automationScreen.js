@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useFocusEffect } from '@react-navigation/native';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 const FoodName = (props) => {
     const [finalDuration, setFinalDuration] = useState(0);
@@ -74,6 +75,7 @@ export default function automationScreen() {
     const [keys, setKeys] = useState([]);
     useFocusEffect(
         useCallback(() => {
+            ReactNativeHapticFeedback.trigger("impactMedium");
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 req = {

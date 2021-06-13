@@ -10,6 +10,7 @@ import Slider from '@react-native-community/slider'
 import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const TemperatureSlider = (props) => {
     const setTemp = (value) => {
@@ -54,33 +55,21 @@ const TemperatureSlider = (props) => {
     )
 }
 
-// const Title = (props) => {
-//     return (
-//         <View >
-//             {/* <CircularSlider
-//                 step={1} min={0} max={100} value={60}
-//                 contentContainerStyle={styles.contentContainerStyle}
-//                 strokeWidth={4}
-//                 // buttonBorderColor={transparent}
-//                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
-//             >
-//                 <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
-//             </CircularSlider> */}
-//         </View>
-//     )
-// }
-
-// const Checkbox = (props) => {
-//     const [checked, setChecked] = useState(true)
-//     return (
-//         <View style={{ flexDirection: 'row' }}>
-//             <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
-//                 <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
-//             </View>
-//             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
-//         </View>
-//     )
-// }
+const Title = (props) => {
+    return (
+        <View >
+            <AnimatedCircularProgress
+                size={125} width={10} fill={props.percent} style={{ alignItems: 'center' }} childrenContainerStyle={{ padding:0 }} arcSweepAngle={360} rotation={0} tintColor={props.color}>
+                {() => (
+                    <View style={[styles.carouselCircle, { backgroundColor: props.color }]}>
+                        <Icon name={props.icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
+                    </View>
+                )}
+            </AnimatedCircularProgress>
+            <Text style={[styles.carouselTitle]}>{props.name.capitalize()}</Text>
+        </View>
+    )
+}
 
 export const Preheat = (props) => {
     const [tempSlider, setTempSlider] = useState(parseInt(props.temp));
@@ -96,39 +85,19 @@ export const Preheat = (props) => {
             ws.close()
         };
     }
-    const progressPercent = (e) => {
-        if (!data.isPaused) {
-            startTime = moment.unix(data.startTime);
-            endTime = moment.unix(data.endTime);
-            totalTime = endTime.diff(startTime, 'seconds')
-
-            calculation = ((moment().diff(startTime, 'seconds') / totalTime) * 100)
-            return calculation
-        }
-        return 0;
-    }
     return (
-        <View >
+        <View style={styles.mainCardContainer}>
+            <Title percent={props.percent} name={props.type} icon="fire-alt" color={colors.orange}/>
+
             <CircularSlider
-                step={1} min={0} max={100} value={65}
-                contentContainerStyle={styles.contentContainerStyle}
-                strokeWidth={10}
-                openingRadian={Math.PI / 4}
-                buttonRadius={0}
-                radius={56}
-                linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
-            >
-                <View style={[styles.carouselCircle, { backgroundColor: colors.yellow }]}>
-                    <Icon name="utensils" color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
-                </View>
-            </CircularSlider>
-            <CircularSlider
-                step={1} min={0} max={100} value={60}
+                step={1} min={0} max={250} value={props.temp}
                 contentContainerStyle={styles.contentContainerStyle}
                 strokeWidth={4}
-                // buttonBorderColor={transparent}
+                buttonBorderColor={colors.red}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
             >
+                <Text style={[styles.value, { color: colors.orange }]}>{tempSlider}</Text>
+                <Text style={[styles.min, { color: colors.orange }]}>&deg;C</Text>
             </CircularSlider>
         </View>
     )
@@ -137,6 +106,7 @@ export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
+
     const setTemp = (value) => {
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
@@ -150,21 +120,11 @@ export const Cook = (props) => {
         };
     }
 
+
     return (
-        <View >
-            <CircularSlider
-                step={1} min={0} max={100} value={props.percent}
-                contentContainerStyle={styles.contentContainerStyle}
-                strokeWidth={10}
-                openingRadian={Math.PI / 4}
-                buttonRadius={0}
-                radius={56}
-                linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
-            >
-                <View style={[styles.carouselCircle, { backgroundColor: colors.yellow }]}>
-                    <Icon name="utensils" color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
-                </View>
-            </CircularSlider>
+        <View style={styles.mainCardContainer}>
+
+            <Title percent={props.percent} name={props.type} icon="utensils" color={colors.yellow} />
 
             <View style={{ width: '100%', marginLeft: 20 }}>
                 <TemperatureSlider top icon={<OvenTop height={22} width={22} fill={colors.black} />} handler={{ value: topTemp, setValue: setTopTemp }} name="top" />
@@ -186,21 +146,19 @@ export const Checkpoint = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.timeout));
     const [checked, setchecked] = useState(false);
     return (
-        <View >
-            <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                <View style={{ paddingLeft: 14, justifyContent: 'center' }}>
-                    <CircularSlider
-                        step={5} min={0} max={60} value={timeSlider}
-                        contentContainerStyle={styles.contentContainerStyle} strokeWidth={4}
-                        buttonBorderColor={colors.blue} openingRadian={Math.PI / 4}
-                        buttonRadius={8} radius={40}
-                        linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
-                    >
-                        <Text style={styles.value}>{timeSlider}</Text>
-                        <Text style={styles.min}>sec</Text>
-                    </CircularSlider>
-                </View>
-            </View>
+        <View style={styles.mainCardContainer}>
+            <Title percent={props.percent} name={props.type} icon="flag" color={colors.blue} />
+
+            <CircularSlider
+                step={5} min={0} max={60} value={timeSlider}
+                contentContainerStyle={styles.contentContainerStyle} strokeWidth={4}
+                buttonBorderColor={colors.blue} openingRadian={Math.PI / 4}
+                buttonRadius={8} radius={40}
+                linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.blue }]}
+            >
+                <Text style={styles.value}>{timeSlider}</Text>
+                <Text style={styles.min}>sec</Text>
+            </CircularSlider>
         </View>
     )
 }
@@ -221,7 +179,10 @@ export const Notify = (props) => {
     const [msg, changeMsg] = useState(props.message);
 
     return (
-        <View >
+        <View style={styles.mainCardContainer}>
+
+            <Title percent={props.percent} name={props.type} icon="bell" color={colors.purple} />
+
             {/* <View style={{ marginTop: 10 }}>
                 <TextInput
                     style={[styles.notifyMsg, { fontWeight: 'bold' }]}
@@ -252,7 +213,9 @@ export const Notify = (props) => {
 
 export const PowerOff = (props) => {
     return (
-        <View style={{ margin: 20 }}>
+        <View style={styles.mainCardContainer}>
+
+            <Title percent={props.percent} name={props.type} icon="power-off" color={colors.red} />
             <Icon name="power-off" size={38} color={colors.lightRed} style={{ alignSelf: 'center', marginTop: 18 }} solid />
         </View>
     )
@@ -261,14 +224,19 @@ export const PowerOff = (props) => {
 export const Cooling = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
     return (
-        <CircularSlider
-            step={1} min={0} max={10} value={timeSlider} contentContainerStyle={styles.contentContainerStyle}
-            strokeWidth={4} buttonBorderColor={colors.turquoise} openingRadian={Math.PI / 4} buttonRadius={8} radius={40}
-            linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
-        >
-            <Text style={styles.value}>{timeSlider}</Text>
-            <Text style={styles.min}>min</Text>
-        </CircularSlider>
+        <View style={styles.mainCardContainer}>
+
+            <Title percent={props.percent} name={props.type}  icon="snowflake" color={colors.turquoise}/>
+
+            <CircularSlider
+                step={1} min={0} max={10} value={timeSlider} contentContainerStyle={styles.contentContainerStyle}
+                strokeWidth={4} buttonBorderColor={colors.turquoise} openingRadian={Math.PI / 4} buttonRadius={8} radius={40}
+                linearGradient={[{ stop: '0%', color: colors.blue }, { stop: '100%', color: colors.turquoise }]}
+            >
+                <Text style={styles.value}>{timeSlider}</Text>
+                <Text style={styles.min}>min</Text>
+            </CircularSlider>
+        </View>
     )
 }
 
