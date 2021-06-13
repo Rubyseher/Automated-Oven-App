@@ -15,6 +15,7 @@ import { getCookingDetails } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import CircularSlider from 'rn-circular-slider'
 
 const TimelineComponent = (props) => {
     var item = props.item
@@ -185,8 +186,8 @@ function mainScreen({ navigation }) {
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
                         console.log("data steps", d.result.steps);
-                        console.log("d.result.currentStep",d.result.currentStep);
-                        this._carousel.snapToItem(d.result.currentStep); 
+                        console.log("d.result.currentStep", d.result.currentStep);
+                        this._carousel.snapToItem(d.result.currentStep);
                         parseData(d.result)
                     }
                     ws.close()
@@ -234,9 +235,20 @@ function mainScreen({ navigation }) {
         }
         return (
             <View style={styles.mainCardContainer}>
-                <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
+                {/* <CircularSlider
+                    step={1} min={0} max={100} value={60}
+                    contentContainerStyle={styles.contentContainerStyle} 
+                    strokeWidth={4} 
+                    // buttonBorderColor={transparent}
+                    openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
+                >
+                    <Text style={{ 'color': colors.red, 'fontSize': 18 }}>{60}°C</Text>
+                </CircularSlider> */}
+                {
+                /* <View style={[styles.carouselCircle, { backgroundColor: colors[stepColor[item.type].color] }]}>
                     <Icon name={stepColor[item.type].icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
-                </View>
+                </View> */
+                }
                 <Text style={styles.carouselTitle}>{item.type.capitalize()}</Text>
                 <TimelineComponent item={item} />
             </View>
