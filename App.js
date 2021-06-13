@@ -19,7 +19,7 @@ export const AuthContext = createContext(null)
 
 export const stateConditionString = state => {
     if (state.isLoading) return 'LOAD_APP';
-    if (state.isSignedIn) return state.userName ? 'LOAD_HOME' : 'LOAD_LOGIN';
+    if (state.isSignedIn) return state.userName !== null ? 'LOAD_HOME' : 'LOAD_LOGIN';
 };
 
 const NavContainerTheme = {
@@ -70,7 +70,7 @@ function mainTabs() {
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
                     if (route.name === 'automations') {
-                        return <IonIcon name="color-wand" size={size+4} color={color} />;
+                        return <IonIcon name="color-wand" size={size + 4} color={color} />;
                     } else if (route.name === 'history') {
                         iconName = 'history';
                     } else if (route.name === 'energy') {
@@ -151,7 +151,7 @@ export default function App() {
     const authContextValue = useMemo(
         () => ({
             login: async data => {
-                if (data) {
+                if (data!==null) {
                     console.log(data);
                     await AsyncStorage.setItem('name', data)
                     var ws = new WebSocket('ws://oven.local:8069');
@@ -163,7 +163,7 @@ export default function App() {
                         }
                         ws.send(JSON.stringify(req));
                     };
-                    dispatch({ type: 'LOGIN', token: 'Token-For-Now' });
+                    dispatch({ type: 'LOGIN', name: 'Token-For-Now' });
                 } else {
                     dispatch({ type: 'TO_LOGIN_PAGE' });
                 }
@@ -174,34 +174,24 @@ export default function App() {
 
     const chooseScreen = state => {
         let navigateTo = stateConditionString(state);
-        let arr = [];
 
         switch (navigateTo) {
             case 'LOAD_APP':
-                arr.push(<Tab.Screen name="main" component={mainTabs} />);
-                break;
-
+                return <Tab.Screen name="main" component={mainTabs} />;
             case 'LOAD_LOGIN':
-                arr.push(<Stack.Screen name="login" component={LoginScreen} />);
-                break;
-
+                return <Stack.Screen name="login" component={LoginScreen} />;
             case 'LOAD_HOME':
-                arr.push(
-                    <Tab.Screen name="main" component={mainTabs} />
-                );
-                break;
+                return <Tab.Screen name="main" component={mainTabs} />
             default:
-                arr.push(<Tab.Screen name="main" component={mainTabs} />);
-                break;
+                return <Stack.Screen name="login" component={LoginScreen} />;
         }
-        return arr[0];
     };
 
     useEffect(async () => {
         const authSubscriber = await AsyncStorage.getItem('name')
-        if (authSubscriber !== null) {
+        // if (authSubscriber !== null) {
             authContextValue.login(authSubscriber)
-        }
+        // }
         console.log(authSubscriber);
     }, [])
 
