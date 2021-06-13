@@ -28,10 +28,9 @@ export default function energyScreen() {
         setEnergyData(last7energy)
         setWeekSum(last7energy.reduce(energySum))
 
-        var monthValues, monthEnergy = 0
+        var monthEnergy = 0
         dates.slice(-31).forEach(i => {
             if (moment(i, 'YYYY-MM-DD').isSame(moment(), 'month')) {
-                // console.log(Object.values(d[i]).map(e => e.watts));
                 monthEnergy +=Object.values(d[i]).map(e => e.watts).reduce(energySum)
             }
         })
