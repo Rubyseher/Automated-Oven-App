@@ -76,7 +76,7 @@ export default function energyScreen() {
         }, []))
 
     return (
-        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 10 }}>
+        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 4 }}>
             <Text style={styles.heading}>Energy</Text>
 
             <AnimatedCircularProgress

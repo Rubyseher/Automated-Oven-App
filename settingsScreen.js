@@ -29,6 +29,7 @@ const SettingSlider = (props) => {
 
 export default function settingsScreen() {
     const [backlight, setBacklight] = useState(0);
+    const [volume, setVolume] = useState(50);
     
     const setPivalue = (name, value) => {
         console.log("setPivalue name ", name);
@@ -36,7 +37,6 @@ export default function settingsScreen() {
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
-               
                 module: 'display',
                 function: `set${name}`,
                 params: [value]
@@ -53,20 +53,25 @@ export default function settingsScreen() {
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 req = {
-                   
                     module: 'display',
                     function: 'getBacklight',
+                    params: []
+                }
+                ws.send(JSON.stringify(req));
+                req = {
+                    module: 'audio',
+                    function: 'getVolume',
                     params: []
                 }
                 ws.send(JSON.stringify(req));
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
-                console.log("msg", d.type);
+                console.log("msg is ", d);
 
                 if (d.type == 'result') {
-                    setBacklight(d.result)
-                    console.log("backlight", d.result);
+                    d.type.req == "getVolume"?  setVolume(d.result):setBacklight(d.result)
+                    console.log("d.type.req is ", d.result);
                     ws.close()
                 }
             };
@@ -77,7 +82,7 @@ export default function settingsScreen() {
             <Text style={styles.heading}>Settings</Text>
             <View style={{ width: '93%', alignSelf: 'center' }}>
                 <SettingSlider icon={<Ficon name="day-sunny" size={24} color={colors.darkGrey} />} handler={{ value: backlight, setValue: setBacklight }} sendHandler={setPivalue} name='Backlight'/>
-                <SettingSlider icon={<Ficon name="volume-up" size={16} color={colors.darkGrey} />} handler={{ value: backlight, setValue: setBacklight }} sendHandler={setPivalue} name='Volume' />
+                <SettingSlider icon={<Ficon name="volume-up" size={16} color={colors.darkGrey} />} handler={{ value: volume, setValue: setVolume }} sendHandler={setPivalue} name='Volume' />
             </View>
             {/* restart button */}
             <FlatList style={{ height: '140%' }}

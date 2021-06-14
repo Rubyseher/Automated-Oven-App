@@ -89,7 +89,7 @@ export default function historyScreen() {
     );
 
     return (
-        <View style={{ paddingHorizontal: 32, paddingTop: 10 }}>
+        <View style={{ paddingHorizontal: 32, paddingTop: 4 }}>
             <Text style={styles.heading}>History</Text>
             {
                 names.length > 0 ? data.map((item, i) => (

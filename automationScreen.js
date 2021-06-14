@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -32,14 +32,12 @@ const FoodName = (props) => {
     return (
         <Fragment >
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
-                <TouchableWithoutFeedback onPress={() => navigation.navigate('automationEdit', { iData: props.iData })}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <View style={styles.tagBadge}>
-                            <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                        </View>
-                        <Text style={styles.autoRecipe}>{props.name}</Text>
+                {/* <View style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('automationEdit', { iData: props.iData })}> */}
+                    <View style={styles.tagBadge}>
+                        <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
                     </View>
-                </TouchableWithoutFeedback>
+                    <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
+                {/* </View> */}
                 <Button
                     buttonStyle={[styles.foodCircleM, { backgroundColor: colors.lightRed }]}
                     icon={<Icon name="bookmark" size={12} color={colors.white} solid />}
