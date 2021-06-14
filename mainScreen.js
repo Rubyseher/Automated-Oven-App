@@ -2,7 +2,7 @@ import React, { useState, Fragment, useCallback } from 'react';
 import Slider from '@react-native-community/slider'
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Overlay } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
 import LinearGradient from 'react-native-linear-gradient';
@@ -61,9 +61,14 @@ const TimelineComponent = (props) => {
 function mainScreen({ navigation }) {
     const [time, setTime] = useState(0);
     const [data, setData] = useState();
+    const [urlData, setUrlData] = useState();
     const [loading, setLoading] = useState(true);
+    const [visible, setVisible] = useState(false);
 
     const sendCookingFromURL = (values) => {
+        setVisible(true)
+        setUrlData(values)
+        console.log("sendCookingFromURL values", values);
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
@@ -81,7 +86,7 @@ function mainScreen({ navigation }) {
 
         var regexURL = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
 
-        if (isAcceptedURL(url) && url.match(regexURL))
+        if (isAcceptedURL(url) && url.match(regexURL)) {
             fetch(url).then(res => res.text()).then(data => {
                 jsdom.env(data, (err, window) => {
                     var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
@@ -89,6 +94,7 @@ function mainScreen({ navigation }) {
                     if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) sendCookingFromURL(cookingValues)
                 })
             })
+        }
     }
 
     const sendRequest = (task) => {
@@ -180,11 +186,16 @@ function mainScreen({ navigation }) {
                         tappableDots={true}
                         carouselRef={this._carousel}
                         inactiveDotStyle={{ backgroundColor: colors.darkGrey }}
-                        inactiveDotScale={1} 
-                        containerStyle={{paddingVertical: 0}}
-                        />
+                        inactiveDotScale={1}
+                        containerStyle={{ paddingVertical: 0 }}
+                    />
                 </Fragment>
             }
+
+            <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={() => setVisible(false)}>
+                <Text style={styles.addStep}>Add Step</Text>
+            </Overlay>
+
             {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
             <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
 
