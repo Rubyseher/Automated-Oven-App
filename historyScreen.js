@@ -26,6 +26,7 @@ const FoodName = (props) => {
 
     return (
         <Fragment>
+
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
                 <View style={styles.tagBadge}>
                     <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />

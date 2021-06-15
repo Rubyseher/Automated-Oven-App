@@ -66,7 +66,7 @@ function mainScreen({ navigation }) {
     const [urlData, setUrlData] = useState();
     const [getUrl, setGetUrl] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(false);
 
     const sendCookingFromURL = (values) => {
         console.log("sendCookingFromURL values", values);
@@ -178,8 +178,24 @@ function mainScreen({ navigation }) {
             <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
             {
                 // urlData && visible && 
-                <Overlay isVisible={visible} overlayStyle={styles.urlOverlay} onBackdropPress={() => setVisible(false)}>
-                    <View style={{ flexDirection: 'row' , justifyContent: 'center' }}>
+                <View isVisible={visible} style={styles.urlOverlay} onBackdropPress={() => setVisible(false)}>
+                    <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
+                        <Ficon name="link2" size={20} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
+                    </View>
+
+                    <View style={{width:'62%'}}>
+                        <Text style={styles.urlName}>Chocolate Cake</Text>
+                        <View style={{ flexDirection: 'row', width: '80%', alignSelf: 'center' }}>
+                            <Text style={styles.urlTemp}>170 °C for 15 min</Text>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.urlPlay}>
+                        <Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
+                    </View>
+
+                    {/* <View style={{ flexDirection: 'row' , justifyContent: 'center' }}>
                         <Ficon name="link2" size={20} color={colors.blue} />
                         <Text style={styles.urlName}> Chocolate cake</Text>
                     </View>
@@ -193,13 +209,15 @@ function mainScreen({ navigation }) {
                         title="Cook"
                         titleStyle={{fontSize:15}}
                         buttonStyle={styles.urlCook}
-                    // containerStyle={styles.saveButton}
-                    />
+                    /> */}
 
                     {/* <Text style={styles.addStep}>{urlData.items}</Text>
                     <Text style={styles.addStep}>{urlData.temp}</Text>
                     <Text style={styles.addStep}>{urlData.time}</Text> */}
-                </Overlay>
+
+
+                </View>
+
             }
             {
                 data.steps && <Fragment>
