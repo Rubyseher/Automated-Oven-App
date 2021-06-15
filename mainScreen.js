@@ -74,7 +74,7 @@ function mainScreen({ navigation }) {
         ws.onopen = () => {
             req = {
                 module: 'cook',
-                function: 'startCustom',
+                function: 'startFromSimple',
                 params: [values]
             }
             ws.send(JSON.stringify(req));

@@ -19,7 +19,7 @@ const TimelineComponent = (props) => {
         case "checkpoint": return <Checkpoint {...item} />
         // case "Pause": return <Pause {...item} />
         case "notify": return <Notify {...item} />
-        case "power off": return <PowerOff {...item} />
+        case "poweroff": return <PowerOff {...item} />
         case "cooling": return <Cooling {...item} />
         default: null
     }
@@ -75,9 +75,9 @@ export default function automationEditScreen({ navigation, route }) {
                 }
                 break;
 
-            case "power off":
+            case "poweroff":
                 content = {
-                    "type": "power off"
+                    "type": "poweroff"
                 }
                 break;
 
@@ -95,7 +95,7 @@ export default function automationEditScreen({ navigation, route }) {
         setVisible(!visible);
     }
 
-    var types = ['cook', 'notify', 'checkpoint', 'preheat', 'cooling', 'power off']
+    var types = ['cook', 'notify', 'checkpoint', 'preheat', 'cooling', 'poweroff']
     var stepColor = ['yellow', 'purple', 'blue', 'orange', 'turquoise', 'red']
     var icon = ['utensils', 'bell', 'flag', 'fire-alt', 'snowflake', 'power-off']
 
