@@ -27,7 +27,7 @@ const TimelineComponent = (props) => {
 }
 
 export default function automationEditScreen({ navigation, route }) {
-    const { id } = route.params;
+    const { id, editable } = route.params;
     // const [data, setData] = useState();
     const [steps, setSteps] = useState(route.params.steps);
     const [visible, setVisible] = useState(false);
@@ -141,46 +141,48 @@ export default function automationEditScreen({ navigation, route }) {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon name="chevron-left" size={22} color={colors.blue} />
                     </TouchableOpacity>
-                    <Text style={[styles.heading, { fontSize: 26, marginTop: -5, marginRight: '23%' }]}>{'   '}Edit Automation</Text>
-                    <Button
+                    <Text style={[styles.heading, { fontSize: 26, marginTop: -5, marginRight: '23%' }]}>{editable ? '   Edit Automation' : '   ' +foodName}</Text>
+                    {editable && <Button
                         icon={saveIsDeleteButton ? <Ficon name="close-a" size={10} color={colors.white} /> : <Icon name={"trash"} size={12} color={colors.white} />}
                         onPress={() => setSaveIsDeleteButton(!saveIsDeleteButton)}
                         buttonStyle={[styles.roundButtonS, { backgroundColor: saveIsDeleteButton ? colors.darkGrey : colors.red, height: 25, width: 25 }]}
                         containerStyle={[styles.roundButtonPaddingS, { height: 30, width: 30, alignSelf: 'center', flex: 2, marginTop: -15 }]}
-                    />
+                    />}
                 </View>
 
-                <TextInput
+                {editable && <TextInput
                     style={styles.saveAuto}
                     onChangeText={changeFoodname}
                     value={foodName}
-                />
+                />}
 
                 {
                     steps.map((item, i) => (
                         <Fragment key={i}>
                             <TimelineComponent item={item} id={i} removeItem={removeItem} />
-                            <View style={styles.timeThread}></View>
+                            {
+                                (editable || i <steps.length-1)&& <View style={styles.timeThread}></View>
+                                }
                         </Fragment>
                     ))
                 }
 
-                <Button
+                {editable && <Button
                     onPress={toggleOverlay}
                     icon={<Icon name="plus" size={18} color={colors.white} />}
                     buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue }]}
                     containerStyle={styles.roundButtonPaddingS}
-                />
+                />}
             </ScrollView>
 
-            <View style={styles.saveOverlay}>
+            {editable && <View style={styles.saveOverlay}>
                 <Button
                     title={saveIsDeleteButton ? "Delete" : "Save"}
                     titleStyle={styles.saveText}
                     buttonStyle={[styles.saveButton, { backgroundColor: saveIsDeleteButton ? colors.red : colors.darkBlue }]}
                     onPress={saveIsDeleteButton ? deleteAutomation : saveAutomation}
                 />
-            </View>
+            </View>}
 
             <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
                 <Text style={styles.addStep}>Add Step</Text>

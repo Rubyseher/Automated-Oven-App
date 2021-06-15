@@ -57,6 +57,15 @@ function AutomationStack() {
     );
 }
 
+function HistoryStack() {
+    return (
+        <Stack.Navigator initialRouteName="historyScreen" headerMode='none'>
+            <Stack.Screen name="historyScreen" component={historyScreen} />
+            <Stack.Screen name="automationEdit" component={automationEditScreen} />
+        </Stack.Navigator>
+    );
+}
+
 function mainTabs() {
     return (
         <Tab.Navigator initialRouteName="automations"
@@ -81,7 +90,7 @@ function mainTabs() {
                 inactiveTintColor: colors.navBarInactive,
                 style: { borderTopWidth: 0 }
             }}>
-            <Tab.Screen name="history" component={historyScreen} />
+            <Tab.Screen name="history" component={HistoryStack} />
             <Tab.Screen name="automations" component={AutomationStack} />
             <Tab.Screen name="main"
                 options={{
