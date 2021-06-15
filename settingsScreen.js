@@ -38,6 +38,15 @@ export default function settingsScreen() {
         availableTones: []
     });
     const { name } = useContext(AuthContext)
+    const tempList = [{ key: 'Oven URL' },
+    { key: 'History' },
+    { key: 'Detection' },
+    { key: 'Developer' }, // debug mode, logs
+    { key: 'Safety Alerts' },
+    { key: 'Empty Alerts' },
+    { key: 'Energy Alerts' },
+    { key: 'Notifications' },
+    { key: 'Automations' }]
 
     const setPivalue = (name, value) => {
         var ws = new WebSocket('ws://oven.local:8069');
@@ -59,7 +68,7 @@ export default function settingsScreen() {
 
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
-                reqList = [['display','getBacklight'],['audio','getVolume'],['audio','getSelectedTone'],['audio','getAvailableTones'],['other','getLogs']]
+                var reqList = [['audio', 'getVolume'], ['audio', 'getSelectedTone'], ['audio', 'getAvailableTones'], ['display', 'getBacklight']]
                 reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: r[1] })))
             };
             ws.onmessage = (e) => {
@@ -72,7 +81,7 @@ export default function settingsScreen() {
         }, [])
     );
     return (
-        <View style={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 300 }}>
+        <ScrollView vertical={true} contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 4, paddingBottom: 50 }}>
             <Text style={styles.heading}>Settings</Text>
             <View style={{ flexDirection: 'row', marginVertical: 4 }}>
                 <View style={styles.profileCircle}>
@@ -82,45 +91,38 @@ export default function settingsScreen() {
                 <Button
                     icon={<Icon name="arrow-left" size={12} color={colors.white} />}
                     buttonStyle={[styles.roundButtonS, { backgroundColor: colors.darkGrey, height: 25, width: 25 }]}
-                    containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%'}]}
+                    containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%' }]}
                 />
             </View >
-            <View style={{ width: '93%', alignSelf: 'center' }}>
-                <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' />
-                <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' />
-            </View>
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent:'space-evenly' }}>
+            <Text style={styles.listTitle}>Display</Text>
+            <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' />
+            <Text style={styles.listTitle}>Sounds</Text>
+            <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' />
+            <Button
+                    icon={<View style={[styles.roundButtonS,{padding:10, shadowRadius:0, backgroundColor:colors.blue, marginHorizontal:10}]}><Icon name="volume-up" size={18} color={colors.white}/></View>}
+                    title={wsData.SelectedTone}
+                    titleStyle={{color:colors.darkGrey}}
+                    buttonStyle={styles.dropDown}
+                    containerStyle={styles.dropDownContainer}
+                />
+            <Text style={styles.listTitle}>Power</Text>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
                 <Button
                     icon={<Icon name="sync-alt" size={24} color={colors.white} />}
                     buttonStyle={[styles.roundButtonM, { backgroundColor: colors.darkGrey }]}
-                    containerStyle={[styles.roundButtonPaddingM,{marginLeft:0, marginRight:0}]}
+                    containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
                 />
                 <Button
                     icon={<Icon name="power-off" size={24} color={colors.white} />}
                     buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
-                    containerStyle={[styles.roundButtonPaddingM,{marginLeft:0, marginRight:0}]}
+                    containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
                 />
 
             </View>
-
-
-            <FlatList style={{ height: 300 }}
-                data={[
-                    { key: 'Oven URL' },
-                    { key: 'History' },
-                    { key: 'Detection' },
-                    { key: 'Developer' }, // debug mode, logs
-                    { key: 'Preferences' },
-                    { key: 'Sounds' },
-                    { key: 'Safety Alerts' },
-                    { key: 'Empty Alerts' },
-                    { key: 'Energy Alerts' },
-                    { key: 'Notifications' },
-                    { key: 'Automations' },
-                ]}
-                renderItem={({ item }) => <Text style={styles.listItem}>{item.key}</Text>}
-            />
-        </View>
+            {
+                tempList.map((tl, k) => <Text key={k} style={styles.listTitle}>{tl.key}</Text>)
+            }
+        </ScrollView>
     );
 }
 

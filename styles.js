@@ -439,11 +439,10 @@ export const styles = StyleSheet.create({
         // padding: 0,
         justifyContent: 'center'
     },
-    listItem: {
-        padding: 15,
+    listTitle: {
+        paddingVertical: 15,
         fontSize: 20,
-        color: colors.darkGrey,
-        borderColor: colors.grey
+        fontWeight:'600'
     },
     overlayContainer: {
         backgroundColor: colors.white,
@@ -580,5 +579,22 @@ export const styles = StyleSheet.create({
         width: '80%',
         borderBottomWidth: 4,
         borderColor: colors.white
+    },
+    dropDown:{
+        backgroundColor: colors.white,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.15,
+        shadowRadius: 3.84,
+        elevation: 5,
+        paddingVertical:15
+    },
+    dropDownContainer: {
+        padding: 10,
+        width:'100%'
     }
 });
