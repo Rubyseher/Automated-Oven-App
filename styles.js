@@ -582,7 +582,7 @@ export const styles = StyleSheet.create({
     },
     dropDown:{
         backgroundColor: colors.white,
-        borderRadius: 12,
+        borderRadius: 14,
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -591,10 +591,9 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 3.84,
         elevation: 5,
-        paddingVertical:15
-    },
-    dropDownContainer: {
+        paddingVertical:15,
+        flexDirection:'row',
         padding: 10,
-        width:'100%'
-    }
+        alignItems:'center'
+    },
 });

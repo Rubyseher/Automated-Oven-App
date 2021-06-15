@@ -98,13 +98,12 @@ export default function settingsScreen() {
             <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' />
             <Text style={styles.listTitle}>Sounds</Text>
             <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' />
-            <Button
-                    icon={<View style={[styles.roundButtonS,{padding:10, shadowRadius:0, backgroundColor:colors.blue, marginHorizontal:10}]}><Icon name="volume-up" size={18} color={colors.white}/></View>}
-                    title={wsData.SelectedTone}
-                    titleStyle={{color:colors.darkGrey}}
-                    buttonStyle={styles.dropDown}
-                    containerStyle={styles.dropDownContainer}
-                />
+            <View style={styles.dropDown}>
+                <View style={[styles.roundButtonS, { padding: 10, shadowRadius: 0, backgroundColor: colors.blue, marginHorizontal: 10 }]}>
+                    <Icon name="volume-up" size={18} color={colors.white} />
+                </View>
+                <Text style={{ color: colors.darkGrey, fontSize: 18, fontWeight: '500' }}>{wsData.SelectedTone}</Text>
+            </View>
             <Text style={styles.listTitle}>Power</Text>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
                 <Button
