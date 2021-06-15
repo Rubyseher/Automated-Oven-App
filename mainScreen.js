@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator,Image } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
@@ -165,31 +165,10 @@ function mainScreen({ navigation }) {
 
     return (
         data ? <View>
-            <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
-            {
-                <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={1} onSwipeComplete={() => setVisible(!visible)} animationIn='fadeInDown' hasBackdrop={false} useNativeDriver={true} style={{ margin: 0 }} >
-
-                    <View style={styles.urlOverlay} >
-                        <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
-                            <Ficon name="link2" size={20} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                        </View>
-
-                        <View style={{ width: '59%', marginLeft:10 }}>
-                            <Text style={styles.urlName}>{urlData && urlData.item}</Text>
-                                <Text style={styles.urlTemp}>{urlData && urlData.temp}°C for {urlData && urlData.time} min</Text>
-            
-                        </View>
-
-
-                        <View style={styles.urlPlay}>
-                            <Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                        </View>
-
-                    </View>
-                </Modal>
-            }
             {
                 data.steps && <Fragment>
+                    <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
+
                     <Carousel
                         ref={(c) => this._carousel = c}
                         data={data.steps}
@@ -214,34 +193,59 @@ function mainScreen({ navigation }) {
                         inactiveDotScale={1}
                         containerStyle={{ paddingVertical: 0 }}
                     />
+
+
+                    <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
+
+                    <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 12 }}>
+                        {data.isCooking && <Button
+                            onPress={() => navigation.navigate('automationScreen')}
+                            icon={<Wand height={25} width={25} fill={colors.black} />}
+                            buttonStyle={styles.roundButtonS}
+                            containerStyle={styles.roundButtonPaddingS}
+                        />}
+                        <Button
+                            onPress={() => sendRequest('pause')}
+                            icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{ alignSelf: 'center' }} />}
+                            buttonStyle={styles.roundButtonM}
+                            containerStyle={[styles.roundButtonPaddingM]}
+                        />
+                        {data.isCooking && <Button
+                            onPress={() => sendRequest('stop')}
+                            icon={<Ficon name="close-a" size={16} color={colors.red} />}
+                            buttonStyle={styles.roundButtonS}
+                            containerStyle={styles.roundButtonPaddingS}
+                        />}
+                    </View>
                 </Fragment>
             }
+            {
+                data.item == 'Empty' && <Fragment>
+                <Image source={require('./assets/WhitePlateScreen.jpg')} style={{width:'100%', height:'100%'}} resizeMode="cover" />
+                <Text style={[styles.title, {position:'absolute', bottom:'20%', alignSelf:'center',color:colors.darkGrey}]}>Empty</Text>
+                <Text style={{position:'absolute', bottom:'15%', marginHorizontal:'20%', alignSelf:'center',color:colors.darkGrey,textAlign:'center', fontStyle:'italic'}}>The crumbs are lonely. Maybe its time to bake something?</Text>
+                </Fragment>
+            }
+            <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={1} onSwipeComplete={() => setVisible(!visible)} animationIn='fadeInDown' hasBackdrop={false} useNativeDriver={true} style={{ margin: 0 }} >
+
+                <View style={styles.urlOverlay} >
+                    <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
+                        <Ficon name="link2" size={20} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
+                    </View>
+
+                    <View style={{ width: '59%', marginLeft: 10 }}>
+                        <Text style={styles.urlName}>{urlData && urlData.item}</Text>
+                        <Text style={styles.urlTemp}>{urlData && urlData.temp}°C for {urlData && urlData.time} min</Text>
+
+                    </View>
 
 
+                    <View style={styles.urlPlay}>
+                        <Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
+                    </View>
 
-            {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
-            <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
-
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 12 }}>
-                {data.isCooking && <Button
-                    onPress={() => navigation.navigate('automationScreen')}
-                    icon={<Wand height={25} width={25} fill={colors.black} />}
-                    buttonStyle={styles.roundButtonS}
-                    containerStyle={styles.roundButtonPaddingS}
-                />}
-                <Button
-                    onPress={() => sendRequest('pause')}
-                    icon={<Ficon name={data.isCooking && !data.isPaused ? 'pause' : 'play'} size={28} color={colors.darkGrey} style={{ alignSelf: 'center' }} />}
-                    buttonStyle={styles.roundButtonM}
-                    containerStyle={[styles.roundButtonPaddingM]}
-                />
-                {data.isCooking && <Button
-                    onPress={() => sendRequest('stop')}
-                    icon={<Ficon name="close-a" size={16} color={colors.red} />}
-                    buttonStyle={styles.roundButtonS}
-                    containerStyle={styles.roundButtonPaddingS}
-                />}
-            </View>
+                </View>
+            </Modal>
         </View> :
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
                 <ActivityIndicator size="large" />
