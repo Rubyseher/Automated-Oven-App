@@ -1,9 +1,8 @@
-import React, { useEffect, useState, createContext, useReducer, useMemo, useContext } from 'react';
+import React, { useEffect, useState, useReducer, useMemo, useContext } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import profileScreen from './profileScreen'
 import historyScreen from './historyScreen'
 import mainScreen from './mainScreen'
 import energyScreen from './energyScreen'
@@ -11,16 +10,10 @@ import automationEditScreen from './automationEditScreen'
 import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
-import { TextInput, View, Text, ActivityIndictor } from 'react-native';
+import { TextInput, View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export const AuthContext = createContext(null)
-
-export const stateConditionString = state => {
-    if (state.isLoading) return 'LOAD_APP';
-    if (state.isSignedIn) return state.userName !== null ? 'LOAD_HOME' : 'LOAD_LOGIN';
-};
+import {AuthContext, stateConditionString} from './AuthContext';
 
 const NavContainerTheme = {
     ...DefaultTheme,
@@ -63,9 +56,18 @@ function AutomationStack() {
     );
 }
 
+function HistoryStack() {
+    return (
+        <Stack.Navigator initialRouteName="historyScreen" headerMode='none'>
+            <Stack.Screen name="historyScreen" component={historyScreen} />
+            <Stack.Screen name="automationEdit" component={automationEditScreen} />
+        </Stack.Navigator>
+    );
+}
+
 function mainTabs() {
     return (
-        <Tab.Navigator initialRouteName="main"
+        <Tab.Navigator initialRouteName="settings"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
@@ -87,7 +89,7 @@ function mainTabs() {
                 inactiveTintColor: colors.navBarInactive,
                 style: { borderTopWidth: 0 }
             }}>
-            <Tab.Screen name="history" component={historyScreen} />
+            <Tab.Screen name="history" component={HistoryStack} />
             <Tab.Screen name="automations" component={AutomationStack} />
             <Tab.Screen name="main"
                 options={{
@@ -152,7 +154,6 @@ export default function App() {
         () => ({
             login: async data => {
                 if (data!==null) {
-                    console.log(data);
                     await AsyncStorage.setItem('name', data)
                     var ws = new WebSocket('ws://oven.local:8069');
                     ws.onopen = () => {
@@ -163,11 +164,11 @@ export default function App() {
                         }
                         ws.send(JSON.stringify(req));
                     };
-                    dispatch({ type: 'LOGIN', name: 'Token-For-Now' });
+                    dispatch({ type: 'LOGIN', name: data });
                 } else {
                     dispatch({ type: 'TO_LOGIN_PAGE' });
                 }
-            },
+            }
         }),
         []
     );
@@ -192,11 +193,10 @@ export default function App() {
         // if (authSubscriber !== null) {
             authContextValue.login(authSubscriber)
         // }
-        console.log(authSubscriber);
     }, [])
 
     return (
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={{name: state.userName, authContextValue}}>
             <NavigationContainer theme={NavContainerTheme}>
                 <RootStack.Navigator headerMode='none'>
                     {chooseScreen(state)}

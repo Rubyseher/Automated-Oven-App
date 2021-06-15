@@ -281,13 +281,13 @@ export const styles = StyleSheet.create({
     profileCircle: {
         height: 65,
         width: 65,
-        marginLeft: 30,
+        marginLeft: 20,
         borderRadius: 32,
         marginBottom: 42,
         // padding: 20,
         paddingLeft: 18,
         justifyContent: 'center',
-        backgroundColor: colors.yellow,
+        backgroundColor: colors.blue,
     },
     fullName: {
         fontWeight: 'bold',
@@ -501,8 +501,8 @@ export const styles = StyleSheet.create({
         marginLeft: 26,
     },
     saveAuto: {
-        fontWeight: '600',
-        fontSize: 30,
+        fontWeight: 'bold',
+        fontSize: 22,
         color: colors.black,
         marginBottom: 20,
         padding: 10,
@@ -538,9 +538,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
-        marginTop: 50,
         marginLeft: -4,
-        marginRight: 110
         // marginBottom: 27,
         // marginLeft: 26,
     },

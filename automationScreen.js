@@ -1,76 +1,18 @@
-import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import React, {  useState, useCallback } from 'react';
+import { View, Text, ScrollView} from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useFocusEffect } from '@react-navigation/native';
-import Ficon from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-
-const FoodName = (props) => {
-    const [finalDuration, setFinalDuration] = useState(0);
-    const [finalTemp, setFinalTemp] = useState(0);
-    const navigation = useNavigation();
-
-    useEffect(() => {
-        if (!finalTemp) {
-            let avgTemp = 0, duration = 0
-            {
-                props.steps && props.steps.forEach(i => {
-                    if (i.type == 'cook') {
-                        avgTemp = (((i.topTemp + i.bottomTemp) / 2) * i.duration) + avgTemp
-                        duration = i.duration + duration
-                    }
-                });
-            }
-            setFinalTemp(Math.round(avgTemp / duration))
-            setFinalDuration(duration)
-        }
-    }, []);
-
-    return (
-        <Fragment >
-            <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
-                {/* <View style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('automationEdit', { iData: props.iData })}> */}
-                    <View style={styles.tagBadge}>
-                        <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                    </View>
-                    <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
-                {/* </View> */}
-                <Button
-                    buttonStyle={[styles.foodCircleM, { backgroundColor: colors.lightRed }]}
-                    icon={<Icon name="bookmark" size={12} color={colors.white} solid />}
-                    containerStyle={{ alignItems: 'flex-end', width: '10%', marginRight: 8 }}
-                />
-                <Button
-                    buttonStyle={[styles.foodCircleM, { backgroundColor: colors.blue }]}
-                    icon={<Icon name="play" size={10} color={colors.white} solid />}
-                />
-            </View>
-            <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>
-                <View style={[styles.detailsCircle, { backgroundColor: colors.orange }]}>
-                    <Icon name="thermometer-half" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
-                </View>
-                <Text style={styles.detailText}> {finalTemp}°C</Text>
-
-                <View style={[styles.detailsCircle, { backgroundColor: colors.blue }]}>
-                    <Icon name="stopwatch" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
-                </View>
-                <Text style={styles.detailText}> {finalDuration} min</Text>
-
-                <View style={[styles.detailsCircle, { backgroundColor: colors.teal }]}>
-                    <Icon name="step-forward" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
-                </View>
-                {props.steps && <Text style={styles.detailText}> {props.steps.length} Steps</Text>}
-            </View>
-        </Fragment>
-    )
-}
+import FoodListItem from "./FoodListItem";
 
 export default function automationScreen() {
     const [data, setData] = useState([]);
     const [keys, setKeys] = useState([]);
+    const navigation = useNavigation();
+
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
@@ -93,21 +35,29 @@ export default function automationScreen() {
         }, [])
     );
 
+    const generateNewID = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    const newAutomation = () => {
+        id = generateNewID(6)
+        ReactNativeHapticFeedback.trigger("impactMedium"); 
+        navigation.navigate('automationEdit', { name: "New Automation 1",steps: [], id })
+    }
+
     return (
-        <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
-            <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
-                <Text style={styles.closeHeading}>Automator</Text>
-                {/* <Button
-          onPress={() => navigation.goBack()}
-          icon={<Ficon name="close-a" size={8} color={colors.white} />}
-          buttonStyle={styles.closeButtonM}
-          containerStyle={styles.closeButtonPaddingM}
-        /> */}
+        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 4 }}>
+            <View style={{ flexDirection: 'row', width: '100%'}} onPress={() => navigation.goBack()}>
+                <Text style={[styles.heading,{flex:0, marginRight:'35%'}]}>Automator</Text>
+                <Button
+                    icon={<Icon name="plus" size={14} color={colors.white} />}
+                    onPress={newAutomation}
+                    buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue,height:25,width:25 }]}
+                    containerStyle={[styles.roundButtonPaddingS, {height:30,width:30, alignSelf:'center', flex:2, marginTop:20}]}
+                />
             </View>
             {
-                data.length > 0 ? data.map((item, i) => (
-                    <FoodName key={i} name={item.name} steps={item.steps} id={keys[i]} iData={item} />
-                )) : null
+                data.length > 0 && data.map((item, i) => (
+                    <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable/>
+                ))
             }
         </ScrollView>
     );
