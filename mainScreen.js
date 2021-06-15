@@ -17,6 +17,8 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import CircularSlider from 'rn-circular-slider'
 
+// https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
+
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
@@ -62,12 +64,11 @@ function mainScreen({ navigation }) {
     const [time, setTime] = useState(0);
     const [data, setData] = useState();
     const [urlData, setUrlData] = useState();
+    const [getUrl, setGetUrl] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(true);
 
     const sendCookingFromURL = (values) => {
-        setVisible(true)
-        setUrlData(values)
         console.log("sendCookingFromURL values", values);
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
@@ -82,7 +83,8 @@ function mainScreen({ navigation }) {
     }
 
     const fetchFromUrl = async () => {
-        const url = await Clipboard.getString();
+        // const url = await Clipboard.getString();
+        const url = await Clipboard.getString("https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/");
 
         var regexURL = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
 
@@ -91,7 +93,11 @@ function mainScreen({ navigation }) {
                 jsdom.env(data, (err, window) => {
                     var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
                     cookingValues.item = cleanTitle(window.document.querySelector(getTitleClass(url)).textContent)
-                    if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) sendCookingFromURL(cookingValues)
+                    setVisible(true)
+
+                    if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) setUrlData(cookingValues)
+                    console.log("cookingValues", cookingValues);
+
                 })
             })
         }
@@ -114,7 +120,6 @@ function mainScreen({ navigation }) {
             ws.send(JSON.stringify(req));
             ws.close()
         };
-
     }
 
     useFocusEffect(
@@ -127,6 +132,7 @@ function mainScreen({ navigation }) {
                 firstStepStart.add(_time, 'm')
                 setTime(firstStepStart.diff(moment(), 'seconds'))
             }
+
             var intervalId = setInterval(() => {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
@@ -140,7 +146,8 @@ function mainScreen({ navigation }) {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
-                        if (!d.result.isCooking) fetchFromUrl()
+                        if (!d.result.isCooking) setGetUrl(true)
+                        else setGetUrl(false)
                         console.log("data", d.result)
                         if (data) {
                             if (data.currentStep == d.result.currentStep - 1)
@@ -160,9 +167,40 @@ function mainScreen({ navigation }) {
         }, [])
     );
 
+    useFocusEffect(
+        useCallback(() => {
+            fetchFromUrl()
+        }, [getUrl])
+    );
+
     return (
         data ? <View>
             <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
+            {
+                // urlData && visible && 
+                <Overlay isVisible={visible} overlayStyle={styles.urlOverlay} onBackdropPress={() => setVisible(false)}>
+                    <View style={{ flexDirection: 'row' , justifyContent: 'center' }}>
+                        <Ficon name="link2" size={20} color={colors.blue} />
+                        <Text style={styles.urlName}> Chocolate cake</Text>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', width: '80%', alignSelf: 'center' }}>
+                        <Text style={styles.urlTemp}>170 °C</Text>
+                        <Text style={styles.urlTemp}>15 min</Text>
+                    </View>
+
+                    <Button
+                        title="Cook"
+                        titleStyle={{fontSize:15}}
+                        buttonStyle={styles.urlCook}
+                    // containerStyle={styles.saveButton}
+                    />
+
+                    {/* <Text style={styles.addStep}>{urlData.items}</Text>
+                    <Text style={styles.addStep}>{urlData.temp}</Text>
+                    <Text style={styles.addStep}>{urlData.time}</Text> */}
+                </Overlay>
+            }
             {
                 data.steps && <Fragment>
                     <Carousel
@@ -192,9 +230,7 @@ function mainScreen({ navigation }) {
                 </Fragment>
             }
 
-            <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={() => setVisible(false)}>
-                <Text style={styles.addStep}>Add Step</Text>
-            </Overlay>
+
 
             {/* <GradientProgress value={data.isCooking ? progressPercent() : 0} trackColor={colors.white} /> */}
             <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
