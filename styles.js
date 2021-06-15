@@ -30,15 +30,15 @@ export const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 18,
-        marginTop:10,
+        marginTop: 10,
         color: colors.darkGrey,
         textAlign: 'center',
     },
     carouselTitle: {
         fontWeight: 'bold',
-        paddingTop:14,
-        paddingBottom:20,
-        textAlign:'center',
+        paddingTop: 14,
+        paddingBottom: 20,
+        textAlign: 'center',
         fontSize: 21
     },
     sliderTrackStyle: {
@@ -128,11 +128,11 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     mainCardContainer: {
-        width:'76%',
+        width: '76%',
         height: 450,
-        borderRadius:20,
-        alignItems:'center',
-        marginVertical:'5%',
+        borderRadius: 20,
+        alignItems: 'center',
+        marginVertical: '5%',
         marginHorizontal: '11%',
         paddingHorizontal: 26,
         paddingVertical: 50,
@@ -145,6 +145,42 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6.94,
         elevation: 4,
+    },
+    urlOverlay: {
+        backgroundColor: colors.white,
+        width: '80%',
+        height: "11%",
+        borderRadius: 22,
+        shadowColor: "#000",
+        justifyContent:'center',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.6,
+        shadowRadius: 6.94,
+        elevation: 4,
+    },
+    urlName: {
+        width: "60%",
+        fontWeight: 'bold',
+        fontSize: 17,
+        paddingLeft:10,
+    },
+    urlTemp: {
+        padding: 5,
+        width: "50%",
+        textAlign: 'center',
+        fontSize: 15,
+        // color: colors.blue,
+        // marginLeft: 26,
+    },
+    urlCook: {
+        backgroundColor: colors.darkBlue,
+        width: '90%',
+        padding: 5,
+        borderRadius: 24,
+        alignSelf: 'center',
     },
     //   ********* historyScreen ********* 
     heading: {
@@ -492,14 +528,14 @@ export const styles = StyleSheet.create({
     welcomeTitle: {
         fontWeight: 'bold',
         fontSize: 36,
-        marginBottom:24,
-        color:colors.white
+        marginBottom: 24,
+        color: colors.white
     },
     welcomeContainer: {
-        padding:50,
-        alignItems:'center',
-        marginVertical:'50%',
-        marginHorizontal:30,
+        padding: 50,
+        alignItems: 'center',
+        marginVertical: '50%',
+        marginHorizontal: 30,
         borderRadius: 12,
         backgroundColor: colors.blue,
         shadowColor: "#000",
@@ -513,19 +549,19 @@ export const styles = StyleSheet.create({
     },
     welcomeText: {
         fontSize: 20,
-        fontWeight:'500',
-        paddingBottom:12,
-        color:colors.white,
+        fontWeight: '500',
+        paddingBottom: 12,
+        color: colors.white,
     },
-    newName:{
+    newName: {
         fontSize: 22,
-        color:colors.white,
-        fontWeight:'500',
-        padding:8,
-        margin:10,
-        textAlign:'center',
-        width:'80%',
-        borderBottomWidth:4,
-        borderColor:colors.white
+        color: colors.white,
+        fontWeight: '500',
+        padding: 8,
+        margin: 10,
+        textAlign: 'center',
+        width: '80%',
+        borderBottomWidth: 4,
+        borderColor: colors.white
     }
 });
