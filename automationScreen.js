@@ -1,10 +1,9 @@
-import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import React, {  useState, useCallback, useEffect } from 'react';
+import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useFocusEffect } from '@react-navigation/native';
-import Ficon from 'react-native-vector-icons/Fontisto';
 import { useNavigation } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
@@ -30,14 +29,12 @@ const FoodName = (props) => {
     }, []);
 
     return (
-        <Fragment >
+        <TouchableOpacity onPress={() => { ReactNativeHapticFeedback.trigger("impactMedium"); navigation.navigate('automationEdit', { name: props.name, steps: props.steps, id: props.id }) }}>
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
-                {/* <View style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('automationEdit', { iData: props.iData })}> */}
-                    <View style={styles.tagBadge}>
-                        <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                    </View>
-                    <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
-                {/* </View> */}
+                <View style={styles.tagBadge}>
+                    <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
+                </View>
+                <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
                 <Button
                     buttonStyle={[styles.foodCircleM, { backgroundColor: colors.lightRed }]}
                     icon={<Icon name="bookmark" size={12} color={colors.white} solid />}
@@ -64,13 +61,15 @@ const FoodName = (props) => {
                 </View>
                 {props.steps && <Text style={styles.detailText}> {props.steps.length} Steps</Text>}
             </View>
-        </Fragment>
+        </TouchableOpacity>
     )
 }
 
 export default function automationScreen() {
     const [data, setData] = useState([]);
     const [keys, setKeys] = useState([]);
+    const navigation = useNavigation();
+
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
@@ -93,20 +92,29 @@ export default function automationScreen() {
         }, [])
     );
 
+    const generateNewID = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
+    const newAutomation = () => {
+        id = generateNewID(6)
+        ReactNativeHapticFeedback.trigger("impactMedium"); 
+        navigation.navigate('automationEdit', { name: "New Automation 1",steps: [], id })
+    }
+
     return (
-        <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
-            <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
-                <Text style={styles.closeHeading}>Automator</Text>
-                {/* <Button
-          onPress={() => navigation.goBack()}
-          icon={<Ficon name="close-a" size={8} color={colors.white} />}
-          buttonStyle={styles.closeButtonM}
-          containerStyle={styles.closeButtonPaddingM}
-        /> */}
+        <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 4 }}>
+            <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 10 }} onPress={() => navigation.goBack()}>
+                <Text style={[styles.heading,{flex:0, marginRight:'35%'}]}>Automator</Text>
+                <Button
+                    icon={<Icon name="plus" size={14} color={colors.white} />}
+                    onPress={newAutomation}
+                    buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue,height:25,width:25 }]}
+                    containerStyle={[styles.roundButtonPaddingS, {height:30,width:30, alignSelf:'center', flex:2, marginTop:20}]}
+                />
             </View>
+
             {
                 data.length > 0 ? data.map((item, i) => (
-                    <FoodName key={i} name={item.name} steps={item.steps} id={keys[i]} iData={item} />
+                    <FoodName key={i} name={item.name} steps={item.steps} id={keys[i]} />
                 )) : null
             }
         </ScrollView>

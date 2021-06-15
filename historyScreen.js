@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useCallback, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text,ScrollView } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -89,14 +89,14 @@ export default function historyScreen() {
     );
 
     return (
-        <View style={{ paddingHorizontal: 32, paddingTop: 4 }}>
+        <ScrollView vertical={true} contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 4,paddingBottom:50 }}>
             <Text style={styles.heading}>History</Text>
             {
                 names.length > 0 ? data.map((item, i) => (
                     <FoodName key={i} name={names[i]} steps={item.steps} />
                 )) : null
             }
-        </View>
+        </ScrollView>
     );
 }
 

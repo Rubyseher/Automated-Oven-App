@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput } from 'react-native';
+import { View, Text, TextInput,Pressable } from 'react-native';
 import { styles, colors } from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import OvenTop from './assets/Oven Direction Top.svg'
@@ -57,12 +57,12 @@ const Title = (props) => {
 }
 
 const Checkbox = (props) => {
-    const [checked, setChecked] = useState(true)
+    const [checked, setchecked] = useState(props.checked);
     return (
         <View style={{ flexDirection: 'row' }}>
-            <View style={[styles.detailsCircle, { backgroundColor: props.color }]}>
-                <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
-            </View>
+            <Pressable style={[styles.detailsCircle, { backgroundColor: checked ?  props.color : colors.white, borderWidth:2, borderColor: props.color }]} onPress={() => setchecked(!checked)}>
+                {checked && <Icon name={props.icon} size={12} color={colors.white} style={{ padding: 2, alignSelf: 'center' }} solid />}
+            </Pressable>
             <Text style={styles.autoTitle}> &nbsp;{props.type}</Text>
         </View>
     )
@@ -112,7 +112,6 @@ export const Cook = (props) => {
 }
 export const Checkpoint = (props) => {
     const [timeSlider, setTimeSlider] = useState(parseInt(props.timeout));
-    const [checked, setchecked] = useState(false);
     return (
         <View style={[styles.autoContainer]}>
             <Title type='Checkpoint' color={colors.blue} icon="flag" id={props.id}  removeItem={props.removeItem} />
@@ -128,7 +127,7 @@ export const Checkpoint = (props) => {
                     </CircularSlider>
                 </View>
                 <View style={{ width: '60%', marginLeft: 14, marginTop: 15 }}>
-                    <Checkbox type="Wait for conformation" color={colors.blue} icon="check" />
+                    <Checkbox type="Wait for conformation" color={colors.blue} icon="check" checked={props.wait} />
                 </View>
             </View>
         </View>

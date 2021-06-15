@@ -1,10 +1,11 @@
-import { View, Text, TextInput } from 'react-native';
-import React, { Fragment, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { Fragment, useState, useContext } from 'react';
 import { styles, colors } from './styles';
 import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './timeline';
 import { ScrollView } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { AuthContext } from './AuthContext';
 import Ficon from 'react-native-vector-icons/Fontisto';
 
 const TimelineComponent = (props) => {
@@ -25,14 +26,15 @@ const TimelineComponent = (props) => {
     return null;
 }
 
-export default function automationEditScreen({ navigation,route }, props) {
-    const {iData} = route.params;
+export default function automationEditScreen({ navigation, route }) {
+    const { id } = route.params;
     // const [data, setData] = useState();
-    const [steps, setSteps] = useState(iData.steps);
+    const [steps, setSteps] = useState(route.params.steps);
     const [visible, setVisible] = useState(false);
-    const [foodName, changeFoodname] = useState(iData.name);
-    console.log("steps is ",foodName);
-    
+    const [foodName, changeFoodname] = useState(route.params.name);
+    const { name } = useContext(AuthContext);
+    const [saveIsDeleteButton, setSaveIsDeleteButton] = useState(false)
+
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
     }
@@ -54,7 +56,7 @@ export default function automationEditScreen({ navigation,route }, props) {
                 "type": "cook",
                 "topTemp": 170,
                 "bottomTemp": 0,
-                "time": 30
+                "duration": 30
             }
                 break;
 
@@ -97,36 +99,54 @@ export default function automationEditScreen({ navigation,route }, props) {
     var stepColor = ['yellow', 'purple', 'blue', 'orange', 'turquoise', 'red']
     var icon = ['utensils', 'bell', 'flag', 'fire-alt', 'snowflake', 'power-off']
 
+    const saveAutomation = () => {
+        if (steps.length > 0) {
+            var ws = new WebSocket('ws://oven.local:8069');
+            ws.onopen = () => {
+                req = {
+                    module: 'automations',
+                    function: 'set',
+                    params: [id, {
+                        name: foodName,
+                        createdBy: name,
+                        creationDate: Math.floor(Date.now() / 1000),
+                        lastUsed: Math.floor(Date.now() / 1000),
+                        steps
+                    }]
+                }
+                ws.send(JSON.stringify(req));
+                ws.close()
+            };
+        }
+        navigation.goBack()
+    }
+
+    const deleteAutomation = () => {
+        var ws = new WebSocket('ws://oven.local:8069');
+        ws.onopen = () => {
+            req = {
+                module: 'automations',
+                function: 'delete',
+                params: [id]
+            }
+            ws.send(JSON.stringify(req));
+            ws.close()
+        };
+    }
+
     return (
-        <View>
-            <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200 }}>
-
-                <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
-                    <Text style={styles.addStep}>Add Step</Text>
-                    <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', marginHorizontal: 50 }}>
-                        {
-                            types.map((item, i) => (
-                                <View key={i} style={{ width: '40%' }}>
-                                    <Button
-                                        onPress={() => addItem(types[i])}
-                                        icon={<Icon name={icon[i]} size={35} color={colors.white} solid />}
-                                        buttonStyle={[styles.stepCircle, { backgroundColor: colors[stepColor[i]] }]}
-                                        containerStyle={styles.stepCirclePadding}
-                                    />
-                                    <Text style={styles.stepTitle}>{types[i]}</Text>
-                                </View>
-                            ))
-                        }
-                    </View>
-                </Overlay>
-
-                <View style={{ flexDirection: 'row', width: '100%', paddingBottom: 40 }}>
-                    <Text style={styles.closeHeading}>Automator</Text>
+        <Fragment>
+            <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200, paddingTop: 50 }}>
+                <View style={{ flexDirection: 'row', width: '100%' }} >
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon name="chevron-left" size={22} color={colors.blue} />
+                    </TouchableOpacity>
+                    <Text style={[styles.heading, { fontSize: 26, marginTop: -5, marginRight: '23%' }]}>{'   '}Edit Automation</Text>
                     <Button
-                        onPress={() => navigation.goBack()}
-                        icon={<Ficon name="close-a" size={8} color={colors.white} />}
-                        buttonStyle={styles.closeButtonM}
-                        containerStyle={styles.closeButtonPaddingM}
+                        icon={saveIsDeleteButton ? <Ficon name="close-a" size={10} color={colors.white} /> : <Icon name={"trash"} size={12} color={colors.white} />}
+                        onPress={() => setSaveIsDeleteButton(!saveIsDeleteButton)}
+                        buttonStyle={[styles.roundButtonS, { backgroundColor: saveIsDeleteButton ? colors.darkGrey : colors.red, height: 25, width: 25 }]}
+                        containerStyle={[styles.roundButtonPaddingS, { height: 30, width: 30, alignSelf: 'center', flex: 2, marginTop: -15 }]}
                     />
                 </View>
 
@@ -152,16 +172,35 @@ export default function automationEditScreen({ navigation,route }, props) {
                     containerStyle={styles.roundButtonPaddingS}
                 />
             </ScrollView>
-            
+
             <View style={styles.saveOverlay}>
                 <Button
-                    title="Save"
+                    title={saveIsDeleteButton ? "Delete" : "Save"}
                     titleStyle={styles.saveText}
-                    buttonStyle={styles.saveButton}
-                    // containerStyle={styles.saveButton}
+                    buttonStyle={[styles.saveButton, { backgroundColor: saveIsDeleteButton ? colors.red : colors.darkBlue }]}
+                    onPress={saveIsDeleteButton ? deleteAutomation : saveAutomation}
                 />
             </View>
-        </View>
+
+            <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
+                <Text style={styles.addStep}>Add Step</Text>
+                <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', marginHorizontal: 50 }}>
+                    {
+                        types.map((item, i) => (
+                            <View key={i} style={{ width: '40%' }}>
+                                <Button
+                                    onPress={() => addItem(types[i])}
+                                    icon={<Icon name={icon[i]} size={35} color={colors.white} solid />}
+                                    buttonStyle={[styles.stepCircle, { backgroundColor: colors[stepColor[i]] }]}
+                                    containerStyle={styles.stepCirclePadding}
+                                />
+                                <Text style={styles.stepTitle}>{types[i]}</Text>
+                            </View>
+                        ))
+                    }
+                </View>
+            </Overlay>
+        </Fragment>
 
     );
 }

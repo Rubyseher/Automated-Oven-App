@@ -445,8 +445,8 @@ export const styles = StyleSheet.create({
         marginLeft: 26,
     },
     saveAuto: {
-        fontWeight: '600',
-        fontSize: 30,
+        fontWeight: 'bold',
+        fontSize: 22,
         color: colors.black,
         marginBottom: 20,
         padding: 10,
@@ -482,9 +482,7 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 36,
         color: colors.blue,
-        marginTop: 50,
         marginLeft: -4,
-        marginRight: 110
         // marginBottom: 27,
         // marginLeft: 26,
     },
