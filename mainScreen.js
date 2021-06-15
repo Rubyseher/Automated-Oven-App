@@ -12,6 +12,7 @@ import jsdom from 'jsdom-jscore-rn';
 import { getCookingDetails, getInstructionClass, isAcceptedURL, getTitleClass, cleanTitle } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 // https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
 

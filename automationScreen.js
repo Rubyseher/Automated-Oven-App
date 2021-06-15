@@ -40,7 +40,7 @@ export default function automationScreen() {
     const newAutomation = () => {
         id = generateNewID(6)
         ReactNativeHapticFeedback.trigger("impactMedium"); 
-        navigation.navigate('automationEdit', { name: "New Automation 1",steps: [], id })
+        navigation.navigate('automationEdit', { name: "New Automation 1",steps: [], id, editable:true })
     }
 
     return (
@@ -51,7 +51,7 @@ export default function automationScreen() {
                     icon={<Icon name="plus" size={14} color={colors.white} />}
                     onPress={newAutomation}
                     buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue,height:25,width:25 }]}
-                    containerStyle={[styles.roundButtonPaddingS, {height:30,width:30, alignSelf:'center', flex:2, marginTop:20}]}
+                    containerStyle={[styles.roundButtonPaddingS, {height:35,width:35, alignSelf:'center', flex:2, marginTop:20}]}
                 />
             </View>
             {

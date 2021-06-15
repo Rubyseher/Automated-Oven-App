@@ -7,6 +7,7 @@ import { Button, Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { AuthContext } from './AuthContext';
 import Ficon from 'react-native-vector-icons/Fontisto';
+import Modal from 'react-native-modal';
 
 const TimelineComponent = (props) => {
     var item = props.item
@@ -38,9 +39,6 @@ export default function automationEditScreen({ navigation, route }) {
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
     }
-    const toggleOverlay = () => {
-        setVisible(!visible);
-    };
 
     function addItem(i) {
         var content = {}
@@ -117,7 +115,7 @@ export default function automationEditScreen({ navigation, route }) {
                         icon={saveIsDeleteButton ? <Ficon name="close-a" size={10} color={colors.white} /> : <Icon name={"trash"} size={12} color={colors.white} />}
                         onPress={() => setSaveIsDeleteButton(!saveIsDeleteButton)}
                         buttonStyle={[styles.roundButtonS, { backgroundColor: saveIsDeleteButton ? colors.darkGrey : colors.red, height: 25, width: 25 }]}
-                        containerStyle={[styles.roundButtonPaddingS, { height: 30, width: 30, alignSelf: 'center', flex: 2, marginTop: -15 }]}
+                        containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'center', flex: 2, marginTop: -15 }]}
                     />}
                 </View>
 
@@ -139,7 +137,7 @@ export default function automationEditScreen({ navigation, route }) {
                 }
 
                 {editable && <Button
-                    onPress={toggleOverlay}
+                    onPress={() => setVisible(!visible)}
                     icon={<Icon name="plus" size={18} color={colors.white} />}
                     buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue }]}
                     containerStyle={styles.roundButtonPaddingS}
@@ -155,7 +153,8 @@ export default function automationEditScreen({ navigation, route }) {
                 />
             </View>}
 
-            <Overlay isVisible={visible} overlayStyle={styles.overlayContainer} onBackdropPress={toggleOverlay}>
+            <Modal isVisible={visible} swipeDirection="down" onSwipeComplete={() => setVisible(!visible)} onBackdropPress={() => setVisible(!visible)} style={{margin:0}} backdropOpacity={0.5}>
+                <View style={styles.overlayContainer}>
                 <Text style={styles.addStep}>Add Step</Text>
                 <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', marginHorizontal: 50 }}>
                     {
@@ -172,7 +171,8 @@ export default function automationEditScreen({ navigation, route }) {
                         ))
                     }
                 </View>
-            </Overlay>
+                </View>
+            </Modal>
         </Fragment>
 
     );

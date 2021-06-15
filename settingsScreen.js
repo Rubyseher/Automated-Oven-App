@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { styles, colors } from './styles'
 import Slider from '@react-native-community/slider'
-import Ficon from 'react-native-vector-icons/Fontisto';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { AuthContext } from './AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -22,7 +22,7 @@ const SettingSlider = (props) => {
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.blue}
                 step={5}
-                onSlidingComplete={value => { props.handler.setValue((currWS) => currWS[props.name] = value); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
+                onSlidingComplete={value => { props.handler.setValue((currWS) => { return { ...currWS, [`${props.name}`]: value } }); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
                 value={props.handler.value}
                 thumbTintColor="transparent"
             />
@@ -31,8 +31,6 @@ const SettingSlider = (props) => {
 }
 
 export default function settingsScreen() {
-    // const [backlight, setBacklight] = useState(0);
-    // const [volume, setVolume] = useState(50);
     const [wsData, setWsData] = useState({
         backlight: 0,
         volume: 0,
@@ -42,8 +40,6 @@ export default function settingsScreen() {
     const { name } = useContext(AuthContext)
 
     const setPivalue = (name, value) => {
-        console.log("setPivalue name ", name);
-        console.log("setPivalue value ", value);
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
@@ -56,50 +52,21 @@ export default function settingsScreen() {
         };
     }
 
+
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
 
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
-                req = {
-                    module: 'display',
-                    function: 'getBacklight',
-                    params: []
-                }
-                ws.send(JSON.stringify(req));
-                req = {
-                    module: 'audio',
-                    function: 'getVolume',
-                    params: []
-                }
-                ws.send(JSON.stringify(req));
-                req = {
-                    module: 'audio',
-                    function: 'getSelectedTone',
-                    params: []
-                }
-                ws.send(JSON.stringify(req));
-                req = {
-                    module: 'audio',
-                    function: 'getAvailableTones',
-                    params: []
-                }
-                ws.send(JSON.stringify(req));
+                reqList = [['display','getBacklight'],['audio','getVolume'],['audio','getSelectedTone'],['audio','getAvailableTones'],['other','getLogs']]
+                reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: r[1] })))
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 console.log("msg is ", d);
-
                 if (d.type == 'result') {
-                    switch (d.req) {
-                        case "getVolume": setWsData((currWS) => { return { ...currWS, volume: d.result } })
-                        case "getBacklight": setWsData((currWS) => { return { ...currWS, backlight: d.result } })
-                        case "getSelectedTone": setWsData((currWS) => { return { ...currWS, selectedTone: d.result } })
-                        case "getAvailableTones": setWsData((currWS) => { return { ...currWS, availableTones: d.result } })
-                        default: null
-                    }
-                    ws.close()
+                    setWsData((currWS) => { return { ...currWS, [d.req.substring(3)]: d.result } })
                 }
             };
         }, [])
@@ -115,33 +82,31 @@ export default function settingsScreen() {
                 <Button
                     icon={<Icon name="arrow-left" size={12} color={colors.white} />}
                     buttonStyle={[styles.roundButtonS, { backgroundColor: colors.darkGrey, height: 25, width: 25 }]}
-                    containerStyle={[styles.roundButtonPaddingS, { height: 30, width: 30, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%' }]}
+                    containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%'}]}
                 />
             </View >
             <View style={{ width: '93%', alignSelf: 'center' }}>
-                <SettingSlider icon={<Ficon name="day-sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.backlight, setValue: setWsData }} sendHandler={setPivalue} name='backlight' />
-                <SettingSlider icon={<Ficon name="volume-up" size={16} color={colors.darkGrey} />} handler={{ value: wsData.volume, setValue: setWsData }} sendHandler={setPivalue} name='volume' />
+                <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' />
+                <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' />
             </View>
-            <View style={{ flexDirection: 'row', width: '100%' }}>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent:'space-evenly' }}>
                 <Button
                     icon={<Icon name="sync-alt" size={24} color={colors.white} />}
                     buttonStyle={[styles.roundButtonM, { backgroundColor: colors.darkGrey }]}
-                    containerStyle={styles.roundButtonPaddingM}
+                    containerStyle={[styles.roundButtonPaddingM,{marginLeft:0, marginRight:0}]}
                 />
                 <Button
                     icon={<Icon name="power-off" size={24} color={colors.white} />}
                     buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
-                    containerStyle={styles.roundButtonPaddingM}
+                    containerStyle={[styles.roundButtonPaddingM,{marginLeft:0, marginRight:0}]}
                 />
 
             </View>
 
 
-            <FlatList style={{ height: '140%' }}
+            <FlatList style={{ height: 300 }}
                 data={[
                     { key: 'Oven URL' },
-                    { key: 'Profile' },
-                    { key: 'Sleep' },
                     { key: 'History' },
                     { key: 'Detection' },
                     { key: 'Developer' }, // debug mode, logs
