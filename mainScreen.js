@@ -13,8 +13,10 @@ import { getCookingDetails, getInstructionClass, isAcceptedURL, getTitleClass, c
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Modal from 'react-native-modal';
 
 // https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
+// https://www.delish.com/cooking/recipe-ideas/recipes/a51451/easy-chicken-parmesan-recipe/
 
 String.prototype.capitalize = function () {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -81,10 +83,10 @@ function mainScreen({ navigation }) {
                 jsdom.env(data, (err, window) => {
                     var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
                     cookingValues.item = cleanTitle(window.document.querySelector(getTitleClass(url)).textContent)
-                    setVisible(true)
 
                     if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) setUrlData(cookingValues)
                     console.log("cookingValues", cookingValues);
+                    setVisible(true)
 
                 })
             })
@@ -136,7 +138,7 @@ function mainScreen({ navigation }) {
                         setData(d.result)
                         if (!d.result.isCooking) setGetUrl(true)
                         else setGetUrl(false)
-                        console.log("data", d.result)
+                        // console.log("data", d.result)
                         if (data) {
                             if (data.currentStep == d.result.currentStep - 1)
                                 this._carousel.snapToItem(d.result.currentStep);
@@ -165,47 +167,26 @@ function mainScreen({ navigation }) {
         data ? <View>
             <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
             {
-                // urlData && visible && 
-                <View isVisible={visible} style={styles.urlOverlay} onBackdropPress={() => setVisible(false)}>
-                    <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
-                        <Ficon name="link2" size={20} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                    </View>
+                <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={1} onSwipeComplete={() => setVisible(!visible)} animationIn='fadeInDown' hasBackdrop={false} useNativeDriver={true} style={{ margin: 0 }} >
 
-                    <View style={{width:'62%'}}>
-                        <Text style={styles.urlName}>Chocolate Cake</Text>
-                        <View style={{ flexDirection: 'row', width: '80%', alignSelf: 'center' }}>
-                            <Text style={styles.urlTemp}>170 °C for 15 min</Text>
+                    <View style={styles.urlOverlay} >
+                        <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
+                            <Ficon name="link2" size={20} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
                         </View>
+
+                        <View style={{ width: '59%', marginLeft:10 }}>
+                            <Text style={styles.urlName}>{urlData && urlData.item}</Text>
+                                <Text style={styles.urlTemp}>{urlData && urlData.temp}°C for {urlData && urlData.time} min</Text>
+            
+                        </View>
+
+
+                        <View style={styles.urlPlay}>
+                            <Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
+                        </View>
+
                     </View>
-
-
-                    <View style={styles.urlPlay}>
-                        <Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
-                    </View>
-
-                    {/* <View style={{ flexDirection: 'row' , justifyContent: 'center' }}>
-                        <Ficon name="link2" size={20} color={colors.blue} />
-                        <Text style={styles.urlName}> Chocolate cake</Text>
-                    </View>
-
-                    <View style={{ flexDirection: 'row', width: '80%', alignSelf: 'center' }}>
-                        <Text style={styles.urlTemp}>170 °C</Text>
-                        <Text style={styles.urlTemp}>15 min</Text>
-                    </View>
-
-                    <Button
-                        title="Cook"
-                        titleStyle={{fontSize:15}}
-                        buttonStyle={styles.urlCook}
-                    /> */}
-
-                    {/* <Text style={styles.addStep}>{urlData.items}</Text>
-                    <Text style={styles.addStep}>{urlData.temp}</Text>
-                    <Text style={styles.addStep}>{urlData.time}</Text> */}
-
-
-                </View>
-
+                </Modal>
             }
             {
                 data.steps && <Fragment>

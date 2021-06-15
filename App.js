@@ -67,7 +67,7 @@ function HistoryStack() {
 
 function mainTabs() {
     return (
-        <Tab.Navigator initialRouteName="settings"
+        <Tab.Navigator initialRouteName="main"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;

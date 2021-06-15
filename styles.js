@@ -159,21 +159,20 @@ export const styles = StyleSheet.create({
             height: 1,
         },
         zIndex: 1,
-        shadowOpacity: 0.15,
-        shadowRadius: 3.34,
+        shadowOpacity: 0.1,
+        shadowRadius: 8.34,
         elevation: 4,
+        position:'absolute',
+        top:'12%'
     },
     urlName: {
         fontWeight: 'bold',
-        marginLeft: 14,
         fontSize: 20,
         marginTop: 14,
         marginBottom: 4,
-         width: '80%' 
     },
     urlTemp: {
         padding: 0,
-        width: "100%",
         fontSize: 15,
         // color: colors.blue,
         // marginLeft: 26,
