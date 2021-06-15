@@ -261,13 +261,13 @@ export const styles = StyleSheet.create({
     profileCircle: {
         height: 65,
         width: 65,
-        marginLeft: 30,
+        marginLeft: 20,
         borderRadius: 32,
         marginBottom: 42,
         // padding: 20,
         paddingLeft: 18,
         justifyContent: 'center',
-        backgroundColor: colors.yellow,
+        backgroundColor: colors.blue,
     },
     fullName: {
         fontWeight: 'bold',

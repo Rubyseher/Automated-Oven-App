@@ -1,11 +1,9 @@
 import React, { useState, Fragment, useCallback } from 'react';
-import Slider from '@react-native-community/slider'
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
-import LinearGradient from 'react-native-linear-gradient';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import { Preheat, Cook, Checkpoint, Notify, PowerOff, Cooling } from './carouselItems';
 import moment from 'moment';
@@ -14,8 +12,6 @@ import jsdom from 'jsdom-jscore-rn';
 import { getCookingDetails, getInstructionClass, isAcceptedURL, getTitleClass, cleanTitle } from './webScraper';
 import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import CircularSlider from 'rn-circular-slider'
 
 // https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
 
@@ -51,15 +47,6 @@ const TimelineComponent = (props) => {
     }
     return null;
 }
-
-// const GradientProgress = (props) => {
-//     return (
-//         <View style={[{ width: '100%', height: 12, backgroundColor: props.trackColor ? props.trackColor : '#e1dddd' }, props.trackStyle]}>
-//             <LinearGradient colors={[colors.yellow, colors.orange]} start={{ x: 0, y: 0 }} locations={[0.5, 1]} style={{ width: `${props.value}%`, height: '100%' }}></LinearGradient>
-//         </View>
-//     )
-// }
-
 function mainScreen({ navigation }) {
     const [time, setTime] = useState(0);
     const [data, setData] = useState();

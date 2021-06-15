@@ -47,47 +47,18 @@ export default function automationEditScreen({ navigation, route }) {
         var st = steps;
 
         switch (i) {
-            case "preheat": content = {
-                "type": "preheat",
-                "temp": 60
-            }
+            case "preheat": content = { "type": i, "temp": 60 }
                 break;
-            case "cook": content = {
-                "type": "cook",
-                "topTemp": 170,
-                "bottomTemp": 0,
-                "duration": 30
-            }
+            case "cook": content = { "type": i, "topTemp": 170, "bottomTemp": 0, "duration": 30 }
                 break;
-
-            case "checkpoint": content = {
-                "type": "checkpoint",
-                "wait": true,
-                "timeout": 30
-            }
+            case "checkpoint": content = { "type": i, "wait": true, "timeout": 30 }
                 break;
-            case "notify":
-                content = {
-                    "type": "notify",
-                    "destination": ["John", "Bob", "Tom", "Alexa"],
-                    "title": "Cooking Complete",
-                    "message": "Pizza is done Cooking"
-                }
+            case "notify": content = { "type": i, "destination": ["John", "Bob", "Tom", "Alexa"], "title": "Cooking Complete", "message": "Pizza is done Cooking" }
                 break;
-
-            case "poweroff":
-                content = {
-                    "type": "poweroff"
-                }
+            case "poweroff": content = { "type": i }
                 break;
-
-            case "cooling":
-                content = {
-                    "type": "cooling",
-                    "duration": 10
-                }
+            case "cooling": content = { "type": i, "duration": 10 }
                 break;
-
             default: null
         }
         st.push(content)
@@ -141,7 +112,7 @@ export default function automationEditScreen({ navigation, route }) {
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Icon name="chevron-left" size={22} color={colors.blue} />
                     </TouchableOpacity>
-                    <Text style={[styles.heading, { fontSize: 26, marginTop: -5, marginRight: '23%' }]}>{editable ? '   Edit Automation' : '   ' +foodName}</Text>
+                    <Text style={[styles.heading, { fontSize: 26, marginTop: -5, marginRight: '23%' }]}>{editable ? '   Edit Automation' : '   ' + foodName}</Text>
                     {editable && <Button
                         icon={saveIsDeleteButton ? <Ficon name="close-a" size={10} color={colors.white} /> : <Icon name={"trash"} size={12} color={colors.white} />}
                         onPress={() => setSaveIsDeleteButton(!saveIsDeleteButton)}
@@ -161,8 +132,8 @@ export default function automationEditScreen({ navigation, route }) {
                         <Fragment key={i}>
                             <TimelineComponent item={item} id={i} removeItem={removeItem} />
                             {
-                                (editable || i <steps.length-1)&& <View style={styles.timeThread}></View>
-                                }
+                                (editable || i < steps.length - 1) && <View style={styles.timeThread}></View>
+                            }
                         </Fragment>
                     ))
                 }

@@ -3,7 +3,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import profileScreen from './profileScreen'
 import historyScreen from './historyScreen'
 import mainScreen from './mainScreen'
 import energyScreen from './energyScreen'
@@ -11,7 +10,7 @@ import automationEditScreen from './automationEditScreen'
 import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
-import { TextInput, View, Text, ActivityIndictor } from 'react-native';
+import { TextInput, View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext, stateConditionString} from './AuthContext';
@@ -68,7 +67,7 @@ function HistoryStack() {
 
 function mainTabs() {
     return (
-        <Tab.Navigator initialRouteName="automations"
+        <Tab.Navigator initialRouteName="settings"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
