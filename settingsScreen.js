@@ -23,7 +23,7 @@ const SettingSlider = (props) => {
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.blue}
                 step={5}
-                onSlidingComplete={value => { props.handler.setValue((currWS) => { return { ...currWS, [`${props.name}`]: value } }); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.name, value) }}
+                onSlidingComplete={value => { props.handler.setValue((currWS) => { return { ...currWS, [`${props.name}`]: value } }); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.type,props.name, value) }}
                 value={props.handler.value}
                 thumbTintColor="transparent"
             />
@@ -55,7 +55,7 @@ export default function settingsScreen() {
         setWsData((currWS) => { return { ...currWS, [name]:value } })
 
         var ws = new WebSocket('ws://oven.local:8069');
-        console.log("type,name, value",type,name, value);
+        console.log("type,name, value is ",type,name, value);
         ws.onopen = () => {
             req = {
                 module: type,
@@ -99,9 +99,9 @@ export default function settingsScreen() {
                 />
             </View >
             <Text style={styles.listTitle}>Display</Text>
-            <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' />
+            <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display'/>
             <Text style={styles.listTitle}>Sounds</Text>
-            <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' />
+            <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio'/>
 
             {/* <View style={styles.dropDown}>
                 <View style={[styles.roundButtonS, { padding: 10, shadowRadius: 0, backgroundColor: colors.blue, marginHorizontal: 10 }]}>
