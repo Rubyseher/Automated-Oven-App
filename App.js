@@ -54,7 +54,14 @@ const RootStack = createStackNavigator();
 
 function LoginScreen() {
     const [newName, setNewName] = useState("")
-    const { login } = useContext(AuthContext);
+    const { authContextValue } = useContext(AuthContext);
+    const defaultPreferences = {
+        url: 'ws://oven.local:8069',
+        detection: { auto: true, fromURL: true },
+        notifications: { DONE: true, HIGH_ENERGY: true, EMPTY: true, HIGH_TEMP: true },
+        history: { incognito: false },
+        automations: { share: true, editable: true }
+    }
     return (
         <View >
             <Text>Hi</Text>
@@ -64,7 +71,7 @@ function LoginScreen() {
                 <TextInput
                     style={styles.newName}
                     onChangeText={setNewName}
-                    onEndEditing={() => login(newName)}
+                    onEndEditing={() => authContextValue.login({ ...defaultPreferences, name: newName })}
                     value={newName}
                 />
             </View>
@@ -118,7 +125,7 @@ function mainTabs() {
             <Tab.Screen name="automations" component={AutomationStack} />
             <Tab.Screen name="main"
                 options={{
-                    tabBarIcon: ({ color }) => (
+                    tabBarIcon: () => (
                         <View
                             style={{
                                 position: 'absolute',
@@ -164,14 +171,14 @@ export default function App() {
                     return {
                         ...prevState,
                         isSignedIn: true,
-                        userName: action.name
+                        config: action.data
                     };
             }
         },
         {
             isLoading: true,
             isSignedIn: true,
-            userName: null
+            config: null
         }
     );
 
@@ -179,17 +186,18 @@ export default function App() {
         () => ({
             login: async data => {
                 if (data !== null) {
-                    await AsyncStorage.setItem('name', data)
+                    console.log(JSON.stringify(data));
+                    await AsyncStorage.setItem('config', JSON.stringify(data))
                     var ws = new WebSocket('ws://oven.local:8069');
                     ws.onopen = () => {
                         req = {
                             module: 'other',
                             function: 'setUserName',
-                            params: [data]
+                            params: [data.name]
                         }
                         ws.send(JSON.stringify(req));
                     };
-                    dispatch({ type: 'LOGIN', name: data });
+                    dispatch({ type: 'LOGIN', data: data });
                 } else {
                     dispatch({ type: 'TO_LOGIN_PAGE' });
                 }
@@ -214,15 +222,15 @@ export default function App() {
     };
 
     useEffect(async () => {
-        const authSubscriber = await AsyncStorage.getItem('name')
+        const authSubscriber = await AsyncStorage.getItem('config')
 
-        authContextValue.login(authSubscriber)
+        authContextValue.login(authSubscriber ? JSON.parse(authSubscriber) : null)
 
         notificationSetup()
     }, [])
 
     return (
-        <AuthContext.Provider value={{ name: state.userName, authContextValue }}>
+        <AuthContext.Provider value={{ config: state.config, authContextValue }}>
             <NavigationContainer theme={NavContainerTheme}>
                 <RootStack.Navigator headerMode='none'>
                     {chooseScreen(state)}

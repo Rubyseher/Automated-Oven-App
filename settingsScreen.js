@@ -49,7 +49,7 @@ const SwitchItem = (props) => {
 
 export default function settingsScreen() {
     const [wsData, setWSData] = useState();
-    const { name } = useContext(AuthContext)
+    const { config } = useContext(AuthContext)
     const [isEnabled, setIsEnabled] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState();
@@ -124,7 +124,7 @@ export default function settingsScreen() {
                         <View style={styles.profileCircle}>
                             <Icon name="user" color={colors.white} size={32} solid />
                         </View>
-                        <Text style={[styles.fullName, { marginVertical: 20 }]}>{name}</Text>
+                        <Text style={[styles.fullName, { marginVertical: 20 }]}>{config.name}</Text>
                         <Button
                             icon={<Icon name="arrow-left" size={12} color={colors.white} />}
                             buttonStyle={[styles.roundButtonS, { backgroundColor: colors.darkGrey, height: 25, width: 25 }]}
@@ -167,8 +167,8 @@ export default function settingsScreen() {
                     </View>
 
                     <Text style={styles.listTitle}>Oven Details</Text>
-                    <Text style={styles.chooseTitle}>Name: Text</Text>
-                    <Text style={styles.chooseTitle}>URL: Text</Text>
+                    <View style={styles.dropDown}><Text>{`Name: ${wsData.config && wsData.config.name}`}</Text></View>
+                    <View style={styles.dropDown}><Text>{`URL: oven.local`}</Text></View>
 
                     <Text style={styles.listTitle}>Detection</Text>
                     {detectionList.map((d, i) => <SwitchItem key={i} {...d} />)}

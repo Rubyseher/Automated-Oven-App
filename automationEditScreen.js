@@ -33,7 +33,7 @@ export default function automationEditScreen({ navigation, route }) {
     const [steps, setSteps] = useState(route.params.steps);
     const [visible, setVisible] = useState(false);
     const [foodName, changeFoodname] = useState(route.params.name);
-    const { name } = useContext(AuthContext);
+    const { config } = useContext(AuthContext);
     const [saveIsDeleteButton, setSaveIsDeleteButton] = useState(false)
 
     function removeItem(i) {
@@ -77,7 +77,7 @@ export default function automationEditScreen({ navigation, route }) {
                     function: 'set',
                     params: [id, {
                         name: foodName,
-                        createdBy: name,
+                        createdBy: config.name,
                         creationDate: Math.floor(Date.now() / 1000),
                         lastUsed: Math.floor(Date.now() / 1000),
                         steps
