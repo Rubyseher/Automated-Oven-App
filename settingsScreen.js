@@ -47,34 +47,46 @@ const SwitchItem = (props) => {
     )
 }
 
-export default function settingsScreen() {
+export default function settingsScreen({ navigation }) {
     const [wsData, setWSData] = useState();
-    const [isEnabled, setIsEnabled] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState();
-    const { config } = useContext(AuthContext)
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const { config, getConfig, setConfig } = useContext(AuthContext)
+    const [configState, setConfigState] = useState(config)
 
-    const detectionList = [
-        { title: 'Automatic AI Food Detection', color: colors.blue, icon: "magic", isEnabled, toggleSwitch },
-        { title: 'Recipe Link Detection', color: colors.orange, icon: "link", isEnabled, toggleSwitch }
-    ]
+    const toggleLocalConfigItem = (category, name, value) => {
+        setConfigState((c) => {
+            let newCS = { ...c, [category]: { ...c[category], [name]: value } }
+            setConfig(newCS);
+            return newCS
+        })
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            async () => {
+                let freshConfig = await getConfig()
+                setConfigState(freshConfig)
+            }
+        }, [])
+    );
+
     const notifications = [
-        { title: 'Cooking Done', color: colors.yellow, icon: "utensils", isEnabled, toggleSwitch },
-        { title: 'High Energy Consumption', color: colors.lightGreen, icon: "plug", isEnabled, toggleSwitch },
-        { title: 'Oven Emptied', color: colors.blue, icon: "cookie-bite", isEnabled, toggleSwitch },
-        { title: 'High Surrounding Temperature', color: colors.red, icon: "exclamation-triangle", isEnabled, toggleSwitch }
+        { title: 'Cooking Done', color: colors.yellow, icon: "utensils", isEnabled: configState.notifications.DONE, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'DONE', v) },
+        { title: 'High Energy Consumption', color: colors.lightGreen, icon: "plug", isEnabled: configState.notifications.HIGH_ENERGY, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'HIGH_ENERGY', v) },
+        { title: 'Oven Emptied', color: colors.blue, icon: "cookie-bite", isEnabled: configState.notifications.EMPTY, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'EMPTY', v) },
+        { title: 'High Surrounding Temperature', color: colors.red, icon: "exclamation-triangle", isEnabled: configState.notifications.HIGH_TEMP, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'HIGH_TEMP', v) }
     ]
 
     const history = [
-        { title: 'Incognito Mode', color: colors.darkGrey, icon: "user-secret", isEnabled, toggleSwitch }
+        { title: 'Incognito Mode', color: colors.darkGrey, icon: "user-secret", isEnabled: configState.history.incognito, toggleSwitch: (v) => toggleLocalConfigItem('history', 'incognito', v) }
     ]
     const automations = [
-        { title: 'Share With Other Users', color: colors.purple, icon: "share", isEnabled, toggleSwitch },
-        { title: 'Allow Others to Edit', color: colors.red, icon: "edit", isEnabled, toggleSwitch }
+        { title: 'Share With Other Users', color: colors.purple, icon: "share", isEnabled: configState.automations.share, toggleSwitch: (v) => toggleLocalConfigItem('automations', 'share', v) },
+        { title: 'Allow Others to Edit', color: colors.red, icon: "edit", isEnabled: configState.automations.editable, toggleSwitch: (v) => toggleLocalConfigItem('automations', 'editable', v) }
     ]
 
-    var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight'], ['config', ''], ['other', 'Logs']]
+    var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight'], ['config', ''], ['other', 'Logs'], ['other', 'AvailableModels']]
 
     useFocusEffect(
         useCallback(() => {
@@ -83,7 +95,6 @@ export default function settingsScreen() {
             var ws = new WebSocket(config.url);
             ws.onopen = () => {
                 reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: 'get' + r[1] })))
-                // ws.send(JSON.stringify({ module: 'other', function: 'getLogs' }))
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
@@ -95,24 +106,31 @@ export default function settingsScreen() {
         }, [])
     );
 
-    const sendValue = (type, name, value) => {
+    const sendWSModuleValue = (type, name, value) => {
         setWSData((currWS) => { return { ...currWS, [name]: value } })
         var ws = new WebSocket(config.url);
-        // console.log("type,name, value is ", type, name, value);
         ws.onopen = () => {
             ws.send(JSON.stringify({ module: type, function: `set${name}`, params: [value] }));
             ws.close()
         };
     }
 
-    const sendConfigValue = (name, value) => {
+    const sendWSConfigValue = (name, value) => {
         setWSData((currWS) => { return { ...currWS, config: { ...currWS.config, [name]: value } } })
         var ws = new WebSocket(config.url);
-        // console.log("type,name, value is ", type, name, value);
         ws.onopen = () => {
             ws.send(JSON.stringify({ module: 'config', function: 'set', params: [name, value] }));
             ws.close()
         };
+    }
+
+    const sendPowerValue = (type) => {
+        var ws = new WebSocket(config.url);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ module: 'other', function: type }));
+            ws.close()
+        };
+        navigation.navigate('main')
     }
 
     return (
@@ -132,15 +150,15 @@ export default function settingsScreen() {
                         />
                     </View >
                     <Text style={styles.listTitle}>Display</Text>
-                    <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWSData }} sendHandler={sendValue} name='Backlight' type='display' />
+                    <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWSData }} sendHandler={sendWSModuleValue} name='Backlight' type='display' />
                     <Text style={styles.listTitle}>Sounds</Text>
-                    <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWSData }} sendHandler={sendValue} name='Volume' type='audio' />
+                    <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWSData }} sendHandler={sendWSModuleValue} name='Volume' type='audio' />
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: '120%', marginHorizontal: '-10%' }} contentOffset={{ x: -30 }}>
                         {
                             wsData.AvailableTones && wsData.AvailableTones.map((item, i) => (
                                 <View key={i} style={{ flexDirection: 'row' }}>
                                     <Button
-                                        onPress={() => sendValue('audio', 'SelectedTone', item)}
+                                        onPress={() => sendWSModuleValue('audio', 'SelectedTone', item)}
                                         buttonStyle={wsData.SelectedTone == item ? styles.currentTone : styles.chooseTone}
                                         title={item}
                                         titleStyle={wsData.SelectedTone == item ? styles.currentTitle : styles.chooseTitle}
@@ -157,22 +175,41 @@ export default function settingsScreen() {
                             icon={<Icon name="sync-alt" size={24} color={colors.white} />}
                             buttonStyle={[styles.roundButtonM, { backgroundColor: colors.darkGrey }]}
                             containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                            onPress={() => sendPowerValue('restart')}
                         />
                         <Button
                             icon={<Icon name="power-off" size={24} color={colors.white} />}
                             buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
                             containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                            onPress={() => sendPowerValue('poweroff')}
                         />
 
                     </View>
 
                     <Text style={styles.listTitle}>Oven Details</Text>
                     <View style={styles.dropDown}><Text>{`Name: ${wsData.config && wsData.config.name}`}</Text></View>
-                    <View style={styles.dropDown}><Text>{`URL: oven.local`}</Text></View>
+                    <View style={styles.dropDown}><Text>{`URL: ${config.url}`}</Text></View>
 
                     <Text style={styles.listTitle}>Detection</Text>
-                    {detectionList.map((d, i) => <SwitchItem key={i} {...d} />)}
-
+                    {[
+                        { title: 'Automatic AI Food Detection', color: colors.blue, icon: "magic", isEnabled: wsData.config && wsData.config.autoDetect, toggleSwitch: (v) => sendWSConfigValue('autoDetect', v) },
+                        { title: 'Recipe Link Detection', color: colors.orange, icon: "link", isEnabled: configState.detection.fromURL, toggleSwitch: (v) => toggleLocalConfigItem('detection', 'fromURL', v) }
+                    ].map((d, i) => <SwitchItem key={i} {...d} />)}
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                        {
+                            wsData.AvailableModels && wsData.config && wsData.AvailableModels.map((item, i) => (
+                                <View key={i} style={{ flexDirection: 'row' }}>
+                                    <Button
+                                        onPress={() => sendWSConfigValue('modelVersion', item)}
+                                        buttonStyle={wsData.config.modelVersion == item ? styles.currentTone : styles.chooseTone}
+                                        title={"AI Detector " + item}
+                                        titleStyle={wsData.config.modelVersion == item ? styles.currentTitle : styles.chooseTitle}
+                                        containerStyle={styles.volumeChooseContainer}
+                                    />
+                                </View>
+                            ))
+                        }
+                    </ScrollView>
 
                     <Text style={styles.listTitle}>Notifications</Text>
                     {notifications.map((d, i) => <SwitchItem key={i} {...d} />)}
@@ -191,7 +228,7 @@ export default function settingsScreen() {
 
                     <Text style={styles.listTitle}>Developer</Text>
                     {
-                        [{ title: 'Demo Mode', color: colors.yellow, icon: "video", isEnabled: wsData.config ? wsData.config.demoMode : false, toggleSwitch: (v) => sendConfigValue('demoMode', v) }].map((d, i) =>
+                        [{ title: 'Demo Mode', color: colors.yellow, icon: "video", isEnabled: wsData.config ? wsData.config.demoMode : false, toggleSwitch: (v) => sendWSConfigValue('demoMode', v) }].map((d, i) =>
                             <SwitchItem key={i} {...d} />)
                     }
                     <Button

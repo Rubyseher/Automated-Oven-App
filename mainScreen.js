@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback,useContext } from 'react';
+import React, { useState, Fragment, useCallback, useContext } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ActivityIndicator, Image } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
@@ -59,7 +59,7 @@ function mainScreen({ navigation }) {
     const [getUrl, setGetUrl] = useState(false);
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = useState(false);
-    const { config } = useContext(AuthContext)
+    const { config, getConfig } = useContext(AuthContext)
 
     const sendCookingFromURL = (values) => {
         console.log("sendCookingFromURL values", values);
@@ -76,23 +76,25 @@ function mainScreen({ navigation }) {
     }
 
     const fetchFromUrl = async () => {
-        // const url = await Clipboard.getString();
-        const url = await Clipboard.getString("https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/");
+        let freshConfig = await getConfig()
+        if (freshConfig.detection.fromURL) {
+            const url = await Clipboard.getString();
 
-        var regexURL = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
+            var regexURL = new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi);
 
-        if (isAcceptedURL(url) && url.match(regexURL)) {
-            fetch(url).then(res => res.text()).then(data => {
-                jsdom.env(data, (err, window) => {
-                    var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
-                    cookingValues.item = cleanTitle(window.document.querySelector(getTitleClass(url)).textContent)
+            if (isAcceptedURL(url) && url.match(regexURL)) {
+                fetch(url).then(res => res.text()).then(data => {
+                    jsdom.env(data, (err, window) => {
+                        var cookingValues = getCookingDetails(window.document.querySelectorAll(getInstructionClass(url)), url)
+                        cookingValues.item = cleanTitle(window.document.querySelector(getTitleClass(url)).textContent)
 
-                    if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) setUrlData(cookingValues)
-                    console.log("cookingValues", cookingValues);
-                    setVisible(true)
+                        if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) setUrlData(cookingValues)
+                        console.log("cookingValues", cookingValues);
+                        setVisible(true)
 
+                    })
                 })
-            })
+            }
         }
     }
 
@@ -148,7 +150,7 @@ function mainScreen({ navigation }) {
                         }
                         if (d.result.item !== "Empty")
                             lastCookedItem = d.result.item
-                        if (d.result.isDone && !sentDoneNotification && lastCookedItem.length>1)
+                        if (d.result.isDone && !sentDoneNotification && lastCookedItem.length > 1 && config.notifications.DONE)
                             sentDoneNotification = Notifications.postLocalNotification({
                                 title: "Done",
                                 body: `${lastCookedItem} is done cooking`,
@@ -182,7 +184,7 @@ function mainScreen({ navigation }) {
     );
 
     return (
-        data ? <View style={{height:'100%'}}>
+        data ? <View style={{ height: '100%' }}>
             <Image source={require('./assets/WhitePlateScreen.jpg')} style={{ width: '100%', height: '100%', position: data.item == 'Empty' ? 'relative' : 'absolute', top: 0, left: 0 }} resizeMode="cover" />
             {
                 data.steps && <Fragment>

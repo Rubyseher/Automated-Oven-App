@@ -52,16 +52,18 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
 
+const defaultPreferences = {
+    url: 'ws://oven.local:8069',
+    detection: { fromURL: true },
+    notifications: { DONE: true, HIGH_ENERGY: true, EMPTY: true, HIGH_TEMP: true },
+    history: { incognito: false },
+    automations: { share: true, editable: true }
+}
+
 function LoginScreen() {
     const [newName, setNewName] = useState("")
-    const { authContextValue } = useContext(AuthContext);
-    const defaultPreferences = {
-        url: 'ws://oven.local:8069',
-        detection: { auto: true, fromURL: true },
-        notifications: { DONE: true, HIGH_ENERGY: true, EMPTY: true, HIGH_TEMP: true },
-        history: { incognito: false },
-        automations: { share: true, editable: true }
-    }
+    const { login } = useContext(AuthContext);
+    
     return (
         <View >
             <Text>Hi</Text>
@@ -71,7 +73,7 @@ function LoginScreen() {
                 <TextInput
                     style={styles.newName}
                     onChangeText={setNewName}
-                    onEndEditing={() => authContextValue.login({ ...defaultPreferences, name: newName })}
+                    onEndEditing={() => login({ ...defaultPreferences, name: newName })}
                     value={newName}
                 />
             </View>
@@ -182,7 +184,7 @@ export default function App() {
         }
     );
 
-    const authContextValue = useMemo(
+    const context = useMemo(
         () => ({
             login: async data => {
                 if (data !== null) {
@@ -203,6 +205,10 @@ export default function App() {
             },
             setConfig: async data => {
                 await AsyncStorage.setItem('config', JSON.stringify(data))
+            },
+            getConfig: async () => {
+                let res = await AsyncStorage.getItem('config')
+                return res !== null ? JSON.parse(res) : defaultPreferences
             }
         }),
         []
@@ -224,15 +230,15 @@ export default function App() {
     };
 
     useEffect(async () => {
-        const authSubscriber = await AsyncStorage.getItem('config')
+        const configSubscriber = await AsyncStorage.getItem('config')
 
-        authContextValue.login(authSubscriber ? JSON.parse(authSubscriber) : null)
+        context.login(configSubscriber ? JSON.parse(configSubscriber) : null)
 
         notificationSetup()
     }, [])
 
     return (
-        <AuthContext.Provider value={{ config: state.config, authContextValue }}>
+        <AuthContext.Provider value={{ config: state.config, ...context }}>
             <NavigationContainer theme={NavContainerTheme}>
                 <RootStack.Navigator headerMode='none'>
                     {chooseScreen(state)}
