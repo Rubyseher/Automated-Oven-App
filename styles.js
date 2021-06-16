@@ -619,7 +619,7 @@ export const styles = StyleSheet.create({
         height: 40,
         // width: 50,
         padding: 4,
-        marginHorizontal:4,
+        marginHorizontal:2,
         borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: {

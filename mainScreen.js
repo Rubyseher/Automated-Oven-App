@@ -146,7 +146,7 @@ function mainScreen({ navigation }) {
                         }
                         if (d.result.item !== "Empty")
                             lastCookedItem = d.result.item
-                        if (d.result.isDone && !sentDoneNotification)
+                        if (d.result.isDone && !sentDoneNotification && lastCookedItem.length>1)
                             sentDoneNotification = Notifications.postLocalNotification({
                                 title: "Done",
                                 body: `${lastCookedItem} is done cooking`,
@@ -241,7 +241,7 @@ function mainScreen({ navigation }) {
                     <Text style={{ position: 'absolute', bottom: '15%', marginHorizontal: '20%', alignSelf: 'center', color: colors.darkGrey, textAlign: 'center', fontStyle: 'italic' }}>The crumbs are lonely. Maybe its time to bake something?</Text>
                 </Fragment>
             }
-            <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={1} onSwipeComplete={() => setVisible(!visible)} animationIn='fadeInDown' useNativeDriver={true} onBackdropPress={() => setVisible(!visible)} style={{ margin: 0 }} backdropOpacity={0} >
+            <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={10} onSwipeComplete={() => setVisible(false)} animationIn='fadeInDown' animationOut='fadeOutUp' useNativeDriver={true} onBackdropPress={() => setVisible(false)} style={{ margin: 0 }} backdropOpacity={0} >
 
                 <View style={styles.urlOverlay} >
                     <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>

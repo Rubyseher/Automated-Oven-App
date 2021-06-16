@@ -39,15 +39,6 @@ export default function settingsScreen() {
         AvailableTones: []
     });
     const { name } = useContext(AuthContext)
-    const tempList = [{ key: 'Oven URL' },
-    { key: 'History' },
-    { key: 'Detection' },
-    { key: 'Developer' }, // debug mode, logs
-    { key: 'Safety Alerts' },
-    { key: 'Empty Alerts' },
-    { key: 'Energy Alerts' },
-    { key: 'Notifications' },
-    { key: 'Automations' }]
 
     var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight']]
 
@@ -102,15 +93,7 @@ export default function settingsScreen() {
             <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display'/>
             <Text style={styles.listTitle}>Sounds</Text>
             <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio'/>
-
-            {/* <View style={styles.dropDown}>
-                <View style={[styles.roundButtonS, { padding: 10, shadowRadius: 0, backgroundColor: colors.blue, marginHorizontal: 10 }]}>
-                    <Icon name="volume-up" size={18} color={colors.white} />
-                </View>
-                <Text style={{ color: colors.darkGrey, fontSize: 18, fontWeight: '500' }}>{wsData.SelectedTone}</Text>
-            </View> */}
-
-            <ScrollView horizontal={true} contentContainerStyle={{}}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{width:'120%', marginHorizontal:'-10%'}} contentOffset={{x:-30}}>
                 {
                     wsData.AvailableTones.map((item, i) => (
                         <View key={i} style={{ flexDirection: 'row' }}>
@@ -141,9 +124,31 @@ export default function settingsScreen() {
 
             </View>
 
-            {
-                tempList.map((tl, k) => <Text key={k} style={styles.listTitle}>{tl.key}</Text>)
-            }
+            <Text style={styles.listTitle}>Oven Details</Text>
+            <Text style={styles.chooseTitle}>Name</Text>
+            <Text style={styles.chooseTitle}>URL</Text>
+
+            <Text style={styles.listTitle}>Detection</Text>
+            <Text style={styles.chooseTitle}>Automatic AI Food Detection</Text>
+            <Text style={styles.chooseTitle}>Recipe Link Detection</Text>
+
+            <Text style={styles.listTitle}>Notifications</Text>
+            <Text style={styles.chooseTitle}>Cooking Done</Text>
+            <Text style={styles.chooseTitle}>High Energy Consumption</Text>
+            <Text style={styles.chooseTitle}>Oven Emptied</Text>
+            <Text style={styles.chooseTitle}>High Surrounding Temperature</Text>
+
+            <Text style={styles.listTitle}>History</Text>
+            <Text style={styles.chooseTitle}>Incognito Mode</Text>
+            <Text style={styles.chooseTitle}>Clear All History</Text>
+
+            <Text style={styles.listTitle}>Automations</Text>
+            <Text style={styles.chooseTitle}>Share With Other Users</Text>
+            <Text style={styles.chooseTitle}>Allow Others to Edit</Text>
+
+            <Text style={styles.listTitle}>Developer</Text>
+            <Text style={styles.chooseTitle}>Demo Mode</Text>
+            <Text style={styles.chooseTitle}>Logs</Text>
         </ScrollView>
     );
 }
