@@ -14,6 +14,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
+import { Notifications } from 'react-native-notifications';
 
 // https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
 // https://www.delish.com/cooking/recipe-ideas/recipes/a51451/easy-chicken-parmesan-recipe/
@@ -123,6 +124,8 @@ function mainScreen({ navigation }) {
                 setTime(firstStepStart.diff(moment(), 'seconds'))
             }
 
+            let sentDoneNotification
+
             var intervalId = setInterval(() => {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
@@ -137,14 +140,38 @@ function mainScreen({ navigation }) {
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
                         if (!d.result.isCooking) setGetUrl(true)
-                        else setGetUrl(false)
-                        // console.log("data", d.result)
-                        if (data) {
-                            if (data.currentStep == d.result.currentStep - 1)
-                                this._carousel.snapToItem(d.result.currentStep);
+                        else {
+                            setGetUrl(false)
+                            sentDoneNotification = undefined
                         }
+                        if (d.result.isDone && !sentDoneNotification)
+                            sentDoneNotification = Notifications.postLocalNotification({
+                                body: "Done",
+                                title: "Food is Done",
+                                sound: "chime.aiff",
+                                silent: false,
+                                category: "SOME_CATEGORY",
+                                userInfo: {}
+                            });
+                        // console.log("data", d.result)
+
                         if (d.isCooking) parseData(d.result)
                     }
+                    // if (data !== undefined) {
+                    //     console.log("data isCook " + data.isCooking);
+                    //     console.log("d isCook " + d.result.isCooking);
+                    //     if (data.currentStep == d.result.currentStep - 1)
+                    //         this._carousel.snapToItem(d.result.currentStep);
+                    //     if (data.isCooking && !d.result.isCooking)
+                    //         Notifications.postLocalNotification({
+                    //             body: "Done",
+                    //             title: "Food is Done",
+                    //             sound: "chime.aiff",
+                    //             silent: false,
+                    //             category: "SOME_CATEGORY",
+                    //             userInfo: {}
+                    //         });
+                    // }
                     ws.close()
                 };
             }, 1000)
@@ -162,6 +189,23 @@ function mainScreen({ navigation }) {
             fetchFromUrl()
         }, [getUrl])
     );
+
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         if (data) {
+    //             if (data.isCooking)
+    //                 if (Math.round(data.steps[data.steps.length - 1].endTime) <= Math.round(Date.now() / 1000))
+    //                     Notifications.postLocalNotification({
+    //                         body: "Done",
+    //                         title: "Food is Done",
+    //                         sound: "chime.aiff",
+    //                         silent: false,
+    //                         category: "SOME_CATEGORY",
+    //                         userInfo: {}
+    //                     });
+    //         }
+    //     }, [data])
+    // )
 
     return (
         data ? <View>

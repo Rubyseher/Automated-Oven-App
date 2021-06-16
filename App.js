@@ -13,7 +13,8 @@ import { styles, colors } from './styles'
 import { TextInput, View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthContext, stateConditionString} from './AuthContext';
+import { AuthContext, stateConditionString } from './AuthContext';
+import { Notifications } from 'react-native-notifications';
 
 const NavContainerTheme = {
     ...DefaultTheme,
@@ -67,7 +68,7 @@ function HistoryStack() {
 
 function mainTabs() {
     return (
-        <Tab.Navigator initialRouteName="settings"
+        <Tab.Navigator initialRouteName="main"
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color, size }) => {
                     let iconName;
@@ -153,7 +154,7 @@ export default function App() {
     const authContextValue = useMemo(
         () => ({
             login: async data => {
-                if (data!==null) {
+                if (data !== null) {
                     await AsyncStorage.setItem('name', data)
                     var ws = new WebSocket('ws://oven.local:8069');
                     ws.onopen = () => {
@@ -190,13 +191,43 @@ export default function App() {
 
     useEffect(async () => {
         const authSubscriber = await AsyncStorage.getItem('name')
-        // if (authSubscriber !== null) {
-            authContextValue.login(authSubscriber)
-        // }
+
+        authContextValue.login(authSubscriber)
+
+        Notifications.registerRemoteNotifications();
+
+        Notifications.events().registerRemoteNotificationsRegistered((event) => {
+            // TODO: Send the token to my server so it could send back push notifications...
+            console.log("Device Token Received", event.deviceToken);
+        });
+        Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
+            console.error(event);
+        });
+
+        Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
+            console.log("Notification Received - Foreground", notification.payload);
+
+            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+            completion({ alert: true, sound: true, badge: false });
+        });
+
+        Notifications.events().registerNotificationOpened((notification, completion, action) => {
+            console.log("Notification opened by device user", notification.payload);
+            console.log(`Notification opened with an action identifier: ${action.identifier} and response text: ${action.text}`);
+            completion();
+        });
+
+        Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
+            console.log("Notification Received - Background", notification.payload);
+
+            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+            completion({ alert: true, sound: true, badge: false });
+        });
+
     }, [])
 
     return (
-        <AuthContext.Provider value={{name: state.userName, authContextValue}}>
+        <AuthContext.Provider value={{ name: state.userName, authContextValue }}>
             <NavigationContainer theme={NavContainerTheme}>
                 <RootStack.Navigator headerMode='none'>
                     {chooseScreen(state)}
