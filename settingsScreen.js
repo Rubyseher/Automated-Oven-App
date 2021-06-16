@@ -172,14 +172,24 @@ export default function settingsScreen() {
 
                     <Text style={styles.listTitle}>History</Text>
                     {history.map((d, i) => <SwitchItem key={i} {...d} />)}
-                    <Text style={styles.chooseTitle}>Clear All History: long button</Text>
+                    <Button
+                        buttonStyle={styles.chooseTone}
+                        title='Clear All History'
+                        titleStyle={styles.chooseTitle}
+                        containerStyle={styles.volumeChooseContainer}
+                    />
 
                     <Text style={styles.listTitle}>Automations</Text>
                     {automations.map((d, i) => <SwitchItem key={i} {...d} />)}
 
                     <Text style={styles.listTitle}>Developer</Text>
                     {developer.map((d, i) => <SwitchItem key={i} {...d} />)}
-                    <Text style={styles.chooseTitle}>View Logs : long button</Text>
+                    <Button
+                        buttonStyle={styles.chooseTone}
+                        title='View Logs '
+                        titleStyle={styles.chooseTitle}
+                        containerStyle={styles.volumeChooseContainer}
+                    />
                 </Fragment>
             }
         </ScrollView>
