@@ -47,12 +47,7 @@ const SwitchItem = (props) => {
 }
 
 export default function settingsScreen() {
-    const [wsData, setWsData] = useState({
-        Backlight: 0,
-        Volume: 0,
-        SelectedTone: "",
-        AvailableTones: []
-    });
+    const [wsData, setWsData] = useState();
     const { name } = useContext(AuthContext)
     const [isEnabled, setIsEnabled] = useState(false);
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
@@ -100,77 +95,81 @@ export default function settingsScreen() {
     return (
         <ScrollView vertical={true} contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 4, paddingBottom: 50 }}>
             <Text style={styles.heading}>Settings</Text>
-            <View style={{ flexDirection: 'row', marginVertical: 4 }}>
-                <View style={styles.profileCircle}>
-                    <Icon name="user" color={colors.white} size={32} solid />
-                </View>
-                <Text style={[styles.fullName, { marginVertical: 20 }]}>{name}</Text>
-                <Button
-                    icon={<Icon name="arrow-left" size={12} color={colors.white} />}
-                    buttonStyle={[styles.roundButtonS, { backgroundColor: colors.darkGrey, height: 25, width: 25 }]}
-                    containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%' }]}
-                />
-            </View >
-            <Text style={styles.listTitle}>Display</Text>
-            <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display' />
-            <Text style={styles.listTitle}>Sounds</Text>
-            <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio' />
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: '120%', marginHorizontal: '-10%' }} contentOffset={{ x: -30 }}>
-                {
-                    wsData.AvailableTones.map((item, i) => (
-                        <View key={i} style={{ flexDirection: 'row' }}>
-                            <Button
-                                onPress={() => setPivalue('audio', 'SelectedTone', item)}
-                                buttonStyle={wsData.SelectedTone == item ? styles.currentTone : styles.chooseTone}
-                                title={item}
-                                titleStyle={wsData.SelectedTone == item ? styles.currentTitle : styles.chooseTitle}
-                                containerStyle={styles.volumeChooseContainer}
-                            />
+            {
+                wsData && <Fragment>
+                    <View style={{ flexDirection: 'row', marginVertical: 4 }}>
+                        <View style={styles.profileCircle}>
+                            <Icon name="user" color={colors.white} size={32} solid />
                         </View>
-                    ))
-                }
-            </ScrollView>
+                        <Text style={[styles.fullName, { marginVertical: 20 }]}>{name}</Text>
+                        <Button
+                            icon={<Icon name="arrow-left" size={12} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonS, { backgroundColor: colors.darkGrey, height: 25, width: 25 }]}
+                            containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%' }]}
+                        />
+                    </View >
+                    <Text style={styles.listTitle}>Display</Text>
+                    <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display' />
+                    <Text style={styles.listTitle}>Sounds</Text>
+                    <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio' />
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: '120%', marginHorizontal: '-10%' }} contentOffset={{ x: -30 }}>
+                        {
+                            wsData.AvailableTones && wsData.AvailableTones.map((item, i) => (
+                                <View key={i} style={{ flexDirection: 'row' }}>
+                                    <Button
+                                        onPress={() => setPivalue('audio', 'SelectedTone', item)}
+                                        buttonStyle={wsData.SelectedTone == item ? styles.currentTone : styles.chooseTone}
+                                        title={item}
+                                        titleStyle={wsData.SelectedTone == item ? styles.currentTitle : styles.chooseTitle}
+                                        containerStyle={styles.volumeChooseContainer}
+                                    />
+                                </View>
+                            ))
+                        }
+                    </ScrollView>
 
-            <Text style={styles.listTitle}>Power</Text>
-            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
-                <Button
-                    icon={<Icon name="sync-alt" size={24} color={colors.white} />}
-                    buttonStyle={[styles.roundButtonM, { backgroundColor: colors.darkGrey }]}
-                    containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
-                />
-                <Button
-                    icon={<Icon name="power-off" size={24} color={colors.white} />}
-                    buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
-                    containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
-                />
+                    <Text style={styles.listTitle}>Power</Text>
+                    <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                        <Button
+                            icon={<Icon name="sync-alt" size={24} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.darkGrey }]}
+                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                        />
+                        <Button
+                            icon={<Icon name="power-off" size={24} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
+                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                        />
 
-            </View>
+                    </View>
 
-            <Text style={styles.listTitle}>Oven Details</Text>
-            <Text style={styles.chooseTitle}>Name</Text>
-            <Text style={styles.chooseTitle}>URL</Text>
+                    <Text style={styles.listTitle}>Oven Details</Text>
+                    <Text style={styles.chooseTitle}>Name: Text</Text>
+                    <Text style={styles.chooseTitle}>URL: Text</Text>
 
-            <Text style={styles.listTitle}>Detection</Text>
-            {detectionList.map((d, i) => <SwitchItem key={i} {...d} />)}
+                    <Text style={styles.listTitle}>Detection</Text>
+                    {detectionList.map((d, i) => <SwitchItem key={i} {...d} />)}
 
 
-            <Text style={styles.listTitle}>Notifications</Text>
-            <Text style={styles.chooseTitle}>Cooking Done</Text>
-            <Text style={styles.chooseTitle}>High Energy Consumption</Text>
-            <Text style={styles.chooseTitle}>Oven Emptied</Text>
-            <Text style={styles.chooseTitle}>High Surrounding Temperature</Text>
+                    <Text style={styles.listTitle}>Notifications</Text>
+                    <Text style={styles.chooseTitle}>Cooking Done</Text>
+                    <Text style={styles.chooseTitle}>High Energy Consumption</Text>
+                    <Text style={styles.chooseTitle}>Oven Emptied</Text>
+                    <Text style={styles.chooseTitle}>High Surrounding Temperature</Text>
 
-            <Text style={styles.listTitle}>History</Text>
-            <Text style={styles.chooseTitle}>Incognito Mode</Text>
-            <Text style={styles.chooseTitle}>Clear All History</Text>
+                    <Text style={styles.listTitle}>History</Text>
+                    <Text style={styles.chooseTitle}>Incognito Mode</Text>
+                    <Text style={styles.chooseTitle}>Clear All History: long button</Text>
 
-            <Text style={styles.listTitle}>Automations</Text>
-            <Text style={styles.chooseTitle}>Share With Other Users</Text>
-            <Text style={styles.chooseTitle}>Allow Others to Edit</Text>
+                    <Text style={styles.listTitle}>Automations</Text>
+                    <Text style={styles.chooseTitle}>Share With Other Users</Text>
+                    <Text style={styles.chooseTitle}>Allow Others to Edit</Text>
 
-            <Text style={styles.listTitle}>Developer</Text>
-            <Text style={styles.chooseTitle}>Demo Mode</Text>
-            <Text style={styles.chooseTitle}>Logs</Text>
+                    <Text style={styles.listTitle}>Developer</Text>
+                    <Text style={styles.chooseTitle}>Demo Mode</Text>
+                    <Text style={styles.chooseTitle}>View Logs : long button</Text>
+                </Fragment>
+            }
         </ScrollView>
     );
 }
