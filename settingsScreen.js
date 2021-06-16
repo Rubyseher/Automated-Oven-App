@@ -8,6 +8,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { AuthContext } from './AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ficon from 'react-native-vector-icons/Fontisto';
 
 const SettingSlider = (props) => {
     return (
@@ -32,10 +33,10 @@ const SettingSlider = (props) => {
 
 export default function settingsScreen() {
     const [wsData, setWsData] = useState({
-        backlight: 0,
-        volume: 0,
-        selectedTone: "",
-        availableTones: []
+        Backlight: 0,
+        Volume: 0,
+        SelectedTone: "",
+        AvailableTones: []
     });
     const { name } = useContext(AuthContext)
     const tempList = [{ key: 'Oven URL' },
@@ -60,7 +61,6 @@ export default function settingsScreen() {
             ws.close()
         };
     }
-
 
     useFocusEffect(
         useCallback(() => {
@@ -98,12 +98,29 @@ export default function settingsScreen() {
             <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' />
             <Text style={styles.listTitle}>Sounds</Text>
             <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' />
-            <View style={styles.dropDown}>
+
+            {/* <View style={styles.dropDown}>
                 <View style={[styles.roundButtonS, { padding: 10, shadowRadius: 0, backgroundColor: colors.blue, marginHorizontal: 10 }]}>
                     <Icon name="volume-up" size={18} color={colors.white} />
                 </View>
                 <Text style={{ color: colors.darkGrey, fontSize: 18, fontWeight: '500' }}>{wsData.SelectedTone}</Text>
-            </View>
+            </View> */}
+
+            <ScrollView horizontal={true} contentContainerStyle={{}}>
+                {
+                    wsData.AvailableTones.map((item, i) => (
+                        <View key={i} style={{ flexDirection: 'row'}}>
+                            <Button
+                                buttonStyle={styles.volumeChoose}
+                                title={item}
+                                titleStyle={{ color: colors.black ,fontSize:14}}
+                                containerStyle={styles.volumeChooseContainer}
+                            />
+                        </View>
+                    ))
+                }
+            </ScrollView>
+
             <Text style={styles.listTitle}>Power</Text>
             <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
                 <Button
@@ -118,6 +135,7 @@ export default function settingsScreen() {
                 />
 
             </View>
+
             {
                 tempList.map((tl, k) => <Text key={k} style={styles.listTitle}>{tl.key}</Text>)
             }

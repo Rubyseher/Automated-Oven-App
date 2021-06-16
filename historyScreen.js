@@ -24,8 +24,8 @@ export default function historyScreen() {
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 if (d.type == 'result') {
-                    setData(Object.values(d.result))
-                    setNames(Object.keys(d.result))
+                    setData(Object.values(d.result).reverse())
+                    setNames(Object.keys(d.result).reverse())
                     ws.close()
                 }
             };
