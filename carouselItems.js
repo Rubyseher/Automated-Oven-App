@@ -73,7 +73,7 @@ const Title = (props) => {
 
 export const Preheat = (props) => {
     const [tempSlider, setTempSlider] = useState(parseInt(props.temp));
-    const setTemp = (value) => {
+    const sendTemp = (value) => {
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
@@ -95,6 +95,7 @@ export const Preheat = (props) => {
                 strokeWidth={4}
                 buttonBorderColor={colors.red}
                 openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.orange }, { stop: '100%', color: colors.red }]}
+                onChange={(v) => { sendTemp(v); setTempSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }}
             >
                 <Text style={[styles.value, { color: colors.orange }]}>{tempSlider}</Text>
                 <Text style={[styles.min, { color: colors.orange }]}>&deg;C</Text>
@@ -107,7 +108,7 @@ export const Cook = (props) => {
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
 
-    const setTemp = (value) => {
+    const sendTemp = (value) => {
         var ws = new WebSocket('ws://oven.local:8069');
         ws.onopen = () => {
             req = {
@@ -132,7 +133,7 @@ export const Cook = (props) => {
             </View>
             <View style={{ paddingLeft: 5, justifyContent: 'center' }}>
                 <CircularSlider
-                    step={2} min={0} max={90} value={timeSlider} onChange={(v) => { setTemp(v); setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
+                    step={2} min={0} max={90} value={timeSlider} onChange={(v) => { sendTemp(v); setTimeSlider(v); if (v % 15 == 0) ReactNativeHapticFeedback.trigger("impactLight"); }} contentContainerStyle={styles.contentContainerStyle} strokeWidth={4} buttonBorderColor={colors.orange}
                     openingRadian={Math.PI / 4} buttonRadius={8} radius={40} linearGradient={[{ stop: '0%', color: colors.yellow }, { stop: '100%', color: colors.orange }]}
                 >
                     <Text style={[styles.value, { color: colors.orange }]}>{timeSlider}</Text>

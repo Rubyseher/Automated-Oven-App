@@ -124,7 +124,7 @@ function mainScreen({ navigation }) {
                 setTime(firstStepStart.diff(moment(), 'seconds'))
             }
 
-            let sentDoneNotification
+            let sentDoneNotification, lastCookedItem = ""
 
             var intervalId = setInterval(() => {
                 var ws = new WebSocket('ws://oven.local:8069');
@@ -138,43 +138,32 @@ function mainScreen({ navigation }) {
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
-                        setData(d.result)
-                        if (!d.result.isCooking) setGetUrl(true)
+                        if (!d.result.isCooking)
+                            setGetUrl(true)
                         else {
                             setGetUrl(false)
                             sentDoneNotification = undefined
                         }
+                        if (d.result.item !== "Empty")
+                            lastCookedItem = d.result.item
                         if (d.result.isDone && !sentDoneNotification)
                             sentDoneNotification = Notifications.postLocalNotification({
-                                body: "Done",
-                                title: "Food is Done",
+                                title: "Done",
+                                body: `${lastCookedItem} is done cooking`,
                                 sound: "chime.aiff",
                                 silent: false,
-                                category: "SOME_CATEGORY",
-                                userInfo: {}
+                                category: "DONE"
                             });
                         // console.log("data", d.result)
-
+                        //     if (data.currentStep == d.result.currentStep - 1)
+                        //         this._carousel.snapToItem(d.result.currentStep);
+                        setData(d.result)
                         if (d.isCooking) parseData(d.result)
                     }
-                    // if (data !== undefined) {
-                    //     console.log("data isCook " + data.isCooking);
-                    //     console.log("d isCook " + d.result.isCooking);
-                    //     if (data.currentStep == d.result.currentStep - 1)
-                    //         this._carousel.snapToItem(d.result.currentStep);
-                    //     if (data.isCooking && !d.result.isCooking)
-                    //         Notifications.postLocalNotification({
-                    //             body: "Done",
-                    //             title: "Food is Done",
-                    //             sound: "chime.aiff",
-                    //             silent: false,
-                    //             category: "SOME_CATEGORY",
-                    //             userInfo: {}
-                    //         });
-                    // }
+
                     ws.close()
                 };
-            }, 1000)
+            }, 700)
 
             setTimeout(() => setLoading(false), 5000)
 
@@ -190,28 +179,14 @@ function mainScreen({ navigation }) {
         }, [getUrl])
     );
 
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         if (data) {
-    //             if (data.isCooking)
-    //                 if (Math.round(data.steps[data.steps.length - 1].endTime) <= Math.round(Date.now() / 1000))
-    //                     Notifications.postLocalNotification({
-    //                         body: "Done",
-    //                         title: "Food is Done",
-    //                         sound: "chime.aiff",
-    //                         silent: false,
-    //                         category: "SOME_CATEGORY",
-    //                         userInfo: {}
-    //                     });
-    //         }
-    //     }, [data])
-    // )
-
     return (
-        data ? <View>
+        data ? <View style={{height:'100%'}}>
+            <Image source={require('./assets/WhitePlateScreen.jpg')} style={{ width: '100%', height: '100%', position: data.item == 'Empty' ? 'relative' : 'absolute', top: 0, left: 0 }} resizeMode="cover" />
             {
                 data.steps && <Fragment>
+
                     <Text style={[styles.title]}>{data.isCooking ? data.item : (data.cooktype == 'Done' ? 'Done' : 'Empty')}</Text>
+                    <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
 
                     <Carousel
                         ref={(c) => this._carousel = c}
@@ -238,9 +213,6 @@ function mainScreen({ navigation }) {
                         containerStyle={{ paddingVertical: 0 }}
                     />
 
-
-                    <Text style={styles.subtitle}>{data.isCooking ? `${Math.floor(time / 60)} min and ${time % 60} sec` : ' '}</Text>
-
                     <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', marginTop: 12 }}>
                         {data.isCooking && <Button
                             onPress={() => navigation.navigate('automationScreen')}
@@ -265,7 +237,6 @@ function mainScreen({ navigation }) {
             }
             {
                 data.item == 'Empty' && <Fragment>
-                    <Image source={require('./assets/WhitePlateScreen.jpg')} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
                     <Text style={[styles.title, { position: 'absolute', bottom: '20%', alignSelf: 'center', color: colors.darkGrey }]}>Empty</Text>
                     <Text style={{ position: 'absolute', bottom: '15%', marginHorizontal: '20%', alignSelf: 'center', color: colors.darkGrey, textAlign: 'center', fontStyle: 'italic' }}>The crumbs are lonely. Maybe its time to bake something?</Text>
                 </Fragment>
@@ -287,7 +258,6 @@ function mainScreen({ navigation }) {
                         onPress={() => sendCookingFromURL(urlData)}
                         icon={<Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />}
                         buttonStyle={styles.urlPlay}
-                    // containerStyle={styles.roundButtonPaddingS}
                     />
                 </View>
             </Modal>

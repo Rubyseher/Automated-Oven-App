@@ -24,13 +24,11 @@ export const styles = StyleSheet.create({
     title: {
         fontWeight: '600',
         fontSize: 41,
-        marginTop: 60,
-        marginBottom: 10,
+        marginTop: 65,
         textAlign: 'center',
     },
     subtitle: {
         fontSize: 18,
-        marginTop: 10,
         color: colors.darkGrey,
         textAlign: 'center',
     },

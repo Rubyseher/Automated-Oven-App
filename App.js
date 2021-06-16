@@ -16,6 +16,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext, stateConditionString } from './AuthContext';
 import { Notifications } from 'react-native-notifications';
 
+const notificationSetup = () => {
+    Notifications.registerRemoteNotifications();
+
+        Notifications.events().registerRemoteNotificationsRegistered((event) => {
+            // TODO: Send the token to my server so it could send back push notifications...
+            console.log("Device Token Received", event.deviceToken);
+        });
+        Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
+            console.error(event);
+        });
+
+        Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
+            // console.log("Notification Received - Foreground", notification.payload);
+            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+            completion({ alert: true, sound: true, badge: false });
+        });
+
+        Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
+            // console.log("Notification Received - Background", notification.payload);
+            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+            completion({ alert: true, sound: true, badge: false });
+        });
+}
+
 const NavContainerTheme = {
     ...DefaultTheme,
     colors: {
@@ -194,36 +218,7 @@ export default function App() {
 
         authContextValue.login(authSubscriber)
 
-        Notifications.registerRemoteNotifications();
-
-        Notifications.events().registerRemoteNotificationsRegistered((event) => {
-            // TODO: Send the token to my server so it could send back push notifications...
-            console.log("Device Token Received", event.deviceToken);
-        });
-        Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
-            console.error(event);
-        });
-
-        Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
-            console.log("Notification Received - Foreground", notification.payload);
-
-            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-            completion({ alert: true, sound: true, badge: false });
-        });
-
-        Notifications.events().registerNotificationOpened((notification, completion, action) => {
-            console.log("Notification opened by device user", notification.payload);
-            console.log(`Notification opened with an action identifier: ${action.identifier} and response text: ${action.text}`);
-            completion();
-        });
-
-        Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
-            console.log("Notification Received - Background", notification.payload);
-
-            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-            completion({ alert: true, sound: true, badge: false });
-        });
-
+        notificationSetup()
     }, [])
 
     return (
