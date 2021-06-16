@@ -61,7 +61,6 @@ export default function settingsScreen() {
         };
     }
 
-
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
