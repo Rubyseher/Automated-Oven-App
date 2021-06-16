@@ -637,11 +637,10 @@ export const styles = StyleSheet.create({
         marginVertical:8
     },
     switchIcon: {
-        height: 32,
-        width: 32,
-        borderRadius: 16,
+        height: 34,
+        width: 34,
+        borderRadius: 17,
         paddingVertical: 8,
-        paddingHorizontal: 10,
         alignSelf: 'center',
         justifyContent:'center',
         backgroundColor: colors.blue,
@@ -650,6 +649,7 @@ export const styles = StyleSheet.create({
         fontWeight:'500',
         fontSize:16,
         color:colors.darkGrey,
-        width:'70%'
+        width:'70%',
+        marginLeft:5
     }
 });

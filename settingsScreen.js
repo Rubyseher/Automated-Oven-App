@@ -8,6 +8,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { AuthContext } from './AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Modal from 'react-native-modal';
 
 const SettingSlider = (props) => {
     return (
@@ -34,7 +35,7 @@ const SwitchItem = (props) => {
     return (
         <View style={styles.switchItemContainer}>
             <View style={[styles.switchIcon, { backgroundColor: props.color }]}>
-                <Icon name={props.icon} color={colors.white} size={14} solid />
+                <Icon name={props.icon} color={colors.white} size={14} solid style={{ alignSelf: 'center' }} />
             </View>
             <Text style={styles.listItemName}>{props.title}</Text>
             <Switch
@@ -47,9 +48,11 @@ const SwitchItem = (props) => {
 }
 
 export default function settingsScreen() {
-    const [wsData, setWsData] = useState();
+    const [wsData, setWSData] = useState();
     const { name } = useContext(AuthContext)
     const [isEnabled, setIsEnabled] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [modalContent, setModalContent] = useState();
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const detectionList = [
@@ -59,8 +62,8 @@ export default function settingsScreen() {
     const notifications = [
         { title: 'Cooking Done', color: colors.yellow, icon: "utensils", isEnabled, toggleSwitch },
         { title: 'High Energy Consumption', color: colors.lightGreen, icon: "plug", isEnabled, toggleSwitch },
-        { title: 'Oven Emptied', color: colors.blue, icon: "sign-out-alt", isEnabled, toggleSwitch },
-        { title: 'High Surrounding Temperature', color: colors.red, icon: "temperature-high", isEnabled, toggleSwitch }
+        { title: 'Oven Emptied', color: colors.blue, icon: "cookie-bite", isEnabled, toggleSwitch },
+        { title: 'High Surrounding Temperature', color: colors.red, icon: "exclamation-triangle", isEnabled, toggleSwitch }
     ]
 
     const history = [
@@ -70,26 +73,8 @@ export default function settingsScreen() {
         { title: 'Share With Other Users', color: colors.purple, icon: "share", isEnabled, toggleSwitch },
         { title: 'Allow Others to Edit', color: colors.red, icon: "edit", isEnabled, toggleSwitch }
     ]
-    const developer = [
-        { title: 'Demo Mode', color: colors.yellow, icon: "code", isEnabled, toggleSwitch },
-    ]
-    var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight']]
 
-    const setPivalue = (type, name, value) => {
-        setWsData((currWS) => { return { ...currWS, [name]: value } })
-
-        var ws = new WebSocket('ws://oven.local:8069');
-        console.log("type,name, value is ", type, name, value);
-        ws.onopen = () => {
-            req = {
-                module: type,
-                function: `set${name}`,
-                params: [value]
-            }
-            ws.send(JSON.stringify(req));
-            ws.close()
-        };
-    }
+    var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight'], ['config', ''], ['other', 'Logs']]
 
     useFocusEffect(
         useCallback(() => {
@@ -98,16 +83,38 @@ export default function settingsScreen() {
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
                 reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: 'get' + r[1] })))
+                // ws.send(JSON.stringify({ module: 'other', function: 'getLogs' }))
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 console.log("msg is ", d);
                 if (d.type == 'result') {
-                    setWsData((currWS) => { return { ...currWS, [d.req.substring(3)]: d.result } })
+                    setWSData((currWS) => { return { ...currWS, [d.req.length > 3 ? d.req.substring(3) : 'config']: d.result } })
                 }
             };
         }, [])
     );
+
+    const sendValue = (type, name, value) => {
+        setWSData((currWS) => { return { ...currWS, [name]: value } })
+        var ws = new WebSocket('ws://oven.local:8069');
+        // console.log("type,name, value is ", type, name, value);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ module: type, function: `set${name}`, params: [value] }));
+            ws.close()
+        };
+    }
+
+    const sendConfigValue = (name, value) => {
+        setWSData((currWS) => { return { ...currWS, config: { ...currWS.config, [name]: value } } })
+        var ws = new WebSocket('ws://oven.local:8069');
+        // console.log("type,name, value is ", type, name, value);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ module: 'config', function: 'set', params: [name, value] }));
+            ws.close()
+        };
+    }
+
     return (
         <ScrollView vertical={true} contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 4, paddingBottom: 50 }}>
             <Text style={styles.heading}>Settings</Text>
@@ -125,15 +132,15 @@ export default function settingsScreen() {
                         />
                     </View >
                     <Text style={styles.listTitle}>Display</Text>
-                    <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display' />
+                    <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWSData }} sendHandler={sendValue} name='Backlight' type='display' />
                     <Text style={styles.listTitle}>Sounds</Text>
-                    <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio' />
+                    <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWSData }} sendHandler={sendValue} name='Volume' type='audio' />
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: '120%', marginHorizontal: '-10%' }} contentOffset={{ x: -30 }}>
                         {
                             wsData.AvailableTones && wsData.AvailableTones.map((item, i) => (
                                 <View key={i} style={{ flexDirection: 'row' }}>
                                     <Button
-                                        onPress={() => setPivalue('audio', 'SelectedTone', item)}
+                                        onPress={() => sendValue('audio', 'SelectedTone', item)}
                                         buttonStyle={wsData.SelectedTone == item ? styles.currentTone : styles.chooseTone}
                                         title={item}
                                         titleStyle={wsData.SelectedTone == item ? styles.currentTitle : styles.chooseTitle}
@@ -183,15 +190,27 @@ export default function settingsScreen() {
                     {automations.map((d, i) => <SwitchItem key={i} {...d} />)}
 
                     <Text style={styles.listTitle}>Developer</Text>
-                    {developer.map((d, i) => <SwitchItem key={i} {...d} />)}
+                    {
+                        [{ title: 'Demo Mode', color: colors.yellow, icon: "video", isEnabled: wsData.config ? wsData.config.demoMode : false, toggleSwitch: (v) => sendConfigValue('demoMode', v) }].map((d, i) =>
+                            <SwitchItem key={i} {...d} />)
+                    }
                     <Button
                         buttonStyle={styles.chooseTone}
-                        title='View Logs '
+                        title='View Logs'
                         titleStyle={styles.chooseTitle}
                         containerStyle={styles.volumeChooseContainer}
+                        onPress={() => {setModalContent({title: 'Logs', body: wsData.Logs}); setModalVisible(true)}}
                     />
                 </Fragment>
             }
+            <Modal isVisible={modalVisible} swipeDirection="down" onSwipeComplete={() => setModalVisible(false)} onBackdropPress={() => setModalVisible(false)} style={{margin:0}} backdropOpacity={0.5}>
+            <View style={styles.overlayContainer}>
+                <Text style={styles.addStep}>{modalContent && modalContent.title}</Text>
+                <ScrollView style={{paddingHorizontal:20}}>
+                    <Text style={styles.listItemName}>{modalContent && modalContent.body}</Text>
+                </ScrollView>
+                </View>
+           </Modal>
         </ScrollView>
     );
 }
