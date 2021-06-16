@@ -9,6 +9,7 @@ import { AuthContext } from './AuthContext';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import Modal from 'react-native-modal';
 
+
 const TimelineComponent = (props) => {
     var item = props.item
     item.id = props.id
@@ -33,8 +34,8 @@ export default function automationEditScreen({ navigation, route }) {
     const [steps, setSteps] = useState(route.params.steps);
     const [visible, setVisible] = useState(false);
     const [foodName, changeFoodname] = useState(route.params.name);
-    const { config } = useContext(AuthContext);
     const [saveIsDeleteButton, setSaveIsDeleteButton] = useState(false)
+    const { config } = useContext(AuthContext)
 
     function removeItem(i) {
         setSteps(st => st = st.filter((s, index) => index != i));
@@ -70,7 +71,7 @@ export default function automationEditScreen({ navigation, route }) {
 
     const saveAutomation = () => {
         if (steps.length > 0) {
-            var ws = new WebSocket('ws://oven.local:8069');
+            var ws = new WebSocket(config.url);
             ws.onopen = () => {
                 req = {
                     module: 'automations',
@@ -91,7 +92,7 @@ export default function automationEditScreen({ navigation, route }) {
     }
 
     const deleteAutomation = () => {
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         ws.onopen = () => {
             req = {
                 module: 'automations',

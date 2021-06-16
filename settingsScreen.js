@@ -49,10 +49,10 @@ const SwitchItem = (props) => {
 
 export default function settingsScreen() {
     const [wsData, setWSData] = useState();
-    const { config } = useContext(AuthContext)
     const [isEnabled, setIsEnabled] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState();
+    const { config } = useContext(AuthContext)
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const detectionList = [
@@ -80,7 +80,7 @@ export default function settingsScreen() {
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
 
-            var ws = new WebSocket('ws://oven.local:8069');
+            var ws = new WebSocket(config.url);
             ws.onopen = () => {
                 reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: 'get' + r[1] })))
                 // ws.send(JSON.stringify({ module: 'other', function: 'getLogs' }))
@@ -97,7 +97,7 @@ export default function settingsScreen() {
 
     const sendValue = (type, name, value) => {
         setWSData((currWS) => { return { ...currWS, [name]: value } })
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         // console.log("type,name, value is ", type, name, value);
         ws.onopen = () => {
             ws.send(JSON.stringify({ module: type, function: `set${name}`, params: [value] }));
@@ -107,7 +107,7 @@ export default function settingsScreen() {
 
     const sendConfigValue = (name, value) => {
         setWSData((currWS) => { return { ...currWS, config: { ...currWS.config, [name]: value } } })
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         // console.log("type,name, value is ", type, name, value);
         ws.onopen = () => {
             ws.send(JSON.stringify({ module: 'config', function: 'set', params: [name, value] }));
@@ -199,18 +199,18 @@ export default function settingsScreen() {
                         title='View Logs'
                         titleStyle={styles.chooseTitle}
                         containerStyle={styles.volumeChooseContainer}
-                        onPress={() => {setModalContent({title: 'Logs', body: wsData.Logs}); setModalVisible(true)}}
+                        onPress={() => { setModalContent({ title: 'Logs', body: wsData.Logs }); setModalVisible(true) }}
                     />
                 </Fragment>
             }
-            <Modal isVisible={modalVisible} swipeDirection="down" onSwipeComplete={() => setModalVisible(false)} onBackdropPress={() => setModalVisible(false)} style={{margin:0}} backdropOpacity={0.5}>
-            <View style={styles.overlayContainer}>
-                <Text style={styles.addStep}>{modalContent && modalContent.title}</Text>
-                <ScrollView style={{paddingHorizontal:20}}>
-                    <Text style={styles.listItemName}>{modalContent && modalContent.body}</Text>
-                </ScrollView>
+            <Modal isVisible={modalVisible} swipeDirection="down" onSwipeComplete={() => setModalVisible(false)} onBackdropPress={() => setModalVisible(false)} style={{ margin: 0 }} backdropOpacity={0.5}>
+                <View style={styles.overlayContainer}>
+                    <Text style={styles.addStep}>{modalContent && modalContent.title}</Text>
+                    <ScrollView style={{ paddingHorizontal: 20 }}>
+                        <Text style={styles.listItemName}>{modalContent && modalContent.body}</Text>
+                    </ScrollView>
                 </View>
-           </Modal>
+            </Modal>
         </ScrollView>
     );
 }

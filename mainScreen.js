@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback } from 'react';
+import React, { useState, Fragment, useCallback,useContext } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ActivityIndicator, Image } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
@@ -15,6 +15,7 @@ import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
 import { Notifications } from 'react-native-notifications';
+import { AuthContext } from './AuthContext';
 
 // https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
 // https://www.delish.com/cooking/recipe-ideas/recipes/a51451/easy-chicken-parmesan-recipe/
@@ -58,10 +59,11 @@ function mainScreen({ navigation }) {
     const [getUrl, setGetUrl] = useState(false);
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = useState(false);
+    const { config } = useContext(AuthContext)
 
     const sendCookingFromURL = (values) => {
         console.log("sendCookingFromURL values", values);
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         ws.onopen = () => {
             req = {
                 module: 'cook',
@@ -95,7 +97,7 @@ function mainScreen({ navigation }) {
     }
 
     const sendRequest = (task) => {
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         ReactNativeHapticFeedback.trigger("impactHeavy");
         ws.onopen = () => {
             if (task == 'stop')
@@ -127,7 +129,7 @@ function mainScreen({ navigation }) {
             let sentDoneNotification, lastCookedItem = ""
 
             var intervalId = setInterval(() => {
-                var ws = new WebSocket('ws://oven.local:8069');
+                var ws = new WebSocket(config.url);
                 ws.onopen = () => {
                     req = {
                         module: 'cook',

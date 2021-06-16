@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import { styles, colors } from './styles'
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -11,10 +11,12 @@ import { Button } from 'react-native-elements';
 import Ficon from 'react-native-vector-icons/Fontisto';
 import moment from 'moment';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { AuthContext } from './AuthContext';
 
 const TemperatureSlider = (props) => {
+    const { config } = useContext(AuthContext)
     const setTemp = (value) => {
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         ws.onopen = () => {
             req = {
                 module: 'cook',
@@ -59,7 +61,7 @@ const Title = (props) => {
     return (
         <View >
             <AnimatedCircularProgress
-                size={125} width={10} fill={props.percent} style={{ alignItems: 'center' }} childrenContainerStyle={{ padding:0 }} arcSweepAngle={360} rotation={0} tintColor={props.color}>
+                size={125} width={10} fill={props.percent} style={{ alignItems: 'center' }} childrenContainerStyle={{ padding: 0 }} arcSweepAngle={360} rotation={0} tintColor={props.color}>
                 {() => (
                     <View style={[styles.carouselCircle, { backgroundColor: props.color }]}>
                         <Icon name={props.icon} color={colors.white} size={38} solid style={{ alignSelf: 'center' }} />
@@ -73,8 +75,9 @@ const Title = (props) => {
 
 export const Preheat = (props) => {
     const [tempSlider, setTempSlider] = useState(parseInt(props.temp));
+    const { config } = useContext(AuthContext)
     const sendTemp = (value) => {
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         ws.onopen = () => {
             req = {
                 module: 'cook',
@@ -87,7 +90,7 @@ export const Preheat = (props) => {
     }
     return (
         <View style={styles.mainCardContainer}>
-            <Title percent={props.percent} name={props.type} icon="fire-alt" color={colors.orange}/>
+            <Title percent={props.percent} name={props.type} icon="fire-alt" color={colors.orange} />
 
             <CircularSlider
                 step={1} min={0} max={250} value={props.temp}
@@ -107,9 +110,10 @@ export const Cook = (props) => {
     const [topTemp, setTopTemp] = useState(parseInt(props.topTemp));
     const [bottomTemp, setBottomTemp] = useState(parseInt(props.bottomTemp));
     const [timeSlider, setTimeSlider] = useState(parseInt(props.duration));
+    const { config } = useContext(AuthContext)
 
     const sendTemp = (value) => {
-        var ws = new WebSocket('ws://oven.local:8069');
+        var ws = new WebSocket(config.url);
         ws.onopen = () => {
             req = {
                 module: 'cook',
@@ -227,7 +231,7 @@ export const Cooling = (props) => {
     return (
         <View style={styles.mainCardContainer}>
 
-            <Title percent={props.percent} name={props.type}  icon="snowflake" color={colors.turquoise}/>
+            <Title percent={props.percent} name={props.type} icon="snowflake" color={colors.turquoise} />
 
             <CircularSlider
                 step={1} min={0} max={10} value={timeSlider} contentContainerStyle={styles.contentContainerStyle}

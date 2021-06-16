@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback } from 'react';
+import React, { Fragment, useState, useCallback, useContext } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, ScrollView } from 'react-native';
 import { styles, colors } from './styles'
@@ -7,6 +7,7 @@ import { BarChart } from 'react-native-svg-charts'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import moment from "moment";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { AuthContext } from './AuthContext';
 
 export default function energyScreen() {
     const [energyData, setEnergyData] = useState();
@@ -14,6 +15,7 @@ export default function energyScreen() {
     const [monthSum, setMonthSum] = useState(0);
     const [monthCost, setMonthCost] = useState(0);
     const [currentUsage, setCurrentUsage] = useState(0);
+    const { config } = useContext(AuthContext)
 
     const parseData = (d) => {
         const energySum = (accumulator, currentValue) => accumulator + currentValue;
@@ -46,7 +48,7 @@ export default function energyScreen() {
     useFocusEffect(
         useCallback(() => {
             const getData = () => {
-                var ws = new WebSocket('ws://oven.local:8069');
+                var ws = new WebSocket(config.url);
                 ws.onopen = () => {
                     req = {
                         module: 'energy',

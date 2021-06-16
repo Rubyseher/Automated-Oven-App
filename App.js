@@ -186,7 +186,6 @@ export default function App() {
         () => ({
             login: async data => {
                 if (data !== null) {
-                    console.log(JSON.stringify(data));
                     await AsyncStorage.setItem('config', JSON.stringify(data))
                     var ws = new WebSocket('ws://oven.local:8069');
                     ws.onopen = () => {
@@ -201,6 +200,9 @@ export default function App() {
                 } else {
                     dispatch({ type: 'TO_LOGIN_PAGE' });
                 }
+            },
+            setConfig: async data => {
+                await AsyncStorage.setItem('config', JSON.stringify(data))
             }
         }),
         []

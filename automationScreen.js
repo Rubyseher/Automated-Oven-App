@@ -1,5 +1,5 @@
-import React, {  useState, useCallback } from 'react';
-import { View, Text, ScrollView} from 'react-native';
+import React, { useState, useCallback, useContext } from 'react';
+import { View, Text, ScrollView } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -7,16 +7,18 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import FoodListItem from "./FoodListItem";
+import { AuthContext } from './AuthContext';
 
 export default function automationScreen() {
     const [data, setData] = useState([]);
     const [keys, setKeys] = useState([]);
     const navigation = useNavigation();
+    const { config } = useContext(AuthContext)
 
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
-            var ws = new WebSocket('ws://oven.local:8069');
+            var ws = new WebSocket(config.url);
             ws.onopen = () => {
                 req = {
                     module: 'automations',
@@ -39,24 +41,24 @@ export default function automationScreen() {
 
     const newAutomation = () => {
         id = generateNewID(6)
-        ReactNativeHapticFeedback.trigger("impactMedium"); 
-        navigation.navigate('automationEdit', { name: "New Automation 1",steps: [], id, editable:true })
+        ReactNativeHapticFeedback.trigger("impactMedium");
+        navigation.navigate('automationEdit', { name: "New Automation 1", steps: [], id, editable: true })
     }
 
     return (
         <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 4 }}>
-            <View style={{ flexDirection: 'row', width: '100%'}} onPress={() => navigation.goBack()}>
-                <Text style={[styles.heading,{flex:0, marginRight:'35%'}]}>Automator</Text>
+            <View style={{ flexDirection: 'row', width: '100%' }} onPress={() => navigation.goBack()}>
+                <Text style={[styles.heading, { flex: 0, marginRight: '35%' }]}>Automator</Text>
                 <Button
                     icon={<Icon name="plus" size={14} color={colors.white} />}
                     onPress={newAutomation}
-                    buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue,height:25,width:25 }]}
-                    containerStyle={[styles.roundButtonPaddingS, {height:35,width:35, alignSelf:'center', flex:2, marginTop:20}]}
+                    buttonStyle={[styles.roundButtonS, { backgroundColor: colors.blue, height: 25, width: 25 }]}
+                    containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'center', flex: 2, marginTop: 20 }]}
                 />
             </View>
             {
                 data.length > 0 && data.map((item, i) => (
-                    <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable/>
+                    <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable />
                 ))
             }
         </ScrollView>
