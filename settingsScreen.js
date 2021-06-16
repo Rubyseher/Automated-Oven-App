@@ -1,5 +1,5 @@
 import React, { useState, useCallback, Fragment, useContext } from 'react';
-import { FlatList, View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Switch } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { styles, colors } from './styles'
@@ -8,7 +8,6 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import { Button } from 'react-native-elements';
 import { AuthContext } from './AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Ficon from 'react-native-vector-icons/Fontisto';
 
 const SettingSlider = (props) => {
     return (
@@ -23,11 +22,27 @@ const SettingSlider = (props) => {
                 maximumTrackTintColor={colors.grey}
                 minimumTrackTintColor={colors.blue}
                 step={5}
-                onSlidingComplete={value => { props.handler.setValue((currWS) => { return { ...currWS, [`${props.name}`]: value } }); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.type,props.name, value) }}
+                onSlidingComplete={value => { props.handler.setValue((currWS) => { return { ...currWS, [`${props.name}`]: value } }); ReactNativeHapticFeedback.trigger("impactLight"); props.sendHandler(props.type, props.name, value) }}
                 value={props.handler.value}
                 thumbTintColor="transparent"
             />
         </Fragment>
+    )
+}
+
+const SwitchItem = (props) => {
+    return (
+        <View style={styles.switchItemContainer}>
+            <View style={[styles.switchIcon, { backgroundColor: props.color }]}>
+                <Icon name={props.icon} color={colors.white} size={14} solid />
+            </View>
+            <Text style={styles.listItemName}>{props.title}</Text>
+            <Switch
+                trackColor={{ false: colors.grey, true: props.color }}
+                onValueChange={props.toggleSwitch}
+                value={props.isEnabled}
+            />
+        </View>
     )
 }
 
@@ -39,14 +54,21 @@ export default function settingsScreen() {
         AvailableTones: []
     });
     const { name } = useContext(AuthContext)
+    const [isEnabled, setIsEnabled] = useState(false);
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    const detectionList = [
+        { title: 'Automatic AI Food Detection', color: colors.blue, icon: "user", isEnabled, toggleSwitch },
+        { title: 'Recipe Link Detection', color: colors.orange, icon: "user", isEnabled, toggleSwitch }
+    ]
 
     var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight']]
 
-    const setPivalue = (type ,name, value) => {
-        setWsData((currWS) => { return { ...currWS, [name]:value } })
+    const setPivalue = (type, name, value) => {
+        setWsData((currWS) => { return { ...currWS, [name]: value } })
 
         var ws = new WebSocket('ws://oven.local:8069');
-        console.log("type,name, value is ",type,name, value);
+        console.log("type,name, value is ", type, name, value);
         ws.onopen = () => {
             req = {
                 module: type,
@@ -64,7 +86,7 @@ export default function settingsScreen() {
 
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
-                reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: 'get'+r[1] })))
+                reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: 'get' + r[1] })))
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
@@ -90,15 +112,15 @@ export default function settingsScreen() {
                 />
             </View >
             <Text style={styles.listTitle}>Display</Text>
-            <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display'/>
+            <SettingSlider icon={<IonIcon name="sunny" size={24} color={colors.darkGrey} />} handler={{ value: wsData.Backlight, setValue: setWsData }} sendHandler={setPivalue} name='Backlight' type='display' />
             <Text style={styles.listTitle}>Sounds</Text>
-            <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio'/>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{width:'120%', marginHorizontal:'-10%'}} contentOffset={{x:-30}}>
+            <SettingSlider icon={<Icon name="volume-up" size={20} color={colors.darkGrey} />} handler={{ value: wsData.Volume, setValue: setWsData }} sendHandler={setPivalue} name='Volume' type='audio' />
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={{ width: '120%', marginHorizontal: '-10%' }} contentOffset={{ x: -30 }}>
                 {
                     wsData.AvailableTones.map((item, i) => (
                         <View key={i} style={{ flexDirection: 'row' }}>
                             <Button
-                                onPress={() => setPivalue('audio','SelectedTone',item)}
+                                onPress={() => setPivalue('audio', 'SelectedTone', item)}
                                 buttonStyle={wsData.SelectedTone == item ? styles.currentTone : styles.chooseTone}
                                 title={item}
                                 titleStyle={wsData.SelectedTone == item ? styles.currentTitle : styles.chooseTitle}
@@ -129,8 +151,8 @@ export default function settingsScreen() {
             <Text style={styles.chooseTitle}>URL</Text>
 
             <Text style={styles.listTitle}>Detection</Text>
-            <Text style={styles.chooseTitle}>Automatic AI Food Detection</Text>
-            <Text style={styles.chooseTitle}>Recipe Link Detection</Text>
+            {detectionList.map((d, i) => <SwitchItem key={i} {...d} />)}
+
 
             <Text style={styles.listTitle}>Notifications</Text>
             <Text style={styles.chooseTitle}>Cooking Done</Text>

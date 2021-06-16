@@ -19,25 +19,25 @@ import { Notifications } from 'react-native-notifications';
 const notificationSetup = () => {
     Notifications.registerRemoteNotifications();
 
-        Notifications.events().registerRemoteNotificationsRegistered((event) => {
-            // TODO: Send the token to my server so it could send back push notifications...
-            console.log("Device Token Received", event.deviceToken);
-        });
-        Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
-            console.error(event);
-        });
+    Notifications.events().registerRemoteNotificationsRegistered((event) => {
+        // TODO: Send the token to my server so it could send back push notifications...
+        console.log("Device Token Received", event.deviceToken);
+    });
+    Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
+        // console.error(event);
+    });
 
-        Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
-            // console.log("Notification Received - Foreground", notification.payload);
-            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-            completion({ alert: true, sound: true, badge: false });
-        });
+    Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
+        // console.log("Notification Received - Foreground", notification.payload);
+        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+        completion({ alert: true, sound: true, badge: false });
+    });
 
-        Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
-            // console.log("Notification Received - Background", notification.payload);
-            // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
-            completion({ alert: true, sound: true, badge: false });
-        });
+    Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
+        // console.log("Notification Received - Background", notification.payload);
+        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
+        completion({ alert: true, sound: true, badge: false });
+    });
 }
 
 const NavContainerTheme = {

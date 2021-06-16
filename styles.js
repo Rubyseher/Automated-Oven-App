@@ -147,8 +147,8 @@ export const styles = StyleSheet.create({
     urlOverlay: {
         width: '90%',
         height: 75,
-        flexDirection:'row',
-        borderRadius:40,
+        flexDirection: 'row',
+        borderRadius: 40,
         alignSelf: 'center',
         backgroundColor: colors.white,
         shadowColor: "#000",
@@ -160,8 +160,8 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 8.34,
         elevation: 4,
-        position:'absolute',
-        top:'12%'
+        position: 'absolute',
+        top: '12%'
     },
     urlName: {
         fontWeight: 'bold',
@@ -440,7 +440,7 @@ export const styles = StyleSheet.create({
     listTitle: {
         paddingVertical: 15,
         fontSize: 20,
-        fontWeight:'600'
+        fontWeight: '600'
     },
     overlayContainer: {
         backgroundColor: colors.white,
@@ -578,7 +578,7 @@ export const styles = StyleSheet.create({
         borderBottomWidth: 4,
         borderColor: colors.white
     },
-    dropDown:{
+    dropDown: {
         backgroundColor: colors.white,
         borderRadius: 14,
         shadowColor: "#000",
@@ -589,10 +589,10 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 3.84,
         elevation: 5,
-        paddingVertical:15,
-        flexDirection:'row',
+        paddingVertical: 15,
+        flexDirection: 'row',
         padding: 10,
-        alignItems:'center'
+        alignItems: 'center'
     },
     chooseTone: {
         backgroundColor: colors.white,
@@ -601,8 +601,8 @@ export const styles = StyleSheet.create({
         borderRadius: 24,
     },
     chooseTitle: {
-        color:colors.black,
-        fontSize:14
+        color: colors.black,
+        fontSize: 14
     },
     currentTone: {
         backgroundColor: colors.blue,
@@ -611,15 +611,15 @@ export const styles = StyleSheet.create({
         borderRadius: 24,
     },
     currentTitle: {
-        color:colors.white,
-        fontSize:14
+        color: colors.white,
+        fontSize: 14
     },
 
-    volumeChooseContainer:{
+    volumeChooseContainer: {
         height: 40,
         // width: 50,
         padding: 4,
-        marginHorizontal:2,
+        marginHorizontal: 2,
         borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: {
@@ -629,5 +629,27 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 2.84,
         // elevation: 5,
+    },
+    switchItemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        marginVertical:8
+    },
+    switchIcon: {
+        height: 32,
+        width: 32,
+        borderRadius: 16,
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        alignSelf: 'center',
+        justifyContent:'center',
+        backgroundColor: colors.blue,
+    },
+    listItemName: {
+        fontWeight:'500',
+        fontSize:16,
+        color:colors.darkGrey,
+        width:'70%'
     }
 });
