@@ -596,12 +596,27 @@ export const styles = StyleSheet.create({
         padding: 10,
         alignItems:'center'
     },
-    volumeChoose: {
+    chooseTone: {
         backgroundColor: colors.white,
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 24,
     },
+    chooseTitle: {
+        color:colors.black,
+        fontSize:14
+    },
+    currentTone: {
+        backgroundColor: colors.blue,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 24,
+    },
+    currentTitle: {
+        color:colors.white,
+        fontSize:14
+    },
+
     volumeChooseContainer:{
         height: 40,
         // width: 50,

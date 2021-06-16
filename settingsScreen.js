@@ -49,11 +49,16 @@ export default function settingsScreen() {
     { key: 'Notifications' },
     { key: 'Automations' }]
 
-    const setPivalue = (name, value) => {
+    var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight']]
+
+    const setPivalue = (type ,name, value) => {
+        setWsData((currWS) => { return { ...currWS, [name]:value } })
+
         var ws = new WebSocket('ws://oven.local:8069');
+        console.log("type,name, value",type,name, value);
         ws.onopen = () => {
             req = {
-                module: 'display',
+                module: type,
                 function: `set${name}`,
                 params: [value]
             }
@@ -68,8 +73,7 @@ export default function settingsScreen() {
 
             var ws = new WebSocket('ws://oven.local:8069');
             ws.onopen = () => {
-                var reqList = [['audio', 'getVolume'], ['audio', 'getSelectedTone'], ['audio', 'getAvailableTones'], ['display', 'getBacklight']]
-                reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: r[1] })))
+                reqList.forEach(r => ws.send(JSON.stringify({ module: r[0], function: 'get'+r[1] })))
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
@@ -109,11 +113,12 @@ export default function settingsScreen() {
             <ScrollView horizontal={true} contentContainerStyle={{}}>
                 {
                     wsData.AvailableTones.map((item, i) => (
-                        <View key={i} style={{ flexDirection: 'row'}}>
+                        <View key={i} style={{ flexDirection: 'row' }}>
                             <Button
-                                buttonStyle={styles.volumeChoose}
+                                onPress={() => setPivalue('audio','SelectedTone',item)}
+                                buttonStyle={wsData.SelectedTone == item ? styles.currentTone : styles.chooseTone}
                                 title={item}
-                                titleStyle={{ color: colors.black ,fontSize:14}}
+                                titleStyle={wsData.SelectedTone == item ? styles.currentTitle : styles.chooseTitle}
                                 containerStyle={styles.volumeChooseContainer}
                             />
                         </View>
