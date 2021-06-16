@@ -162,7 +162,6 @@ export const Notify = (props) => {
                     value={msg}
                 />
                 {/* <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
-
                     {
                         props.destination.map((item, i) => (
                             <View key={i} style={{ flexDirection: 'row', width: '32%' }}>

@@ -596,4 +596,25 @@ export const styles = StyleSheet.create({
         padding: 10,
         alignItems:'center'
     },
+    volumeChoose: {
+        backgroundColor: colors.white,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 24,
+    },
+    volumeChooseContainer:{
+        height: 40,
+        // width: 50,
+        padding: 4,
+        marginHorizontal:4,
+        borderRadius: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 2.84,
+        // elevation: 5,
+    }
 });
