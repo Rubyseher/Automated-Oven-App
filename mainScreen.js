@@ -1,6 +1,6 @@
 import React, { useState, Fragment, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, ActivityIndicator,Image } from 'react-native';
+import { View, Text, ActivityIndicator, Image } from 'react-native';
 import { Button, Overlay } from 'react-native-elements';
 import { styles, colors } from './styles'
 import Wand from './assets/wand.svg'
@@ -14,6 +14,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
+import { Notifications } from 'react-native-notifications';
 
 // https://www.allrecipes.com/recipe/10813/best-chocolate-chip-cookies/
 // https://www.delish.com/cooking/recipe-ideas/recipes/a51451/easy-chicken-parmesan-recipe/
@@ -123,6 +124,8 @@ function mainScreen({ navigation }) {
                 setTime(firstStepStart.diff(moment(), 'seconds'))
             }
 
+            let sentDoneNotification
+
             var intervalId = setInterval(() => {
                 var ws = new WebSocket('ws://oven.local:8069');
                 ws.onopen = () => {
@@ -137,14 +140,38 @@ function mainScreen({ navigation }) {
                     if (d.type == 'result' && d.req == 'get') {
                         setData(d.result)
                         if (!d.result.isCooking) setGetUrl(true)
-                        else setGetUrl(false)
-                        // console.log("data", d.result)
-                        if (data) {
-                            if (data.currentStep == d.result.currentStep - 1)
-                                this._carousel.snapToItem(d.result.currentStep);
+                        else {
+                            setGetUrl(false)
+                            sentDoneNotification = undefined
                         }
+                        if (d.result.isDone && !sentDoneNotification)
+                            sentDoneNotification = Notifications.postLocalNotification({
+                                body: "Done",
+                                title: "Food is Done",
+                                sound: "chime.aiff",
+                                silent: false,
+                                category: "SOME_CATEGORY",
+                                userInfo: {}
+                            });
+                        // console.log("data", d.result)
+
                         if (d.isCooking) parseData(d.result)
                     }
+                    // if (data !== undefined) {
+                    //     console.log("data isCook " + data.isCooking);
+                    //     console.log("d isCook " + d.result.isCooking);
+                    //     if (data.currentStep == d.result.currentStep - 1)
+                    //         this._carousel.snapToItem(d.result.currentStep);
+                    //     if (data.isCooking && !d.result.isCooking)
+                    //         Notifications.postLocalNotification({
+                    //             body: "Done",
+                    //             title: "Food is Done",
+                    //             sound: "chime.aiff",
+                    //             silent: false,
+                    //             category: "SOME_CATEGORY",
+                    //             userInfo: {}
+                    //         });
+                    // }
                     ws.close()
                 };
             }, 1000)
@@ -162,6 +189,23 @@ function mainScreen({ navigation }) {
             fetchFromUrl()
         }, [getUrl])
     );
+
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         if (data) {
+    //             if (data.isCooking)
+    //                 if (Math.round(data.steps[data.steps.length - 1].endTime) <= Math.round(Date.now() / 1000))
+    //                     Notifications.postLocalNotification({
+    //                         body: "Done",
+    //                         title: "Food is Done",
+    //                         sound: "chime.aiff",
+    //                         silent: false,
+    //                         category: "SOME_CATEGORY",
+    //                         userInfo: {}
+    //                     });
+    //         }
+    //     }, [data])
+    // )
 
     return (
         data ? <View>
@@ -221,12 +265,12 @@ function mainScreen({ navigation }) {
             }
             {
                 data.item == 'Empty' && <Fragment>
-                <Image source={require('./assets/WhitePlateScreen.jpg')} style={{width:'100%', height:'100%'}} resizeMode="cover" />
-                <Text style={[styles.title, {position:'absolute', bottom:'20%', alignSelf:'center',color:colors.darkGrey}]}>Empty</Text>
-                <Text style={{position:'absolute', bottom:'15%', marginHorizontal:'20%', alignSelf:'center',color:colors.darkGrey,textAlign:'center', fontStyle:'italic'}}>The crumbs are lonely. Maybe its time to bake something?</Text>
+                    <Image source={require('./assets/WhitePlateScreen.jpg')} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+                    <Text style={[styles.title, { position: 'absolute', bottom: '20%', alignSelf: 'center', color: colors.darkGrey }]}>Empty</Text>
+                    <Text style={{ position: 'absolute', bottom: '15%', marginHorizontal: '20%', alignSelf: 'center', color: colors.darkGrey, textAlign: 'center', fontStyle: 'italic' }}>The crumbs are lonely. Maybe its time to bake something?</Text>
                 </Fragment>
             }
-            <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={1} onSwipeComplete={() => setVisible(!visible)} animationIn='fadeInDown' useNativeDriver={true}  onBackdropPress={() => setVisible(!visible)} style={{margin:0}} backdropOpacity={0} >
+            <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={1} onSwipeComplete={() => setVisible(!visible)} animationIn='fadeInDown' useNativeDriver={true} onBackdropPress={() => setVisible(!visible)} style={{ margin: 0 }} backdropOpacity={0} >
 
                 <View style={styles.urlOverlay} >
                     <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
@@ -240,11 +284,11 @@ function mainScreen({ navigation }) {
                     </View>
 
                     <Button
-                            onPress={() => sendCookingFromURL(urlData) }
-                            icon={<Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />}
-                            buttonStyle={styles.urlPlay}
-                            // containerStyle={styles.roundButtonPaddingS}
-                        />
+                        onPress={() => sendCookingFromURL(urlData)}
+                        icon={<Icon name="play" size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />}
+                        buttonStyle={styles.urlPlay}
+                    // containerStyle={styles.roundButtonPaddingS}
+                    />
                 </View>
             </Modal>
         </View> :
