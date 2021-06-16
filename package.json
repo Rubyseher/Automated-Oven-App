@@ -13,6 +13,7 @@
     "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-clipboard/clipboard": "^1.8.1",
     "@react-native-community/slider": "^3.0.3",
+    "@react-native-firebase/app": "^12.1.0",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
