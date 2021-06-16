@@ -53,10 +53,26 @@ export default function settingsScreen() {
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const detectionList = [
-        { title: 'Automatic AI Food Detection', color: colors.blue, icon: "user", isEnabled, toggleSwitch },
-        { title: 'Recipe Link Detection', color: colors.orange, icon: "user", isEnabled, toggleSwitch }
+        { title: 'Automatic AI Food Detection', color: colors.blue, icon: "magic", isEnabled, toggleSwitch },
+        { title: 'Recipe Link Detection', color: colors.orange, icon: "link", isEnabled, toggleSwitch }
+    ]
+    const notifications = [
+        { title: 'Cooking Done', color: colors.yellow, icon: "utensils", isEnabled, toggleSwitch },
+        { title: 'High Energy Consumption', color: colors.lightGreen, icon: "plug", isEnabled, toggleSwitch },
+        { title: 'Oven Emptied', color: colors.blue, icon: "sign-out-alt", isEnabled, toggleSwitch },
+        { title: 'High Surrounding Temperature', color: colors.red, icon: "temperature-high", isEnabled, toggleSwitch }
     ]
 
+    const history = [
+        { title: 'Incognito Mode', color: colors.darkGrey, icon: "user-secret", isEnabled, toggleSwitch }
+    ]
+    const automations = [
+        { title: 'Share With Other Users', color: colors.purple, icon: "share", isEnabled, toggleSwitch },
+        { title: 'Allow Others to Edit', color: colors.red, icon: "edit", isEnabled, toggleSwitch }
+    ]
+    const developer = [
+        { title: 'Demo Mode', color: colors.yellow, icon: "code", isEnabled, toggleSwitch },
+    ]
     var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight']]
 
     const setPivalue = (type, name, value) => {
@@ -152,21 +168,17 @@ export default function settingsScreen() {
 
 
                     <Text style={styles.listTitle}>Notifications</Text>
-                    <Text style={styles.chooseTitle}>Cooking Done</Text>
-                    <Text style={styles.chooseTitle}>High Energy Consumption</Text>
-                    <Text style={styles.chooseTitle}>Oven Emptied</Text>
-                    <Text style={styles.chooseTitle}>High Surrounding Temperature</Text>
+                    {notifications.map((d, i) => <SwitchItem key={i} {...d} />)}
 
                     <Text style={styles.listTitle}>History</Text>
-                    <Text style={styles.chooseTitle}>Incognito Mode</Text>
+                    {history.map((d, i) => <SwitchItem key={i} {...d} />)}
                     <Text style={styles.chooseTitle}>Clear All History: long button</Text>
 
                     <Text style={styles.listTitle}>Automations</Text>
-                    <Text style={styles.chooseTitle}>Share With Other Users</Text>
-                    <Text style={styles.chooseTitle}>Allow Others to Edit</Text>
+                    {automations.map((d, i) => <SwitchItem key={i} {...d} />)}
 
                     <Text style={styles.listTitle}>Developer</Text>
-                    <Text style={styles.chooseTitle}>Demo Mode</Text>
+                    {developer.map((d, i) => <SwitchItem key={i} {...d} />)}
                     <Text style={styles.chooseTitle}>View Logs : long button</Text>
                 </Fragment>
             }
