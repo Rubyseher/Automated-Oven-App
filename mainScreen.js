@@ -63,7 +63,7 @@ function mainScreen({ navigation }) {
 
     const sendCookingFromURL = (values) => {
         console.log("sendCookingFromURL values", values);
-        var ws = new WebSocket(config.url);
+        var ws = new WebSocket(config.url || 'ws://oven.local:8069');
         ws.onopen = () => {
             req = {
                 module: 'cook',
@@ -99,7 +99,7 @@ function mainScreen({ navigation }) {
     }
 
     const sendRequest = (task) => {
-        var ws = new WebSocket(config.url);
+        var ws = new WebSocket(config.url || 'ws://oven.local:8069');
         ReactNativeHapticFeedback.trigger("impactHeavy");
         ws.onopen = () => {
             if (task == 'stop')
@@ -131,7 +131,7 @@ function mainScreen({ navigation }) {
             let sentDoneNotification, lastCookedItem = ""
 
             var intervalId = setInterval(() => {
-                var ws = new WebSocket(config.url);
+                var ws = new WebSocket(config.url || 'ws://oven.local:8069');
                 ws.onopen = () => {
                     req = {
                         module: 'cook',

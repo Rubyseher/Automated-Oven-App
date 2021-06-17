@@ -12,6 +12,7 @@ import { AuthContext } from './AuthContext';
 export default function automationScreen() {
     const [data, setData] = useState([]);
     const [keys, setKeys] = useState([]);
+    const [filter, setFilter] = useState(false);
     const navigation = useNavigation();
     const { config } = useContext(AuthContext)
 
@@ -29,8 +30,25 @@ export default function automationScreen() {
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
                 if (d.type == 'result') {
-                    setData(Object.values(d.result))
-                    setKeys(Object.keys(d.result))
+                    let val = Object.values(d.result)
+                    let keys = Object.keys(d.result)
+                    keys.sort((e1, e2) => {
+                        let k1 = d.result[e1].lastUsed
+                        let k2 = d.result[e2].lastUsed
+                        if (k1 > k2) return -1
+                        else if (k1 < k2) return 1
+                        else return 0
+                    })
+                    val.sort((e1, e2) => {
+                        let v1 = e1.lastUsed
+                        let v2 = e2.lastUsed
+                        if (v1 > v2) return -1
+                        else if (v1 < v2) return 1
+                        else return 0
+                    })
+                    val.forEach(v => console.log(v))
+                    setData(val)
+                    setKeys(keys)
                     ws.close()
                 }
             };
@@ -47,8 +65,14 @@ export default function automationScreen() {
 
     return (
         <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 4 }}>
-            <View style={{ flexDirection: 'row', width: '100%' }} onPress={() => navigation.goBack()}>
-                <Text style={[styles.heading, { flex: 0, marginRight: '35%' }]}>Automator</Text>
+            <View style={{ flexDirection: 'row', width: '100%',justifyContent:'center' }} onPress={() => navigation.goBack()}>
+                <Text style={[styles.heading, { flex: 0, marginRight: '20%' }]}>Automator</Text>
+                <Button
+                    icon={<Icon name="filter" size={12} color={colors.white} />}
+                    onPress={() => setFilter(!filter)}
+                    buttonStyle={[styles.roundButtonS, { backgroundColor: filter ? colors.orange : colors.grey, height: 25, width: 25 }]}
+                    containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'center', flex: 2, marginTop: 20 }]}
+                />
                 <Button
                     icon={<Icon name="plus" size={14} color={colors.white} />}
                     onPress={newAutomation}
@@ -58,9 +82,10 @@ export default function automationScreen() {
             </View>
             {
                 data.length > 0 && data.map((item, i) => (
-                    <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable />
+                    (!filter || item.createdBy == config.name) && <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable />
                 ))
             }
+            {filter && <Text style={[styles.listItemName,{textAlign:'center',width:'100%',marginLeft:0}]}>Showing items created by you.</Text>}
         </ScrollView>
     );
 }

@@ -98,7 +98,6 @@ export default function settingsScreen({ navigation }) {
             };
             ws.onmessage = (e) => {
                 d = JSON.parse(e.data)
-                console.log("msg is ", d);
                 if (d.type == 'result') {
                     setWSData((currWS) => { return { ...currWS, [d.req.length > 3 ? d.req.substring(3) : 'config']: d.result } })
                 }

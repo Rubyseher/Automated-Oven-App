@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import { AuthContext } from './AuthContext';
 
 export default FoodListItem = (props) => {
     const [finalDuration, setFinalDuration] = useState(0);
     const [finalTemp, setFinalTemp] = useState(0);
     const navigation = useNavigation();
+    const { config } = useContext(AuthContext)
 
     useEffect(() => {
         if (!finalTemp) {
@@ -27,6 +29,15 @@ export default FoodListItem = (props) => {
         }
     }, []);
 
+    const runSteps = () => {
+        console.log({item: props.name, steps:props.steps});
+        var ws = new WebSocket(config.url);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ module: 'cook', function: 'startFromSteps', params: [{item: props.name, steps:props.steps}] }));
+            ws.close()
+        };
+    }
+
     return (
         <TouchableOpacity onPress={() => { ReactNativeHapticFeedback.trigger("impactMedium"); navigation.navigate('automationEdit', props) }}>
             <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
@@ -42,6 +53,7 @@ export default FoodListItem = (props) => {
                 <Button
                     buttonStyle={[styles.foodCircleM, { backgroundColor: colors.blue }]}
                     icon={<Icon name="play" size={10} color={colors.white} solid />}
+                    onPress={runSteps}
                 />
             </View>
             <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>

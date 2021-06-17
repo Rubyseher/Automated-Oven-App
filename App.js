@@ -13,7 +13,7 @@ import { styles, colors } from './styles'
 import { TextInput, View, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext, stateConditionString } from './AuthContext';
+import { AuthContext } from './AuthContext';
 import { Notifications } from 'react-native-notifications';
 
 const notificationSetup = () => {
@@ -63,7 +63,7 @@ const defaultPreferences = {
 function LoginScreen() {
     const [newName, setNewName] = useState("")
     const { login } = useContext(AuthContext);
-    
+
     return (
         <View >
             <Text>Hi</Text>
@@ -99,7 +99,7 @@ function HistoryStack() {
     );
 }
 
-function mainTabs() {
+function MainTabs() {
     return (
         <Tab.Navigator initialRouteName="main"
             screenOptions={({ route }) => ({
@@ -172,6 +172,7 @@ export default function App() {
                 case 'LOGIN':
                     return {
                         ...prevState,
+                        isLoading: false,
                         isSignedIn: true,
                         config: action.data
                     };
@@ -187,18 +188,24 @@ export default function App() {
     const context = useMemo(
         () => ({
             login: async data => {
+                console.log(data);
                 if (data !== null) {
-                    await AsyncStorage.setItem('config', JSON.stringify(data))
-                    var ws = new WebSocket('ws://oven.local:8069');
-                    ws.onopen = () => {
-                        req = {
-                            module: 'other',
-                            function: 'setUserName',
-                            params: [data.name]
-                        }
-                        ws.send(JSON.stringify(req));
-                    };
-                    dispatch({ type: 'LOGIN', data: data });
+                    if (!data.url) {
+                        dispatch({ type: 'TO_LOGIN_PAGE' });
+                    } else {
+                        if (data.url && data.name)
+                            await AsyncStorage.setItem('config', JSON.stringify(data))
+                        var ws = new WebSocket('ws://oven.local:8069');
+                        ws.onopen = () => {
+                            req = {
+                                module: 'other',
+                                function: 'setUserName',
+                                params: [data.name]
+                            }
+                            ws.send(JSON.stringify(req));
+                        };
+                        dispatch({ type: 'LOGIN', data: data });
+                    }
                 } else {
                     dispatch({ type: 'TO_LOGIN_PAGE' });
                 }
@@ -214,35 +221,16 @@ export default function App() {
         []
     );
 
-    const chooseScreen = state => {
-        let navigateTo = stateConditionString(state);
-
-        switch (navigateTo) {
-            case 'LOAD_APP':
-                return <Tab.Screen name="main" component={mainTabs} />;
-            case 'LOAD_LOGIN':
-                return <Stack.Screen name="login" component={LoginScreen} />;
-            case 'LOAD_HOME':
-                return <Tab.Screen name="main" component={mainTabs} />
-            default:
-                return <Stack.Screen name="login" component={LoginScreen} />;
-        }
-    };
-
     useEffect(async () => {
         const configSubscriber = await AsyncStorage.getItem('config')
-
-        context.login(configSubscriber ? JSON.parse(configSubscriber) : null)
-
+        context.login(configSubscriber !== null ? JSON.parse(configSubscriber) : null)
         notificationSetup()
     }, [])
 
     return (
         <AuthContext.Provider value={{ config: state.config, ...context }}>
             <NavigationContainer theme={NavContainerTheme}>
-                <RootStack.Navigator headerMode='none'>
-                    {chooseScreen(state)}
-                </RootStack.Navigator>
+                {state.isLoading || state.config !== null? <MainTabs />: <LoginScreen />}
             </NavigationContainer>
         </AuthContext.Provider>
     );
