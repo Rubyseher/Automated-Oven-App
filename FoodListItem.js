@@ -40,7 +40,7 @@ export default FoodListItem = (props) => {
 
     return (
         <TouchableOpacity onPress={() => { ReactNativeHapticFeedback.trigger("impactMedium"); navigation.navigate('automationEdit', props) }}>
-            <View style={[styles.foodContainer, { flexDirection: 'row' }]}>
+            <View style={[styles.foodContainer, { flexDirection: 'row' }, props.bookmarked ? {shadowOpacity: 0.25, shadowRadius: 5.34}: {}]}>
                 <View style={styles.tagBadge}>
                     <Icon name="utensils" size={22} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
                 </View>
@@ -57,7 +57,7 @@ export default FoodListItem = (props) => {
                     onPress={runSteps}
                 />
             </View>
-            <View style={[styles.detailsContainer, { justifyContent: 'center' }]}>
+            <View style={[styles.detailsContainer, { justifyContent: 'center' }, props.bookmarked ? {shadowOpacity: 0.35, shadowRadius: 5.34}: {}]}>
                 <View style={[styles.detailsCircle, { backgroundColor: colors.orange }]}>
                     <Icon name="thermometer-half" size={14} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} />
                 </View>

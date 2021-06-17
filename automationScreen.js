@@ -21,7 +21,6 @@ export default function automationScreen() {
         setConfigState((c) => {
             let newCS = { ...c, bookmarkedAutomationItems: [...c.bookmarkedAutomationItems, value] }
             setConfig(newCS);
-            console.log(newCS.bookmarkedAutomationItems);
             return newCS
         })
     }
@@ -30,7 +29,6 @@ export default function automationScreen() {
         setConfigState((c) => {
             let newCS = { ...c, bookmarkedAutomationItems: [...c.bookmarkedAutomationItems.filter(item => item !== value)] }
             setConfig(newCS);
-            console.log(newCS.bookmarkedAutomationItems);
             return newCS
         })
     }
@@ -102,6 +100,7 @@ export default function automationScreen() {
                     configState.bookmarkedAutomationItems.includes(keys[i]) && <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable bookmarked addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarkedById />
                 ))
             }
+            {configState.bookmarkedAutomationItems.length>0 && <View style={styles.divider}></View>}
             {
                 data.length > 0 && data.map((item, i) => (
                     ((!filter  && !configState.bookmarkedAutomationItems.includes(keys[i])) || (item.createdBy == config.name && !configState.bookmarkedAutomationItems.includes(keys[i]))) && <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarkedById />

@@ -10,7 +10,7 @@ import automationEditScreen from './automationEditScreen'
 import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
-import { TextInput, View, Text,ActivityIndicator } from 'react-native';
+import { TextInput, View, Text, ActivityIndicator } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthContext';
@@ -80,8 +80,8 @@ function LoginScreen(props) {
                 />
             </View>
         </View> : <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
-                <ActivityIndicator size="large" />
-            </View>
+            <ActivityIndicator size="large" />
+        </View>
     );
 }
 
@@ -180,6 +180,13 @@ export default function App() {
                         isSignedIn: true,
                         config: action.data
                     };
+                case 'LOGOUT':
+                    return {
+                        ...prevState,
+                        isLoading: false,
+                        isSignedIn: false,
+                        config: null
+                    };
             }
         },
         {
@@ -210,7 +217,7 @@ export default function App() {
                         dispatch({ type: 'LOGIN', data: data });
                     }
                 } else {
-                    dispatch({ type: 'TO_LOGIN_PAGE' });
+                    dispatch({ type: 'LOGOUT' });
                 }
             },
             setConfig: async data => {
@@ -219,6 +226,10 @@ export default function App() {
             getConfig: async () => {
                 let res = await AsyncStorage.getItem('config')
                 return res !== null ? JSON.parse(res) : defaultPreferences
+            },
+            logout: () => {
+                AsyncStorage.clear();
+                dispatch({ type: 'TO_LOGIN_PAGE' });
             }
         }),
         []
@@ -233,7 +244,7 @@ export default function App() {
     return (
         <AuthContext.Provider value={{ config: state.config, ...context }}>
             <NavigationContainer theme={NavContainerTheme}>
-                {!state.isLoading && state.config !== null? <MainTabs />: <LoginScreen isLoading={state.isLoading}/>}
+                {!state.isLoading && state.config !== null ? <MainTabs /> : <LoginScreen isLoading={state.isLoading} />}
             </NavigationContainer>
         </AuthContext.Provider>
     );

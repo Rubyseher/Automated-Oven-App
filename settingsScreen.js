@@ -1,5 +1,5 @@
 import React, { useState, useCallback, Fragment, useContext } from 'react';
-import { View, Text, ScrollView, Switch, TextInput,TouchableWithoutFeedback } from 'react-native';
+import { View, Text, ScrollView, Switch, TextInput, TouchableWithoutFeedback } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { styles, colors } from './styles'
@@ -66,7 +66,7 @@ export default function settingsScreen({ navigation }) {
     const [wsData, setWSData] = useState();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState();
-    const { config, getConfig, setConfig } = useContext(AuthContext)
+    const { config, getConfig, setConfig, logout } = useContext(AuthContext)
     const [configState, setConfigState] = useState(config)
     const [confirmClearHistory, setConfirmClearHistory] = useState(false)
 
@@ -167,6 +167,7 @@ export default function settingsScreen({ navigation }) {
                         </View>
                         <Text style={[styles.fullName, { marginVertical: 20 }]}>{config.name}</Text>
                         <Button
+                            onPress={logout}
                             icon={<Icon name="arrow-left" size={12} color={colors.white} />}
                             buttonStyle={[styles.roundButtonS, { backgroundColor: colors.darkGrey, height: 25, width: 25 }]}
                             containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'flex-start', marginTop: 20, marginLeft: '20%' }]}
@@ -268,7 +269,7 @@ export default function settingsScreen({ navigation }) {
                     />
                     <TouchableWithoutFeedback onPress={easterEgg}>
 
-                    <Text style={[styles.listItemName, { textAlign: 'center', width: '100%', marginLeft: 0, marginVertical: 50, paddingHorizontal: 20, fontSize: 14 }]}>Some settings may require an oven and app restart to take effect.</Text>
+                        <Text style={[styles.listItemName, { textAlign: 'center', width: '100%', marginLeft: 0, marginVertical: 50, paddingHorizontal: 20, fontSize: 14 }]}>Some settings may require an oven and app restart to take effect.</Text>
                     </TouchableWithoutFeedback>
                 </Fragment>
             }

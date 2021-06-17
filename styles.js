@@ -590,7 +590,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 3.84,
         flexDirection: 'row',
         padding: 10,
-        marginVertical:5,
+        marginVertical: 5,
         alignItems: 'center'
     },
     chooseTone: {
@@ -633,7 +633,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        marginVertical:8
+        marginVertical: 8
     },
     switchIcon: {
         height: 34,
@@ -641,14 +641,22 @@ export const styles = StyleSheet.create({
         borderRadius: 17,
         paddingVertical: 8,
         alignSelf: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         backgroundColor: colors.blue,
     },
     listItemName: {
-        fontWeight:'500',
-        fontSize:16,
-        color:colors.darkGrey,
-        width:'70%',
-        marginLeft:5
+        fontWeight: '500',
+        fontSize: 16,
+        color: colors.darkGrey,
+        width: '70%',
+        marginLeft: 5
+    },
+    divider: {
+        width: '90%',
+        backgroundColor: colors.grey,
+        height: 1,
+        alignSelf: 'center',
+        marginBottom: 20,
+        marginTop: 5
     }
 });

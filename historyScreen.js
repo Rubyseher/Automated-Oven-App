@@ -87,6 +87,7 @@ export default function historyScreen() {
                     configState.bookmarkedHistoryItems.includes(names[i]) && <FoodListItem key={i} name={names[i]} steps={item.steps} id={i} bookmarked addBookmark={addBookmark} removeBookmark={removeBookmark} />
                 )) : null
             }
+            {configState.bookmarkedHistoryItems.length>0 && <View style={styles.divider}></View>}
             {
                 names.length > 0 ? data.map((item, i) => (
                     ((!filter  && !configState.bookmarkedHistoryItems.includes(names[i])) || (item.playbackHistory.some(p => p.users.includes(config.name)) && !configState.bookmarkedHistoryItems.includes(names[i]))) && <FoodListItem key={i} name={names[i]} steps={item.steps} id={i} addBookmark={addBookmark} removeBookmark={removeBookmark} />
