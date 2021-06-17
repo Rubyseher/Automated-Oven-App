@@ -10,7 +10,7 @@ import automationEditScreen from './automationEditScreen'
 import automationScreen from './automationScreen'
 import settingsScreen from './settingsScreen'
 import { styles, colors } from './styles'
-import { TextInput, View, Text } from 'react-native';
+import { TextInput, View, Text,ActivityIndicator } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthContext';
@@ -57,15 +57,17 @@ const defaultPreferences = {
     detection: { fromURL: true },
     notifications: { DONE: true, HIGH_ENERGY: true, EMPTY: true, HIGH_TEMP: true },
     history: { incognito: false },
-    automations: { share: true, editable: true }
+    automations: { share: true, editable: true },
+    bookmarkedHistoryItems: [],
+    bookmarkedAutomationItems: [],
 }
 
-function LoginScreen() {
+function LoginScreen(props) {
     const [newName, setNewName] = useState("")
     const { login } = useContext(AuthContext);
 
     return (
-        <View >
+        !props.isLoading ? <View >
             <Text>Hi</Text>
             <View style={styles.welcomeContainer}>
                 <Text style={styles.welcomeTitle}>Hi</Text>
@@ -77,7 +79,9 @@ function LoginScreen() {
                     value={newName}
                 />
             </View>
-        </View>
+        </View> : <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
+                <ActivityIndicator size="large" />
+            </View>
     );
 }
 
@@ -188,7 +192,6 @@ export default function App() {
     const context = useMemo(
         () => ({
             login: async data => {
-                console.log(data);
                 if (data !== null) {
                     if (!data.url) {
                         dispatch({ type: 'TO_LOGIN_PAGE' });
@@ -230,7 +233,7 @@ export default function App() {
     return (
         <AuthContext.Provider value={{ config: state.config, ...context }}>
             <NavigationContainer theme={NavContainerTheme}>
-                {state.isLoading || state.config !== null? <MainTabs />: <LoginScreen />}
+                {!state.isLoading && state.config !== null? <MainTabs />: <LoginScreen isLoading={state.isLoading}/>}
             </NavigationContainer>
         </AuthContext.Provider>
     );

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { View, Text, ScrollView } from 'react-native';
-import { styles,colors } from './styles'
+import { styles, colors } from './styles'
 import { useFocusEffect } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import FoodListItem from "./FoodListItem";
@@ -13,7 +13,24 @@ export default function historyScreen() {
     const [data, setData] = useState([]);
     const [names, setNames] = useState([]);
     const [filter, setFilter] = useState(false);
-    const { config } = useContext(AuthContext)
+    const { config, setConfig } = useContext(AuthContext)
+    const [configState, setConfigState] = useState(config)
+
+    const addBookmark = (value) => {
+        setConfigState((c) => {
+            let newCS = { ...c, bookmarkedHistoryItems: [...c.bookmarkedHistoryItems, value] }
+            setConfig(newCS);
+            return newCS
+        })
+    }
+
+    const removeBookmark = (value) => {
+        setConfigState((c) => {
+            let newCS = { ...c, bookmarkedHistoryItems: [...c.bookmarkedHistoryItems.filter(item => item !== value)] }
+            setConfig(newCS);
+            return newCS
+        })
+    }
 
     useFocusEffect(
         useCallback(() => {
@@ -56,8 +73,8 @@ export default function historyScreen() {
 
     return (
         <ScrollView vertical={true} contentContainerStyle={{ paddingHorizontal: 32, paddingTop: 4, paddingBottom: 50 }}>
-            <View style={{ flexDirection: 'row', width: '100%',justifyContent:'center' }} onPress={() => navigation.goBack()}>
-                <Text style={[styles.heading, { flex: 0, marginRight: '50%' }]}>History</Text>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }} onPress={() => navigation.goBack()}>
+                <Text style={[styles.heading, { flex: 0, marginRight: '55%' }]}>History</Text>
                 <Button
                     icon={<Icon name="filter" size={12} color={colors.white} />}
                     onPress={() => setFilter(!filter)}
@@ -67,10 +84,15 @@ export default function historyScreen() {
             </View>
             {
                 names.length > 0 ? data.map((item, i) => (
-                    (!filter || item.playbackHistory.some(p => p.users.includes(config.name))) && <FoodListItem key={i} name={names[i]} steps={item.steps} id={i} />
+                    configState.bookmarkedHistoryItems.includes(names[i]) && <FoodListItem key={i} name={names[i]} steps={item.steps} id={i} bookmarked addBookmark={addBookmark} removeBookmark={removeBookmark} />
                 )) : null
             }
-            {filter && <Text style={[styles.listItemName,{textAlign:'center',width:'100%',marginLeft:0}]}>Showing items used by you.</Text>}
+            {
+                names.length > 0 ? data.map((item, i) => (
+                    ((!filter  && !configState.bookmarkedHistoryItems.includes(names[i])) || (item.playbackHistory.some(p => p.users.includes(config.name)) && !configState.bookmarkedHistoryItems.includes(names[i]))) && <FoodListItem key={i} name={names[i]} steps={item.steps} id={i} addBookmark={addBookmark} removeBookmark={removeBookmark} />
+                )) : null
+            }
+            {filter && <Text style={[styles.listItemName, { textAlign: 'center', width: '100%', marginLeft: 0 }]}>Showing items used by you.</Text>}
 
         </ScrollView>
     );

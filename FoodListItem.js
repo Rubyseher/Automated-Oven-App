@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { styles, colors } from './styles'
 import { Button } from 'react-native-elements';
@@ -30,10 +30,10 @@ export default FoodListItem = (props) => {
     }, []);
 
     const runSteps = () => {
-        console.log({item: props.name, steps:props.steps});
+        console.log({ item: props.name, steps: props.steps });
         var ws = new WebSocket(config.url);
         ws.onopen = () => {
-            ws.send(JSON.stringify({ module: 'cook', function: 'startFromSteps', params: [{item: props.name, steps:props.steps}] }));
+            ws.send(JSON.stringify({ module: 'cook', function: 'startFromSteps', params: [{ item: props.name, steps: props.steps }] }));
             ws.close()
         };
     }
@@ -46,9 +46,10 @@ export default FoodListItem = (props) => {
                 </View>
                 <Text style={[styles.fullName, { marginTop: 26, width: '40%' }]}>{props.name}</Text>
                 <Button
-                    buttonStyle={[styles.foodCircleM, { backgroundColor: colors.lightRed }]}
-                    icon={<Icon name="bookmark" size={12} color={colors.white} solid />}
+                    buttonStyle={[styles.foodCircleM, { backgroundColor: props.bookmarked ? colors.darkGrey : colors.lightRed }]}
+                    icon={<Icon name={props.bookmarked ? "tint-slash" : "bookmark"} size={12} color={colors.white} solid />}
                     containerStyle={{ alignItems: 'flex-end', width: '10%', marginRight: 8 }}
+                    onPress={() => props.bookmarked ? props.removeBookmark(props.bookmarkedById ? props.id : props.name) : props.addBookmark(props.bookmarkedById ? props.id : props.name)}
                 />
                 <Button
                     buttonStyle={[styles.foodCircleM, { backgroundColor: colors.blue }]}

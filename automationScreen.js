@@ -14,8 +14,26 @@ export default function automationScreen() {
     const [keys, setKeys] = useState([]);
     const [filter, setFilter] = useState(false);
     const navigation = useNavigation();
-    const { config } = useContext(AuthContext)
+    const { config, setConfig } = useContext(AuthContext)
+    const [configState, setConfigState] = useState(config)
 
+    const addBookmark = (value) => {
+        setConfigState((c) => {
+            let newCS = { ...c, bookmarkedAutomationItems: [...c.bookmarkedAutomationItems, value] }
+            setConfig(newCS);
+            console.log(newCS.bookmarkedAutomationItems);
+            return newCS
+        })
+    }
+
+    const removeBookmark = (value) => {
+        setConfigState((c) => {
+            let newCS = { ...c, bookmarkedAutomationItems: [...c.bookmarkedAutomationItems.filter(item => item !== value)] }
+            setConfig(newCS);
+            console.log(newCS.bookmarkedAutomationItems);
+            return newCS
+        })
+    }
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactMedium");
@@ -46,7 +64,6 @@ export default function automationScreen() {
                         else if (v1 < v2) return 1
                         else return 0
                     })
-                    val.forEach(v => console.log(v))
                     setData(val)
                     setKeys(keys)
                     ws.close()
@@ -65,12 +82,12 @@ export default function automationScreen() {
 
     return (
         <ScrollView vertical={true} contentContainerStyle={{ height: '105%', paddingHorizontal: 32, paddingTop: 4 }}>
-            <View style={{ flexDirection: 'row', width: '100%',justifyContent:'center' }} onPress={() => navigation.goBack()}>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }} onPress={() => navigation.goBack()}>
                 <Text style={[styles.heading, { flex: 0, marginRight: '20%' }]}>Automator</Text>
                 <Button
                     icon={<Icon name="filter" size={12} color={colors.white} />}
                     onPress={() => setFilter(!filter)}
-                    buttonStyle={[styles.roundButtonS, { backgroundColor: filter ? colors.orange : colors.grey, height: 25, width: 25 }]}
+                    buttonStyle={[styles.roundButtonS, { backgroundColor: filter ? colors.red : colors.grey, height: 25, width: 25 }]}
                     containerStyle={[styles.roundButtonPaddingS, { height: 35, width: 35, alignSelf: 'center', flex: 2, marginTop: 20 }]}
                 />
                 <Button
@@ -82,10 +99,15 @@ export default function automationScreen() {
             </View>
             {
                 data.length > 0 && data.map((item, i) => (
-                    (!filter || item.createdBy == config.name) && <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable />
+                    configState.bookmarkedAutomationItems.includes(keys[i]) && <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable bookmarked addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarkedById />
                 ))
             }
-            {filter && <Text style={[styles.listItemName,{textAlign:'center',width:'100%',marginLeft:0}]}>Showing items created by you.</Text>}
+            {
+                data.length > 0 && data.map((item, i) => (
+                    ((!filter  && !configState.bookmarkedAutomationItems.includes(keys[i])) || (item.createdBy == config.name && !configState.bookmarkedAutomationItems.includes(keys[i]))) && <FoodListItem key={i} name={item.name} steps={item.steps} id={keys[i]} editable addBookmark={addBookmark} removeBookmark={removeBookmark} bookmarkedById />
+                ))
+            }
+            {filter && <Text style={[styles.listItemName, { textAlign: 'center', width: '100%', marginLeft: 0 }]}>Showing items created by you.</Text>}
         </ScrollView>
     );
 }

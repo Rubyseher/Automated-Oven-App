@@ -1,5 +1,5 @@
 import React, { useState, useCallback, Fragment, useContext } from 'react';
-import { View, Text, ScrollView, Switch } from 'react-native';
+import { View, Text, ScrollView, Switch, TextInput,TouchableWithoutFeedback } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { styles, colors } from './styles'
@@ -47,16 +47,32 @@ const SwitchItem = (props) => {
     )
 }
 
+const IconTextInput = (props) => {
+    return (
+        <View style={styles.dropDown}>
+            <View style={[styles.switchIcon, { backgroundColor: props.color }]}>
+                <Icon name={props.icon} color={colors.white} size={14} solid style={{ alignSelf: 'center' }} />
+            </View>
+            <TextInput
+                style={[styles.listItemName]}
+                onChangeText={props.onChange}
+                value={props.value}
+            />
+        </View>
+    )
+}
+
 export default function settingsScreen({ navigation }) {
     const [wsData, setWSData] = useState();
     const [modalVisible, setModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState();
     const { config, getConfig, setConfig } = useContext(AuthContext)
     const [configState, setConfigState] = useState(config)
+    const [confirmClearHistory, setConfirmClearHistory] = useState(false)
 
-    const toggleLocalConfigItem = (category, name, value) => {
+    const setLocalConfigItem = (category, name, value) => {
         setConfigState((c) => {
-            let newCS = { ...c, [category]: { ...c[category], [name]: value } }
+            let newCS = name ? { ...c, [category]: { ...c[category], [name]: value } } : { ...c, [category]: value }
             setConfig(newCS);
             return newCS
         })
@@ -72,18 +88,18 @@ export default function settingsScreen({ navigation }) {
     );
 
     const notifications = [
-        { title: 'Cooking Done', color: colors.yellow, icon: "utensils", isEnabled: configState.notifications.DONE, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'DONE', v) },
-        { title: 'High Energy Consumption', color: colors.lightGreen, icon: "plug", isEnabled: configState.notifications.HIGH_ENERGY, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'HIGH_ENERGY', v) },
-        { title: 'Oven Emptied', color: colors.blue, icon: "cookie-bite", isEnabled: configState.notifications.EMPTY, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'EMPTY', v) },
-        { title: 'High Surrounding Temperature', color: colors.red, icon: "exclamation-triangle", isEnabled: configState.notifications.HIGH_TEMP, toggleSwitch: (v) => toggleLocalConfigItem('notifications', 'HIGH_TEMP', v) }
+        { title: 'Cooking Done', color: colors.yellow, icon: "utensils", isEnabled: configState.notifications.DONE, toggleSwitch: (v) => setLocalConfigItem('notifications', 'DONE', v) },
+        { title: 'High Energy Consumption', color: colors.lightGreen, icon: "plug", isEnabled: configState.notifications.HIGH_ENERGY, toggleSwitch: (v) => setLocalConfigItem('notifications', 'HIGH_ENERGY', v) },
+        { title: 'Oven Emptied', color: colors.blue, icon: "cookie-bite", isEnabled: configState.notifications.EMPTY, toggleSwitch: (v) => setLocalConfigItem('notifications', 'EMPTY', v) },
+        { title: 'High Surrounding Temperature', color: colors.red, icon: "exclamation-triangle", isEnabled: configState.notifications.HIGH_TEMP, toggleSwitch: (v) => setLocalConfigItem('notifications', 'HIGH_TEMP', v) }
     ]
 
     const history = [
-        { title: 'Incognito Mode', color: colors.darkGrey, icon: "user-secret", isEnabled: configState.history.incognito, toggleSwitch: (v) => toggleLocalConfigItem('history', 'incognito', v) }
+        { title: 'Incognito Mode', color: colors.darkGrey, icon: "user-secret", isEnabled: configState.history.incognito, toggleSwitch: (v) => setLocalConfigItem('history', 'incognito', v) }
     ]
     const automations = [
-        { title: 'Share With Other Users', color: colors.purple, icon: "share", isEnabled: configState.automations.share, toggleSwitch: (v) => toggleLocalConfigItem('automations', 'share', v) },
-        { title: 'Allow Others to Edit', color: colors.red, icon: "edit", isEnabled: configState.automations.editable, toggleSwitch: (v) => toggleLocalConfigItem('automations', 'editable', v) }
+        { title: 'Share With Other Users', color: colors.purple, icon: "share", isEnabled: configState.automations.share, toggleSwitch: (v) => setLocalConfigItem('automations', 'share', v) },
+        { title: 'Allow Others to Edit', color: colors.orange, icon: "edit", isEnabled: configState.automations.editable, toggleSwitch: (v) => setLocalConfigItem('automations', 'editable', v) }
     ]
 
     var reqList = [['audio', 'Volume'], ['audio', 'SelectedTone'], ['audio', 'AvailableTones'], ['display', 'Backlight'], ['config', ''], ['other', 'Logs'], ['other', 'AvailableModels']]
@@ -130,6 +146,14 @@ export default function settingsScreen({ navigation }) {
             ws.close()
         };
         navigation.navigate('main')
+    }
+
+    const easterEgg = () => {
+        var ws = new WebSocket(config.url);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ module: 'audio', function: 'easterEgg' }));
+            ws.close()
+        };
     }
 
     return (
@@ -186,13 +210,15 @@ export default function settingsScreen({ navigation }) {
                     </View>
 
                     <Text style={styles.listTitle}>Oven Details</Text>
-                    <View style={styles.dropDown}><Text>{`Name: ${wsData.config && wsData.config.name}`}</Text></View>
-                    <View style={styles.dropDown}><Text>{`URL: ${config.url}`}</Text></View>
+                    {[
+                        { icon: 'address-card', color: colors.red, value: wsData.config && wsData.config.name, onChange: (v) => sendWSConfigValue('name', v) },
+                        { icon: 'link', color: colors.blue, value: configState.url, onChange: (v) => setLocalConfigItem('url', null, v) }
+                    ].map((d, i) => <IconTextInput key={i} {...d} />)}
 
                     <Text style={styles.listTitle}>Detection</Text>
                     {[
-                        { title: 'Automatic AI Food Detection', color: colors.blue, icon: "magic", isEnabled: wsData.config && wsData.config.autoDetect, toggleSwitch: (v) => sendWSConfigValue('autoDetect', v) },
-                        { title: 'Recipe Link Detection', color: colors.orange, icon: "link", isEnabled: configState.detection.fromURL, toggleSwitch: (v) => toggleLocalConfigItem('detection', 'fromURL', v) }
+                        { title: 'Automatic AI Food Detection', color: colors.orange, icon: "magic", isEnabled: wsData.config && wsData.config.autoDetect, toggleSwitch: (v) => sendWSConfigValue('autoDetect', v) },
+                        { title: 'Recipe Link Detection', color: colors.blue, icon: "link", isEnabled: configState.detection.fromURL, toggleSwitch: (v) => setLocalConfigItem('detection', 'fromURL', v) }
                     ].map((d, i) => <SwitchItem key={i} {...d} />)}
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                         {
@@ -213,17 +239,19 @@ export default function settingsScreen({ navigation }) {
                     <Text style={styles.listTitle}>Notifications</Text>
                     {notifications.map((d, i) => <SwitchItem key={i} {...d} />)}
 
+                    <Text style={styles.listTitle}>Automations</Text>
+                    {automations.map((d, i) => <SwitchItem key={i} {...d} />)}
+
                     <Text style={styles.listTitle}>History</Text>
                     {history.map((d, i) => <SwitchItem key={i} {...d} />)}
                     <Button
-                        buttonStyle={styles.chooseTone}
-                        title='Clear All History'
-                        titleStyle={styles.chooseTitle}
-                        containerStyle={styles.volumeChooseContainer}
+                        buttonStyle={[styles.chooseTone, { backgroundColor: confirmClearHistory ? colors.red : colors.darkGrey, paddingVertical: 10 }]}
+                        title={confirmClearHistory ? 'Confirm Clear History' : 'Clear All History'}
+                        icon={<Icon name="trash" color={colors.white} size={14} solid style={{ marginHorizontal: 15 }} />}
+                        titleStyle={[styles.chooseTitle, { color: colors.white }]}
+                        containerStyle={[styles.volumeChooseContainer, { height: 50, marginVertical: 5 }]}
+                        onPress={() => setConfirmClearHistory(!confirmClearHistory)}
                     />
-
-                    <Text style={styles.listTitle}>Automations</Text>
-                    {automations.map((d, i) => <SwitchItem key={i} {...d} />)}
 
                     <Text style={styles.listTitle}>Developer</Text>
                     {
@@ -231,12 +259,17 @@ export default function settingsScreen({ navigation }) {
                             <SwitchItem key={i} {...d} />)
                     }
                     <Button
-                        buttonStyle={styles.chooseTone}
+                        buttonStyle={[styles.chooseTone, { backgroundColor: colors.darkGrey, paddingVertical: 10 }]}
                         title='View Logs'
-                        titleStyle={styles.chooseTitle}
-                        containerStyle={styles.volumeChooseContainer}
+                        icon={<Icon name="scroll" color={colors.white} size={14} solid style={{ marginHorizontal: 15 }} />}
+                        titleStyle={[styles.chooseTitle, { color: colors.white }]}
+                        containerStyle={[styles.volumeChooseContainer, { height: 50, marginVertical: 5 }]}
                         onPress={() => { setModalContent({ title: 'Logs', body: wsData.Logs }); setModalVisible(true) }}
                     />
+                    <TouchableWithoutFeedback onPress={easterEgg}>
+
+                    <Text style={[styles.listItemName, { textAlign: 'center', width: '100%', marginLeft: 0, marginVertical: 50, paddingHorizontal: 20, fontSize: 14 }]}>Some settings may require an oven and app restart to take effect.</Text>
+                    </TouchableWithoutFeedback>
                 </Fragment>
             }
             <Modal isVisible={modalVisible} swipeDirection="down" onSwipeComplete={() => setModalVisible(false)} onBackdropPress={() => setModalVisible(false)} style={{ margin: 0 }} backdropOpacity={0.5}>

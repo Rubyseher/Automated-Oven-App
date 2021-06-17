@@ -586,12 +586,11 @@ export const styles = StyleSheet.create({
             width: 0,
             height: 2,
         },
-        shadowOpacity: 0.15,
+        shadowOpacity: 0.20,
         shadowRadius: 3.84,
-        elevation: 5,
-        paddingVertical: 15,
         flexDirection: 'row',
         padding: 10,
+        marginVertical:5,
         alignItems: 'center'
     },
     chooseTone: {
