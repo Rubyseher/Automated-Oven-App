@@ -108,7 +108,7 @@ export default function automationEditScreen({ navigation, route }) {
         <Fragment>
             <ScrollView vertical={true} contentContainerStyle={{ marginTop: 5, marginHorizontal: 32, paddingBottom: 200, paddingTop: 50 }}>
                 <View style={{ flexDirection: 'row', width: '100%' }} >
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => navigation.navigate('automationScreen')}>
                         <Icon name="chevron-left" size={22} color={colors.blue} />
                     </TouchableOpacity>
                     <Text style={[styles.heading, { fontSize: 26, marginTop: -5, marginRight: '23%' }]}>{editable ? '   Edit Automation' : '   ' + foodName}</Text>

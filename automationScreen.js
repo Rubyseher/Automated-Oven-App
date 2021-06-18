@@ -9,6 +9,8 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import FoodListItem from "./FoodListItem";
 import { AuthContext } from './AuthContext';
 
+const generateNewID = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
+
 export default function automationScreen() {
     const [data, setData] = useState([]);
     const [keys, setKeys] = useState([]);
@@ -69,8 +71,6 @@ export default function automationScreen() {
             };
         }, [])
     );
-
-    const generateNewID = size => [...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('');
 
     const newAutomation = () => {
         id = generateNewID(6)

@@ -20,6 +20,15 @@ export const colors = {
     navBarInactive: '#b9b9b9'
 }
 
+export const itemColors = {
+    cook: colors.yellow,
+    preheat: colors.orange,
+    notify: colors.purple,
+    cool: colors.turquoise,
+    poweroff: colors.red,
+    checkpoint: colors.blue,
+}
+
 export const styles = StyleSheet.create({
     title: {
         fontWeight: '600',
@@ -658,5 +667,29 @@ export const styles = StyleSheet.create({
         alignSelf: 'center',
         marginBottom: 20,
         marginTop: 5
+    },
+    paginationContainer: {
+        marginHorizontal: '5%',
+        flexDirection:'row',
+        alignSelf:'center'
+    },
+    paginationItem: {
+        height: 18,
+        width: 18,
+        borderRadius: 9,
+        borderWidth:6,
+        marginHorizontal:15,
+    },
+    currentTemp: {
+        fontWeight:'bold',
+        color:colors.red,
+        fontSize:24,
+        marginTop:10,
+        marginBottom:40
+    },
+    quickTypeTextInput: {
+        fontWeight:'bold',
+        fontSize:22,
+        color:colors.black,
     }
 });

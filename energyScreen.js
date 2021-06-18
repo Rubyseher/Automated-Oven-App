@@ -31,8 +31,6 @@ export default function energyScreen() {
     const parseData = (d) => {
         let dates = Object.keys(d)
 
-        console.log(d);
-
         var _weekData = [], _weekDataSelf = []
         for (m = moment().subtract(6, 'd'); m.isSameOrBefore(moment()); m.add(1, 'd')) {
             var date = m.format('YYYY-MM-DD')
