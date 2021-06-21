@@ -216,7 +216,7 @@ function mainScreen({ navigation }) {
 
     return (
         data ? <View style={{ height: '100%' }}>
-            <Image source={require('./assets/WhitePlateScreen.jpg')} style={{ width: '100%', height: '100%', position: data.item == 'Empty' ? 'relative' : 'absolute', top: 0, left: 0 }} resizeMode="cover" />
+            <Image source={{ uri: 'WhitePlateScreen' }} style={{ width: '100%', height: '100%', position: data.item == 'Empty' ? 'relative' : 'absolute', top: 0, left: 0 }} resizeMode="cover" />
             {
                 data.steps && <Fragment>
 
@@ -273,9 +273,9 @@ function mainScreen({ navigation }) {
                 </Fragment>
             }
             {
-                data.item == 'Empty' && <TouchableOpacity onPress={() => setQuickTypeVisible(true)} style={{position: 'absolute', bottom: '15%',width:'100%'}}>
+                data.item == 'Empty' && <TouchableOpacity onPress={() => setQuickTypeVisible(true)} style={{ position: 'absolute', bottom: '15%', width: '100%' }}>
                     <Text style={[styles.title, { alignSelf: 'center', color: colors.darkGrey }]}>Empty</Text>
-                    <Text style={{ marginTop:'3%', marginHorizontal: '20%', alignSelf: 'center', color: colors.darkGrey, textAlign: 'center', fontStyle: 'italic' }}>The crumbs are lonely. Maybe its time to bake something?</Text>
+                    <Text style={{ marginTop: '3%', marginHorizontal: '20%', alignSelf: 'center', color: colors.darkGrey, textAlign: 'center', fontStyle: 'italic' }}>The crumbs are lonely. Maybe its time to bake something?</Text>
                 </TouchableOpacity>
             }
             <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={10} onSwipeComplete={() => setVisible(false)} animationIn='fadeInDown' animationOut='fadeOutUp' useNativeDriver={true} onBackdropPress={() => setVisible(false)} style={{ margin: 0 }} backdropOpacity={0} >
@@ -297,7 +297,7 @@ function mainScreen({ navigation }) {
                     />
                 </View>
             </Modal>
-            <Modal isVisible={quickTypeVisible}  onModalWillShow={() => this._quickTempInput.focus()} swipeDirection="down" panResponderThreshold={10} onSwipeComplete={() => setQuickTypeVisible(false)} animationIn='fadeInUp' animationOut='fadeOut' useNativeDriver={true} onBackdropPress={() => setQuickTypeVisible(false)} style={{ margin: 0 }} backdropOpacity={0.5} >
+            <Modal isVisible={quickTypeVisible} onModalWillShow={() => this._quickTempInput.focus()} swipeDirection="down" panResponderThreshold={10} onSwipeComplete={() => setQuickTypeVisible(false)} animationIn='fadeInUp' animationOut='fadeOut' useNativeDriver={true} onBackdropPress={() => setQuickTypeVisible(false)} style={{ margin: 0 }} backdropOpacity={0.5} >
                 <View style={[styles.urlOverlay, { top: '40%', width: '75%' }]} >
                     <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
                         <Icon name="pen" solid size={18} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />

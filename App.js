@@ -15,6 +15,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthContext';
 import { Notifications } from 'react-native-notifications';
+import SplashScreen from  "react-native-splash-screen";
 
 const notificationSetup = () => {
     Notifications.registerRemoteNotifications();
@@ -28,14 +29,10 @@ const notificationSetup = () => {
     });
 
     Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
-        // console.log("Notification Received - Foreground", notification.payload);
-        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
         completion({ alert: true, sound: true, badge: false });
     });
 
     Notifications.events().registerNotificationReceivedBackground((notification, completion) => {
-        // console.log("Notification Received - Background", notification.payload);
-        // Calling completion on iOS with `alert: true` will present the native iOS inApp notification.
         completion({ alert: true, sound: true, badge: false });
     });
 }
@@ -236,6 +233,7 @@ export default function App() {
     );
 
     useEffect(async () => {
+        SplashScreen.hide();
         const configSubscriber = await AsyncStorage.getItem('config')
         context.login(configSubscriber !== null ? JSON.parse(configSubscriber) : null)
         notificationSetup()
