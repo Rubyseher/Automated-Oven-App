@@ -18,15 +18,15 @@ import { Notifications } from 'react-native-notifications';
 import SplashScreen from  "react-native-splash-screen";
 
 const notificationSetup = () => {
-    Notifications.registerRemoteNotifications();
+    // Notifications.registerRemoteNotifications();
 
-    Notifications.events().registerRemoteNotificationsRegistered((event) => {
-        // TODO: Send the token to my server so it could send back push notifications...
-        console.log("Device Token Received", event.deviceToken);
-    });
-    Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
-        // console.error(event);
-    });
+    // Notifications.events().registerRemoteNotificationsRegistered((event) => {
+    //     // TODO: Send the token to my server so it could send back push notifications...
+    //     console.log("Device Token Received", event.deviceToken);
+    // });
+    // Notifications.events().registerRemoteNotificationsRegistrationFailed((event) => {
+    //     // console.error(event);
+    // });
 
     Notifications.events().registerNotificationReceivedForeground((notification, completion) => {
         completion({ alert: true, sound: true, badge: false });

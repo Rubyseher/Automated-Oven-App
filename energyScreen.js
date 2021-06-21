@@ -118,8 +118,8 @@ export default function energyScreen() {
                 </View>
             </View>
 
-            <BarChart style={{ height: 110 }} data={filter ? weekDataSelf : weekData} svg={{ fill: colors.lightGreen }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.30} spacingOuter={0.6} yAccessor={({ item }) => item / 10} yMax={30} ></BarChart>
-            <View style={{ borderBottomColor: colors.grey, borderBottomWidth: 2, marginTop: '-3%', marginBottom: '3%', marginHorizontal: '4%' }} />
+            <BarChart style={{ height: 110 }} data={filter ? weekDataSelf : weekData} svg={{ fill: colors.lightGreen }} contentInset={{ top: 10, bottom: 10 }} spacingInner={0.30} spacingOuter={0.6} yAccessor={({ item }) => item / 4} yMax={30} ></BarChart>
+            <View style={{ borderBottomColor: colors.grey, borderBottomWidth: 2, marginBottom: '3%', marginHorizontal: '4%' }} />
 
             <View style={styles.tagContainer}>
                 <View style={[styles.tagBadge, { backgroundColor: colors.lightGreen, marginTop: 8 }]}>

@@ -155,7 +155,7 @@ function mainScreen({ navigation }) {
                 }
             }
 
-            let sentDoneNotification, lastCookedItem = ""
+            let sentDoneNotification, sentHighEnergyNotification, lastCookedItem = ""
 
             var intervalId = setInterval(() => {
                 var ws = new WebSocket(config ? config.url : 'ws://oven.local:8069');
@@ -169,21 +169,18 @@ function mainScreen({ navigation }) {
                 ws.onmessage = (e) => {
                     d = JSON.parse(e.data)
                     if (d.type == 'result' && d.req == 'get') {
+                        // console.log("data", d.result)
                         if (!d.result.isCooking)
                             setGetUrl(true)
-                        else {
-                            setGetUrl(false)
-                            sentDoneNotification = undefined
-                        }
+                        else { setGetUrl(false); sentDoneNotification = sentHighEnergyNotification = undefined; }
                         if (d.result.item !== "Empty")
                             lastCookedItem = d.result.item
                         if (d.result.isDone && !sentDoneNotification && lastCookedItem.length > 1 && config.notifications.DONE)
                             sentDoneNotification = Notifications.postLocalNotification({ title: "Done", body: `${lastCookedItem} is done cooking`, sound: "chime.aiff", silent: false, category: "DONE" });
-                        // console.log("data", d.result)
-                        if (data)
-                            if (data.currentStep == d.result.currentStep - 1 && !d.isPaused)
-                                if (this._carousel)
-                                    this._carousel.snapToItem(d.result.currentStep);
+                        if (d.result.currentTempTop > 200 && !sentHighEnergyNotification && config.notifications.HIGH_ENERGY)
+                            sentHighEnergyNotification = Notifications.postLocalNotification({ title: "Warning: High Energy Consumption", body: 'Your energy consumption is relatively high. Consider lowering cooking temperatures to cut down on costs.', sound: "chime.aiff", silent: false, category: "HIGH_ENERGY" });
+                        if (data) if (data.currentStep == d.result.currentStep - 1 && !d.isPaused) if (this._carousel)
+                            this._carousel.snapToItem(d.result.currentStep);
                         if (delayFetch) {
                             setTimeout(() => {
                                 setData(d.result)
