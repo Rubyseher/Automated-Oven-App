@@ -193,23 +193,6 @@ export default function settingsScreen({ navigation }) {
                         }
                     </ScrollView>
 
-                    <Text style={styles.listTitle}>Power</Text>
-                    <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
-                        <Button
-                            icon={<Icon name="sync-alt" size={24} color={colors.white} />}
-                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.darkGrey }]}
-                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
-                            onPress={() => sendPowerValue('restart')}
-                        />
-                        <Button
-                            icon={<Icon name="power-off" size={24} color={colors.white} />}
-                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
-                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
-                            onPress={() => sendPowerValue('poweroff')}
-                        />
-
-                    </View>
-
                     <Text style={styles.listTitle}>Oven Details</Text>
                     {[
                         { icon: 'address-card', color: colors.red, value: wsData.config && wsData.config.name, onChange: (v) => sendWSConfigValue('name', v) },
@@ -267,6 +250,40 @@ export default function settingsScreen({ navigation }) {
                         containerStyle={[styles.volumeChooseContainer, { height: 50, marginVertical: 5 }]}
                         onPress={() => { setModalContent({ title: 'Logs', body: wsData.Logs }); setModalVisible(true) }}
                     />
+
+                    <Text style={styles.listTitle}>Operating System</Text>
+                    <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                        <Button
+                            icon={<Icon name="sync-alt" size={24} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.purple }]}
+                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                            onPress={() => sendPowerValue('softRestart')}
+                        />
+                        <Button
+                            icon={<Icon name="cloud-download-alt" size={24} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.blue }]}
+                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                            onPress={() => sendPowerValue('update')}
+                        />
+
+                    </View>
+
+                    <Text style={styles.listTitle}>Power</Text>
+                    <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                        <Button
+                            icon={<Icon name="sync-alt" size={24} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.orange }]}
+                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                            onPress={() => sendPowerValue('restart')}
+                        />
+                        <Button
+                            icon={<Icon name="power-off" size={24} color={colors.white} />}
+                            buttonStyle={[styles.roundButtonM, { backgroundColor: colors.red }]}
+                            containerStyle={[styles.roundButtonPaddingM, { marginLeft: 0, marginRight: 0 }]}
+                            onPress={() => sendPowerValue('poweroff')}
+                        />
+
+                    </View>
                     <TouchableWithoutFeedback onPress={easterEgg}>
 
                         <Text style={[styles.listItemName, { textAlign: 'center', width: '100%', marginLeft: 0, marginVertical: 50, paddingHorizontal: 20, fontSize: 14 }]}>Some settings may require an oven and app restart to take effect.</Text>

@@ -1,6 +1,6 @@
-import React, { useState, Fragment, useCallback, useContext } from 'react';
+import React, { useState, Fragment, useCallback, useContext, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, TextInput } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, TextInput, KeyboardAvoidingView } from 'react-native';
 import { Button } from 'react-native-elements';
 import { styles, colors, itemColors } from './styles'
 import Ficon from 'react-native-vector-icons/Fontisto';
@@ -55,18 +55,42 @@ const TimelineComponent = (props) => {
     return null;
 }
 
+const IconTextInput = (props) => {
+    return (
+        <View style={styles.dropDown}>
+            <View style={[styles.switchIcon, { backgroundColor: props.color }]}>
+                <Icon name={props.icon} color={colors.white} size={14} solid style={{ alignSelf: 'center' }} />
+            </View>
+            <TextInput
+                style={[styles.listItemName, { color: colors.black }]}
+                onChangeText={props.onChange}
+                value={props.value}
+                placeholder={props.placeholder}
+                secureTextEntry={true}
+                onSubmitEditing={props.onSubmitEditing}
+            />
+        </View>
+    )
+}
+
 function mainScreen({ navigation }) {
     const [time, setTime] = useState(0);
     const [data, setData] = useState();
     const [urlData, setUrlData] = useState();
     const [getUrl, setGetUrl] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [visible, setVisible] = useState(false);
+    const [URLModalVisible, setURLModalVisible] = useState(false);
     const [delayFetch, setDelayFetch] = useState(false);
     const { config, getConfig } = useContext(AuthContext)
 
     const [quickTypeVisible, setQuickTypeVisible] = useState(false);
     const [quickTypeInput, setQuickTypeInput] = useState({});
+
+    const [WiFiModalVisible, setWiFiModalVisible] = useState(false);
+    const [SSIDs, setSSIDs] = useState([]);
+    const [selectedSSID, setSelectedSSID] = useState();
+    const [networkPassword, setNetworkPassword] = useState();
+
 
     const sendCookingFromURL = (values) => {
         console.log("sendCookingFromURL values", values);
@@ -97,7 +121,7 @@ function mainScreen({ navigation }) {
 
                         if (cookingValues['temp'] > 0 && cookingValues['time'] > 0) setUrlData(cookingValues)
                         console.log("cookingValues", cookingValues);
-                        setVisible(true)
+                        setURLModalVisible(true)
 
                     })
                 })
@@ -137,6 +161,7 @@ function mainScreen({ navigation }) {
     useFocusEffect(
         useCallback(() => {
             ReactNativeHapticFeedback.trigger("impactHeavy");
+
             const parseData = (d) => {
                 if (!d.isPaused) {
                     _time = 0
@@ -211,6 +236,49 @@ function mainScreen({ navigation }) {
         }, [getUrl])
     );
 
+    useFocusEffect(
+        useCallback(() => {
+            let resList = [false, false]
+            var ws = new WebSocket(config ? config.url : 'ws://oven.local:8069');
+            ws.onopen = () => {
+                let reqList = ['get', 'getSSIDs']
+                reqList.forEach(r => ws.send(JSON.stringify({ module: 'network', function: r })))
+            };
+            ws.onmessage = (e) => {
+                d = JSON.parse(e.data)
+                if (d.type == 'result') {
+                    if (d.req == 'get' && d.result !== 'connected') {
+                        setWiFiModalVisible(true)
+                        resList[0] = true
+                    } else if (d.req == 'getSSIDs') {
+                        setSSIDs(d.result.filter(r => r[0] != '\\'))
+                        resList[1] = true
+                    }
+                }
+                if (resList[0] === resList[1] === true) ws.close()
+            };
+        }, [])
+    );
+
+    const joinNetwork = () => {
+        if (selectedSSID) {
+            setWiFiModalVisible(false)
+
+            var ws = new WebSocket(config ? config.url : 'ws://oven.local:8069');
+            ReactNativeHapticFeedback.trigger("impactHeavy");
+            ws.onopen = () => {
+                req = {
+                    module: 'network',
+                    function: 'joinNetwork',
+                    params: [selectedSSID, networkPassword]
+                }
+                ws.send(JSON.stringify(req));
+                setLoading(true)
+            };
+        }
+    }
+
+
     return (
         data ? <View style={{ height: '100%' }}>
             <Image source={{ uri: 'WhitePlateScreen' }} style={{ width: '100%', height: '100%', position: data.item == 'Empty' ? 'relative' : 'absolute', top: 0, left: 0 }} resizeMode="cover" />
@@ -275,7 +343,7 @@ function mainScreen({ navigation }) {
                     <Text style={{ marginTop: '3%', marginHorizontal: '20%', alignSelf: 'center', color: colors.darkGrey, textAlign: 'center', fontStyle: 'italic' }}>The crumbs are lonely. Maybe its time to bake something?</Text>
                 </TouchableOpacity>
             }
-            <Modal isVisible={urlData && visible} swipeDirection="up" panResponderThreshold={10} onSwipeComplete={() => setVisible(false)} animationIn='fadeInDown' animationOut='fadeOutUp' useNativeDriver={true} onBackdropPress={() => setVisible(false)} style={{ margin: 0 }} backdropOpacity={0} >
+            <Modal isVisible={urlData && URLModalVisible} swipeDirection="up" panResponderThreshold={10} onSwipeComplete={() => setURLModalVisible(false)} animationIn='fadeInDown' animationOut='fadeOutUp' useNativeDriver={true} onBackdropPress={() => setURLModalVisible(false)} style={{ margin: 0 }} backdropOpacity={0} >
                 <View style={styles.urlOverlay} >
                     <View style={[styles.tagBadge, { backgroundColor: colors.blue }]}>
                         <Ficon name="link2" size={20} color={colors.white} style={{ padding: 13, alignSelf: 'center' }} />
@@ -326,6 +394,34 @@ function mainScreen({ navigation }) {
                         <Text style={[styles.quickTypeTextInput]}>&nbsp;min</Text>
                     </View>
                 </View>
+            </Modal>
+            <Modal isVisible={WiFiModalVisible} swipeDirection="down" onSwipeComplete={() => setWiFiModalVisible(!WiFiModalVisible)} onBackdropPress={() => setWiFiModalVisible(!WiFiModalVisible)} style={{ margin: 0 }} backdropOpacity={0.5}>
+                <KeyboardAvoidingView style={[styles.overlayContainer, { padding: 50, height: '80%' }]} behavior="position" keyboardVerticalOffset={-260}>
+                    <View style={[styles.roundButtonM, { backgroundColor: colors.blue, alignItems: 'center', justifyContent: 'center', shadowRadius: 0, shadowOpacity: 0 }]}>
+                        <Icon name="wifi" size={28} color={colors.white} style={{ alignSelf: 'center' }} />
+
+                    </View>
+                    <Text style={{ fontWeight: 'bold', fontSize: 28, textAlign: 'center', marginTop: 20, marginHorizontal: 10 }}>Connect your oven to the network</Text>
+                    {!selectedSSID ? <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', marginVertical: 30 }}>
+                        {
+                            SSIDs.map((item, i) => (
+                                <View key={i} style={{ flexDirection: 'row' }}>
+                                    <Button
+                                        onPress={() => setSelectedSSID(item)}
+                                        buttonStyle={styles.chooseTone}
+                                        title={item}
+                                        titleStyle={styles.chooseTitle}
+                                        containerStyle={styles.volumeChooseContainer}
+                                    />
+                                </View>
+                            ))
+                        }
+                    </View> : <TouchableOpacity onPress={() => setSelectedSSID()}>
+                        <Text style={[styles.heading, { textAlign: 'center' }]}>{selectedSSID}</Text>
+                    </TouchableOpacity>
+                    }
+                    <IconTextInput icon="key" color={colors.blue} value={networkPassword} onChange={setNetworkPassword} placeholder="Super Secret Password" onSubmitEditing={() => joinNetwork()} />
+                </KeyboardAvoidingView>
             </Modal>
         </View> :
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>
