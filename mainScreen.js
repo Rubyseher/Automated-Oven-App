@@ -222,7 +222,7 @@ function mainScreen({ navigation }) {
                 };
             }, 800)
 
-            setTimeout(() => setLoading(false), 5000)
+            setTimeout(() => setLoading(false), 4000)
 
             return () => {
                 clearInterval(intervalId);
