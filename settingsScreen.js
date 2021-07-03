@@ -5,7 +5,7 @@ import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import { styles, colors } from './styles'
 import Slider from '@react-native-community/slider'
 import IonIcon from 'react-native-vector-icons/Ionicons';
-import { Button } from 'react-native-elements';
+import { Button, Overlay } from 'react-native-elements';
 import { AuthContext } from './AuthContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Modal from 'react-native-modal';
@@ -64,19 +64,16 @@ const IconTextInput = (props) => {
     )
 }
 
-// send twice
-// update frequently
-// metrics
-
 export default function settingsScreen({ navigation }) {
     const [loading, setLoading] = useState(true);
     const [wsData, setWSData] = useState();
     const [modalVisible, setModalVisible] = useState(false);
+    const [metricsOverlay, setMetricsOverlay] = useState(false);
     const [modalContent, setModalContent] = useState();
     const { config, getConfig, setConfig, logout } = useContext(AuthContext)
     const [configState, setConfigState] = useState(config)
     const [confirmClearHistory, setConfirmClearHistory] = useState(false)
-    const [parsedMetricData, setParsedMetricData] = useState([0,0,0,0,0,[],0])
+    const [parsedMetricData, setParsedMetricData] = useState([0, 0, 0, 0, 0, [], 0])
 
     const setLocalConfigItem = (category, name, value) => {
         setConfigState((c) => {
@@ -151,7 +148,7 @@ export default function settingsScreen({ navigation }) {
                     d = JSON.parse(e.data)
                     if (d.type == 'result') {
                         setWSData((currWS) => { return { ...currWS, [d.req.length > 3 ? d.req.substring(3) : 'config']: d.result } })
-                        parseMetrics()
+                        if(d.req == 'getMetrics') parseMetrics()
                     }
                 };
             }, 800)
@@ -308,7 +305,7 @@ export default function settingsScreen({ navigation }) {
                         icon={<Icon name="tachometer-alt" color={colors.white} size={14} solid style={{ marginHorizontal: 15 }} />}
                         titleStyle={[styles.chooseTitle, { color: colors.white }]}
                         containerStyle={[styles.volumeChooseContainer, { height: 50, marginVertical: 5 }]}
-                        onPress={() => { setModalContent({ title: 'Metrics', body: '' }); setModalVisible(true) }}
+                        onPress={() => setMetricsOverlay(true)}
                     />
 
                     <Text style={styles.listTitle}>Operating System</Text>
@@ -349,42 +346,41 @@ export default function settingsScreen({ navigation }) {
                     </TouchableWithoutFeedback>
                 </Fragment>
             }
-            <Modal isVisible={modalVisible} swipeDirection="down" onSwipeComplete={() => setModalVisible(false)} onBackdropPress={() => setModalVisible(false)} style={{ margin: 0 }} backdropOpacity={0.5}>
-                {modalContent && modalContent.title !== 'Metrics' ?
-                    <ScrollView style={styles.overlayContainer}>
-                        <Text style={styles.addStep}>{modalContent.title}</Text>
-                        <View style={{ paddingHorizontal: 20 }}>
-                            <Text style={styles.listItemName}>{modalContent.body}</Text>
-                        </View>
-                    </ScrollView> :
-                    <View style={styles.overlayContainer}>
-                        <Text style={styles.addStep}>{modalContent && modalContent.title}</Text>
-                        <View style={{ paddingHorizontal: 20, flexDirection: 'row', flexWrap: 'wrap'}}>
-                            {
-                                modalContent && parsedMetricData && parsedMetricData.map((item, i) =>
-                                    <View key={i} style={{ width: '50%', flexWrap: 'wrap', marginVertical: 15,justifyContent:'center' }}>
-                                        {metrics.sources[i][1] !== 'units' ? <Text style={{ fontSize: 28, fontWeight: 'bold',textAlign:'center'  }}>{item}</Text> :
-                                            <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
-                                                {
-                                                    item.map((user, u) => (
-                                                        <View key={u} style={{ flexDirection: 'row', width: '32%' }}>
-                                                            <View style={[styles.detailsCircle, { backgroundColor: colors.blue }]}>
-                                                                <Icon name='user-alt' size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
-                                                            </View>
-                                                        </View>
-                                                    ))
-                                                }
-
-                                            </View>
+            <Overlay isVisible={metricsOverlay} onBackdropPress={() => setMetricsOverlay(!metricsOverlay)} overlayStyle={[styles.overlayContainer,{height:'80%'}]}>
+                <Text style={styles.addStep}>Metrics</Text>
+                <View style={{ paddingHorizontal: 20, flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center', width:'90%',marginLeft:'10%'}}>
+                    {
+                        parsedMetricData.map((item, i) =>
+                            <View key={i} style={{ width: metrics.sources[i][1] !== 'users' ? '50%' : '100%', marginVertical: 15, justifyContent: 'center' }}>
+                                {metrics.sources[i][1] !== 'users' ? <Text style={{ fontSize: 28, fontWeight: 'bold', textAlign: 'center', width: metrics.sources[i][1] !== 'users' ? '60%' : '100%'   }}>{item}</Text> :
+                                    <View style={{ flexDirection: 'row', width: '100%', height: 90, flexWrap: 'wrap', padding: 10 }}>
+                                        {
+                                            item && item.map((user, u) => (
+                                                <View key={u} style={{  width: '28%' }}>
+                                                    <View style={[styles.detailsCircle, { backgroundColor: colors.blue }]}>
+                                                        <Icon name='user-alt' size={12} color={colors.white} style={{ padding: 4, alignSelf: 'center' }} solid />
+                                                    </View>
+                                                    <Text style={styles.autoTitle}>{user}</Text>
+                                                </View>
+                                            ))
                                         }
-                                        <Text style={{textAlign:'center' }}>{metrics.units[i]}</Text>
-                                        <Text style={{ flexWrap: 'wrap',textAlign:'center',width:'50%'  }}>{metrics.names[i]}</Text>
+
                                     </View>
-                                )
-                            }
-                        </View>
+                                }
+                                <Text style={{ textAlign: 'center', width: metrics.sources[i][1] !== 'users' ? '60%' : '90%'  }}>{metrics.units[i]}</Text>
+                                <Text style={{ flexWrap: 'wrap', textAlign: 'center', width: metrics.sources[i][1] !== 'users' ? '60%' : '90%' }}>{metrics.names[i]}</Text>
+                            </View>
+                        )
+                    }
+                </View>
+            </Overlay>
+            <Modal isVisible={modalVisible} swipeDirection="down" onSwipeComplete={() => setModalVisible(false)} onBackdropPress={() => setModalVisible(false)} style={{ margin: 0 }} backdropOpacity={0.5}>
+                <ScrollView style={[styles.overlayContainer,{height:'90%'}]}>
+                    <Text style={styles.addStep}>{modalContent && modalContent.title}</Text>
+                    <View style={{ paddingHorizontal: 20 }}>
+                        <Text style={styles.listItemName}>{modalContent && modalContent.body}</Text>
                     </View>
-                }
+                </ScrollView>
             </Modal>
         </ScrollView> :
             <View style={{ width: '100%', height: '100%', justifyContent: 'center', padding: '15%' }}>

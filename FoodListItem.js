@@ -30,7 +30,6 @@ export default FoodListItem = (props) => {
     }, []);
 
     const runSteps = () => {
-        console.log({ item: props.name, steps: props.steps });
         var ws = new WebSocket(config.url);
         ws.onopen = () => {
             ws.send(JSON.stringify({ module: 'cook', function: 'startFromSteps', params: [{ item: props.name, steps: props.steps }] }));
