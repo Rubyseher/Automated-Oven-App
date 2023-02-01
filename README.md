@@ -1,6 +1,7 @@
 # Automated-Oven-App
 
-<img src='imagesSS/Automator Menu.jpeg' width='150'>
+<img src='imagesSS/Automator Menu.jpeg' width='300'>
+
 MAIN PAGE
 ![Main Empty 2](https://user-images.githubusercontent.com/67371345/215938460-caaa8204-6e91-43be-afa3-cb9acb6b5259.jpg)
 ![Main Burger 3](https://user-images.githubusercontent.com/67371345/215938479-b481b8ac-4e6f-426b-b285-1a94abc18ecd.jpg)
