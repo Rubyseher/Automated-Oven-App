@@ -1,6 +1,6 @@
 # Automated-Oven-App
 
-<b>MAIN PAGE</b>
+<h2>MAIN PAGE</h2>
 
 <br/>
 <img src='imagesSS/Main Empty 2.jpg' width='400'>
