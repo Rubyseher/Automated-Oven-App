@@ -1,10 +1,9 @@
 # Automated-Oven-App
 
+<b>MAIN PAGE</b>
 
-
-MAIN PAGE
-<img src='imagesSS/Main Burger 2.jpg' width='400'>
-
+<br/>
+<img src='imagesSS/Main Empty 2.jpg' width='400'>
 <img src='imagesSS/Main Burger 3.jpg' width='400'>
 
 
